@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RSUD Prof. Dr. Margono Soekarjo Purwokerto | Bot Layanan Kesehatan BOKU 24 Jam</title>
+  <meta name="description" content="Portal Resmi RSUD Prof. Dr. Margono Soekarjo Purwokerto (RSMS) - Rumah Sakit Rujukan Regional Kelas A Pendidikan Pemprov Jawa Tengah dengan Layanan Asisten Virtual WhatsApp BOKU 24 Jam.">
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/bot-modal.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+  <!-- ========================================================================
+       TOP NAVIGATION BAR (RSUD PROF. DR. MARGONO SOEKARJO & BOT BOKU)
+       ======================================================================== -->
+  <header class="site-header">
+    <div class="container nav-container">
+      <a href="#" class="brand-logo" id="navBrandLogo" title="RSUD Prof. Dr. Margono Soekarjo Purwokerto">
+        <img src="assets/images/logo-jateng.svg" alt="Lambang Provinsi Jawa Tengah" class="gov-logo-img">
+        <div class="brand-text-group">
+          <span class="brand-main">RSUD Margono</span>
+          <span class="brand-sub">Jawa Tengah • Purwokerto</span>
+        </div>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="#home" class="nav-link active">Beranda</a></li>
+        <li><a href="#about" class="nav-link">Profil</a></li>
+        <li><a href="#services" class="nav-link">Layanan</a></li>
+        <li><a href="#facilities" class="nav-link">Fasilitas</a></li>
+        <li><a href="#contact" class="nav-link">Kontak</a></li>
+      </ul>
+
+      <div class="nav-actions">
+        <button class="btn btn-outline open-admin-btn" id="openAdminNavBtn" title="Buka Portal Admin RSUD Margono">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          Portal Admin RS
+        </button>
+        <button class="btn btn-primary open-wa-btn" id="openWaNavBtn">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          Tanya BOKU
+        </button>
+        <button class="menu-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       LANDING PAGE MOBILE NAVIGATION DRAWER
+       ======================================================================== -->
+  <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
+  <aside class="mobile-nav-drawer" id="mobileNavDrawer" aria-label="Menu Mobile">
+    <div class="mobile-nav-header">
+      <a href="#" class="brand-logo" id="mobileNavBrandLogo">
+        <img src="assets/images/logo-jateng.svg" alt="Lambang Provinsi Jawa Tengah" class="gov-logo-img">
+        <div class="brand-text-group">
+          <span class="brand-main">RSUD Margono</span>
+          <span class="brand-sub">Jawa Tengah • Purwokerto</span>
+        </div>
+      </a>
+      <button class="mobile-nav-close" id="mobileNavClose" aria-label="Tutup Menu">
+        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <ul class="mobile-nav-list">
+      <li><a href="#home" class="mobile-nav-item active">Beranda</a></li>
+      <li><a href="#about" class="mobile-nav-item">Profil</a></li>
+      <li><a href="#services" class="mobile-nav-item">Layanan</a></li>
+      <li><a href="#facilities" class="mobile-nav-item">Fasilitas</a></li>
+      <li><a href="#contact" class="mobile-nav-item">Kontak</a></li>
+    </ul>
+
+    <div class="mobile-nav-actions">
+      <button class="btn btn-primary open-wa-btn" style="width:100%; justify-content:center;">
+        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Tanya BOKU
+      </button>
+      <button class="btn btn-outline open-admin-btn" style="width:100%; justify-content:center;">
+        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Portal Admin RS
+      </button>
+    </div>
+  </aside>
+
+  <!-- ========================================================================
+       HERO SECTION (RSUD PROF. DR. MARGONO SOEKARJO & BOT BOKU)
+       ======================================================================== -->
+  <section class="hero-section" id="home">
+    <div class="container hero-grid">
+      
+      <!-- Hero Left: Content -->
+      <div class="hero-content">
+        <div class="hero-pill-tag">
+          <span class="pulse-dot"></span>
+          RSUD Kelas A Pendidikan • Rujukan Utama Jawa Tengah
+        </div>
+
+        <h1 class="hero-title">
+          Pelayanan Medis Prima & Terpadu dengan <span>Bot BOKU</span>
+        </h1>
+
+        <p class="hero-desc">
+          Pusat rujukan regional RSUD Prof. Dr. Margono Soekarjo Purwokerto, didampingi <strong>BOKU</strong> — asisten WhatsApp pintar 24 jam untuk informasi jadwal dokter, panduan mandiri pasien, dan respon tanggap darurat.
+        </p>
+
+        <!-- Hero Interactive Search Bar -->
+        <div class="hero-search-wrap">
+          <div class="hero-search-input-box">
+            <svg class="svg-icon svg-icon-sm search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" id="heroSearchInput" placeholder="Cari info poli, jadwal dokter, atau panduan rawat..." autocomplete="off">
+            <button type="button" class="btn btn-primary btn-search-hero" id="btnHeroSearch" title="Cari di Bot BOKU">
+              <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+              <span>Cari</span>
+            </button>
+          </div>
+
+          <!-- Topik Populer: Desktop Pills -->
+          <div class="hero-search-pills">
+            <span class="pills-label">Topik Populer:</span>
+            <button type="button" class="search-pill-btn" data-search="Panduan Kemoterapi">Panduan Kemoterapi</button>
+            <button type="button" class="search-pill-btn" data-search="Jadwal Dokter Poli">Jadwal Dokter Poli</button>
+            <button type="button" class="search-pill-btn" data-search="Paviliun Abiyasa">Paviliun Abiyasa</button>
+            <button type="button" class="search-pill-btn" data-search="Layanan IGD 24 Jam">Layanan IGD 24 Jam</button>
+          </div>
+
+          <!-- Topik Populer: Mobile Dropdown -->
+          <div class="hero-search-dropdown-wrap">
+            <span class="pills-label">Topik Populer:</span>
+            <div class="topic-select-box">
+              <select id="heroTopicSelect" class="hero-topic-select" aria-label="Pilih Topik Populer">
+                <option value="" disabled selected>Pilih Topik Populer...</option>
+                <option value="Panduan Kemoterapi">Panduan Kemoterapi</option>
+                <option value="Jadwal Dokter Poli">Jadwal Dokter Poli</option>
+                <option value="Paviliun Abiyasa">Paviliun Abiyasa</option>
+                <option value="Layanan IGD 24 Jam">Layanan IGD 24 Jam</option>
+              </select>
+              <svg class="topic-select-arrow" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-buttons">
+          <button class="btn btn-primary open-wa-btn" id="heroMakeAppointmentBtn">
+            Daftar Janji Temu / Poli
+          </button>
+          <button class="btn btn-outline open-wa-btn" id="heroChatWithUsBtn">
+            Konsultasi via BOKU
+          </button>
+        </div>
+
+        <!-- Key Metrics Summary -->
+        <div class="hero-metrics">
+          <div class="metric-item">
+            <h4>Kelas A</h4>
+            <p>RS Rujukan Regional</p>
+          </div>
+          <div class="metric-item">
+            <h4>&lt; 3 Detik</h4>
+            <p>Respon Cepat BOKU</p>
+          </div>
+          <div class="metric-item">
+            <h4>24 Jam</h4>
+            <p>Siaga IGD & Rawat Inap</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero Right: Visual Asset with Floating Badges & Integrated BOKU Card -->
+      <div class="hero-visual-wrap">
+        <div class="hero-image-card">
+          <img src="assets/images/rsud-margono-hero-opt.jpg" alt="Gedung Utama RSUD Prof. Dr. Margono Soekarjo Purwokerto" id="heroDoctorImg">
+          
+          <!-- Floating Badge 1: 100+ Dokter Spesialis -->
+          <div class="float-badge-top-left">
+            <div class="badge-dot">
+              <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <span>100+ Dokter Spesialis</span>
+          </div>
+
+          <!-- Floating Badge 2: Pusat Onkologi & Jantung -->
+          <div class="float-badge-top-right">
+            <div class="badge-dot-gold">
+              <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+            </div>
+            <span>Pusat Onkologi & Jantung</span>
+          </div>
+
+          <!-- Docked BOKU Profile Card (Clean & Floating at Bottom) -->
+          <div class="hero-boku-card open-wa-btn" title="Chat dengan Bot BOKU via WhatsApp">
+            <img src="assets/images/boku-avatar.jpg" alt="Maskot Bot BOKU RSUD Margono" class="boku-avatar">
+            <div class="boku-info">
+              <h5>BOKU • Asisten Virtual RSMS</h5>
+              <p>Siaga 24 Jam via WhatsApp</p>
+            </div>
+            <span class="boku-action">Chat BOKU →</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       ABOUT US SECTION (PROFIL RSUD PROF. DR. MARGONO SOEKARJO)
+       ======================================================================== -->
+  <section class="about-section" id="about">
+    <div class="container">
+      
+      <div class="about-grid">
+        <!-- About Left Image Card (Clean, No Negative Offset) -->
+        <div class="about-image-wrap">
+          <div class="about-image-card">
+            <img src="assets/images/rsud-margono-building-opt.jpg" alt="Fasad Gedung Pelayanan RSUD Prof. Dr. Margono Soekarjo" id="aboutDoctorImg">
+          </div>
+        </div>
+
+        <!-- About Right Content (Clean & Streamlined) -->
+        <div class="about-details">
+          <div class="section-tag">Profil Rumah Sakit</div>
+          <h2 class="about-title">Pelayanan Prima, Sub-Spesialistik & Berorientasi Pasien</h2>
+          <p class="about-desc">
+            RSUD Prof. Dr. Margono Soekarjo adalah rumah sakit rujukan utama kelas A pendidikan milik Pemprov Jawa Tengah yang mengedepankan keunggulan klinis, keselamatan pasien, dan inovasi pelayanan digital modern.
+          </p>
+
+          <!-- Budaya Kerja PRIMA (Clean Badges) -->
+          <div class="prima-wrap">
+            <div class="prima-label">Budaya Kerja PRIMA:</div>
+            <div class="prima-pills">
+              <span class="prima-pill"><strong>P</strong>rofesional</span>
+              <span class="prima-pill"><strong>R</strong>amah</span>
+              <span class="prima-pill"><strong>I</strong>khlas</span>
+              <span class="prima-pill"><strong>M</strong>utu</span>
+              <span class="prima-pill"><strong>A</strong>kuntabel</span>
+            </div>
+          </div>
+
+          <!-- 2 Kampus Pelayanan Terintegrasi -->
+          <div class="about-campuses-grid">
+            <div class="about-campus-card">
+              <h5>
+                <svg class="svg-icon svg-icon-xs" style="color:var(--primary); width:14px; height:14px;" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                Kampus Pusat (Gumbreg)
+              </h5>
+              <p>Pusat Rujukan Regional, IGD Trauma Center 24 Jam, Pusat Onkologi & Bedah Jantung di Jl. Dr. Gumbreg No. 1.</p>
+            </div>
+            <div class="about-campus-card">
+              <h5>
+                <svg class="svg-icon svg-icon-xs" style="color:var(--primary); width:14px; height:14px;" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                Paviliun Abiyasa
+              </h5>
+              <p>Pusat Pelayanan Geriatri ramah lanjut usia dan perawatan rawat inap asri di Jl. Dr. Angka No. 1-2.</p>
+            </div>
+          </div>
+
+          <div>
+            <a href="#services" class="learn-more-link" id="aboutLearnMoreLink">Pelajari Layanan Unggulan →</a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       OUR SERVICES SECTION (LAYANAN UNGGULAN RSMS)
+       ======================================================================== -->
+  <section class="services-section" id="services">
+    <div class="container">
+      
+      <div class="section-header-center">
+        <div class="section-tag">Layanan Unggulan RSMS</div>
+        <h2 class="section-title">Solusi Layanan Medis Terpadu & Terpercaya</h2>
+        <p class="section-desc" style="margin:12px auto 0;">Fasilitas rujukan regional modern dengan dukungan teknologi kedokteran terkini dan asistensi digital 24 jam.</p>
+      </div>
+
+      <div class="services-grid">
+        <!-- Service Card 1: Onkologi Terpadu -->
+        <div class="service-card">
+          <div class="service-header-row">
+            <div class="service-icon-box">
+              <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/><path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"/><circle cx="20" cy="10" r="2"/></svg>
+            </div>
+          </div>
+          <h4>Pusat Onkologi Terpadu</h4>
+          <p>Pelayanan kemoterapi modern, radioterapi Linear Accelerator (LINAC), bedah tumor, dan ruang paliatif komprehensif.</p>
+          <a href="#" class="service-link open-wa-btn">Konsultasi Onkologi →</a>
+        </div>
+
+        <!-- Service Card 2: Bot WhatsApp BOKU 24/7 (Highlight) -->
+        <div class="service-card highlight">
+          <div class="service-header-row">
+            <div class="service-icon-box" style="background:#ecfdf5; color:#059669; border-color:#a7f3d0;">
+              <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </div>
+            <span class="service-top-pill">● 24 Jam Siaga</span>
+          </div>
+          <h4>Bot Pintar BOKU 24 Jam</h4>
+          <p>Asisten WhatsApp resmi RSUD Margono untuk triase keluhan pasca-kemo, informasi jadwal dokter, dan panduan pasien.</p>
+          <a href="#" class="service-link open-wa-btn">Chat dengan BOKU →</a>
+        </div>
+
+        <!-- Service Card 3: Pusat Kardiovaskular & Bedah Jantung -->
+        <div class="service-card">
+          <div class="service-header-row">
+            <div class="service-icon-box" style="background:#eff6ff; color:#1e40af;">
+              <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            </div>
+          </div>
+          <h4>Pusat Kardiovaskular (Cath Lab)</h4>
+          <p>Layanan kateterisasi jantung intervensi 24 jam, bedah jantung terbuka, serta ruang ICCU berstandar tinggi.</p>
+          <a href="#" class="service-link open-wa-btn">Jadwal Cath Lab →</a>
+        </div>
+
+        <!-- Service Card 4: Paviliun Abiyasa & Pusat Geriatri -->
+        <div class="service-card">
+          <div class="service-header-row">
+            <div class="service-icon-box">
+              <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
+            </div>
+          </div>
+          <h4>Paviliun Abiyasa (Pusat Geriatri)</h4>
+          <p>Pelayanan kesehatan paripurna khusus lanjut usia di lingkungan asri dengan pendekatan tim dokter multi-disiplin.</p>
+          <a href="#" class="service-link open-wa-btn">Info Paviliun Abiyasa →</a>
+        </div>
+
+        <!-- Service Card 5: IGD & Trauma Center 24 Jam -->
+        <div class="service-card">
+          <div class="service-header-row">
+            <div class="service-icon-box" style="background:#fef2f2; color:#ef4444; border-color:#fecaca;">
+              <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </div>
+          </div>
+          <h4>IGD & Trauma Center 24 Jam</h4>
+          <p>Penanganan kegawatdaruratan medis, bedah cito cepat, dan armada ambulans SPGDT di nomor darurat (0281) 641992.</p>
+          <a href="#" class="service-link open-wa-btn">Hotline IGD 24 Jam →</a>
+        </div>
+
+        <!-- Service Card 6: Poliklinik Rawat Jalan Eksekutif -->
+        <div class="service-card">
+          <div class="service-header-row">
+            <div class="service-icon-box">
+              <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><path d="m6 18 8-8"/><path d="M3 21h18"/><path d="m14 4 4 4"/><circle cx="9" cy="9" r="2"/><path d="M12 12v3"/><path d="M14 18a2 2 0 0 1-2-2v-1"/></svg>
+            </div>
+          </div>
+          <h4>Poli Rawat Jalan & Eksekutif</h4>
+          <p>28+ poliklinik sub-spesialis dan poli eksekutif dengan pendaftaran online nyaman dan waktu layanan terukur.</p>
+          <a href="#" class="service-link open-wa-btn">Jadwal Poliklinik →</a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       TESTIMONIALS & SUCCESS STORIES
+       ======================================================================== -->
+  <section class="testimonials-section" id="stories">
+    <div class="container">
+      
+      <div class="stories-grid">
+        <!-- Left: Story List (Clean & Decluttered) -->
+        <div class="stories-content">
+          <div class="section-tag">Kisah Pemulihan</div>
+          <h3>Dedikasi Sepenuh Hati untuk Setiap Pasien</h3>
+          <p class="stories-desc">
+            Komitmen kami menghadirkan pelayanan medis terbaik serta pendampingan yang menenangkan bagi setiap pasien dan keluarga:
+          </p>
+
+          <div class="story-cards-wrap">
+            <div class="story-card">
+              <div class="story-quote">"Pendampingan kemoterapi di RSUD Margono sangat memuaskan. Bot BOKU membantu saya mengatasi rasa cemas dan mual saat istirahat di rumah."</div>
+              <div class="story-author"><strong>Ibu Sulastri</strong> <span>• Pasien Onkologi Terpadu</span></div>
+            </div>
+
+            <div class="story-card">
+              <div class="story-quote">"Penanganan darurat di IGD dan tindakan kateterisasi di Cath Lab sangat cepat. Tim medis siaga penuh saat kondisi kritis."</div>
+              <div class="story-author"><strong>Bpk. Bambang S.</strong> <span>• Pasien Kardiovaskular</span></div>
+            </div>
+
+            <div class="story-card">
+              <div class="story-quote">"Perawatan orang tua kami di Paviliun Abiyasa terasa nyaman seperti di rumah sendiri. Pelayanannya sangat ramah, asri, dan sabar."</div>
+              <div class="story-author"><strong>Keluarga Bpk. Hadi</strong> <span>• Pasien Paviliun Abiyasa</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Photo Showcase Card -->
+        <div class="photo-showcase-card">
+          <img src="assets/images/rsud-margono-facade-opt.jpg" alt="Fasilitas Gedung Rawat Inap RSUD Margono Soekarjo" id="patientRecoveryImg">
+          <div class="photo-overlay">
+            <h5>Standar Pelayanan Akreditasi Paripurna</h5>
+            <p>Ruang rawat inap modern didukung pemantauan medis sentral dan tim perawat spesialis berdedikasi.</p>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       CAMPUS & FACILITY SHOWCASE GALLERY (FASILITAS RSUD MARGONO)
+       ======================================================================== -->
+  <section class="facility-gallery-section" id="facilities">
+    <div class="container">
+      
+      <div class="section-header-center">
+        <div class="section-tag">Fasilitas & Lingkungan</div>
+        <h2 class="section-title">Infrastruktur Modern Menunjang Kesembuhan</h2>
+        <p class="section-desc" style="margin:12px auto 0;">RSUD Prof. Dr. Margono Soekarjo didesain dengan fasilitas lengkap, ruang terbuka hijau asri, serta kemudahan akses mobilitas pasien.</p>
+      </div>
+
+      <!-- 3 Equal Symmetrical Columns Grid -->
+      <div class="gallery-grid">
+        <!-- Card 1: Kampus Utama Gumbreg -->
+        <div class="gallery-card">
+          <img src="assets/images/rsud-margono-hero-opt.jpg" alt="Gedung Utama RSUD Prof. Dr. Margono Soekarjo">
+          <div class="gallery-overlay">
+            <span class="gallery-badge">Kampus Pusat</span>
+            <h4>Kampus Utama Jl. Dr. Gumbreg</h4>
+            <p>Pusat rujukan regional pelayanan rawat jalan sub-spesialis, IGD Trauma Center 24 Jam, dan Pusat Onkologi.</p>
+          </div>
+        </div>
+
+        <!-- Card 2: Gedung Paviliun Rawat Inap -->
+        <div class="gallery-card">
+          <img src="assets/images/rsud-margono-facade-opt.jpg" alt="Gedung Paviliun Baru RSUD Margono">
+          <div class="gallery-overlay">
+            <span class="gallery-badge">Paviliun & Inpatient</span>
+            <h4>Gedung Perawatan Modern</h4>
+            <p>Kamar rawat inap representatif dilengkapi pemantauan medis sentral dan lingkungan tenang.</p>
+          </div>
+        </div>
+
+        <!-- Card 3: Lanskap Asri & Akses Terbuka -->
+        <div class="gallery-card">
+          <img src="assets/images/rsud-margono-entrance-opt.jpg" alt="Lanskap Area Terbuka RSUD Margono Purwokerto">
+          <div class="gallery-overlay">
+            <span class="gallery-badge">Lingkungan Hijau</span>
+            <h4>Area Terbuka & Ramah Lingkungan</h4>
+            <p>Kawasan asri ramah pasien lanjut usia dan penyandang disabilitas dengan sirkulasi udara segar.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ========================================================================
+       GET IN TOUCH / CALL TO ACTION BANNER
+       ======================================================================== -->
+  <section class="cta-banner-section" id="contact">
+    <div class="container">
+      
+      <div class="cta-banner-card">
+        <!-- Background speech bubble watermark (subtle) -->
+        <div class="cta-watermark">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/>
+          </svg>
+        </div>
+
+        <div class="cta-banner-content">
+          <div class="section-tag" style="background:rgba(255,255,255,0.18); color:#ffffff;">Siaga 24 Jam Melayani</div>
+          <h2 class="cta-banner-title">Butuh Asistensi Medis atau Info Rumah Sakit?</h2>
+          <p class="cta-banner-desc">
+            Hubungi Bot WhatsApp resmi RSUD Prof. Dr. Margono Soekarjo Purwokerto untuk konsultasi keluhan mandiri, informasi jadwal dokter, persiapan rawat inap, atau panggilan darurat IGD 24 jam.
+          </p>
+          <button class="btn btn-primary open-wa-btn" id="ctaContactUsBtn">
+            Chat BOKU via WhatsApp
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       FOOTER (RSUD PROF. DR. MARGONO SOEKARJO PURWOKERTO)
+       ======================================================================== -->
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        
+        <!-- Brand Col -->
+        <div class="footer-brand">
+          <div class="brand-logo">
+            <img src="assets/images/logo-jateng.svg" alt="Lambang Provinsi Jawa Tengah" class="gov-logo-img">
+            <div class="brand-text-group">
+              <span class="brand-main" style="color:#ffffff;">RSUD Margono Soekarjo</span>
+              <span class="brand-sub" style="color:#94a3b8;">Jawa Tengah • Purwokerto</span>
+            </div>
+          </div>
+          <p style="margin-top:14px; font-size:0.88rem; color:#94a3b8; line-height:1.6;">
+            Rumah Sakit Umum Daerah Kelas A Pendidikan milik Pemerintah Provinsi Jawa Tengah. Pusat rujukan pelayanan kesehatan paripurna regional Jateng bagian barat dan selatan.
+          </p>
+          <div class="social-links" style="margin-top:16px;">
+            <a href="https://rsmargono.jatengprov.go.id" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="Website Resmi" title="Website Resmi RSUD Margono">
+              <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+            </a>
+            <a href="https://instagram.com/rsudmargono" target="_blank" rel="noopener noreferrer" class="social-btn" aria-label="Instagram" title="Instagram Resmi @rsudmargono">
+              <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+            </a>
+            <a href="#" class="social-btn open-wa-btn" aria-label="WhatsApp BOKU" title="WhatsApp BOKU">
+              <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Kampus & Lokasi Col -->
+        <div class="footer-col">
+          <h5>Kampus Pelayanan</h5>
+          <ul class="footer-list">
+            <li><strong>Kampus Pusat & IGD:</strong><br>Jl. Dr. Gumbreg No. 1, Berkoh, Purwokerto Selatan 53146</li>
+            <li style="margin-top:8px;"><strong>Kampus Paviliun Abiyasa:</strong><br>Jl. Dr. Angka No. 1-2, Purwokerto (Pusat Geriatri)</li>
+            <li style="margin-top:8px;">Kabupaten Banyumas, Jawa Tengah</li>
+          </ul>
+        </div>
+
+        <!-- Layanan Unggulan Col -->
+        <div class="footer-col">
+          <h5>Layanan Unggulan</h5>
+          <ul class="footer-list">
+            <li>Pusat Onkologi Terpadu</li>
+            <li>Pusat Kardiovaskular & Cath Lab</li>
+            <li>Paviliun Geriatri Abiyasa</li>
+            <li>IGD & Trauma Center 24 Jam</li>
+            <li>Poliklinik Sub-Spesialis & Eksekutif</li>
+          </ul>
+        </div>
+
+        <!-- Kontak & Hotline Darurat Col -->
+        <div class="footer-col">
+          <h5>Kontak & Hotline 24 Jam</h5>
+          <ul class="footer-list">
+            <li><strong>IGD 24 Jam:</strong> (0281) 641992</li>
+            <li><strong>Call Center Resmi:</strong> 0811-2933-433</li>
+            <li><strong>Telepon Informasi:</strong> (0281) 632708</li>
+            <li><strong>Ambulans SPGDT:</strong> 118 / 119</li>
+            <li><strong>Poli Eksekutif:</strong> 0811-2520-6890</li>
+          </ul>
+        </div>
+
+        <!-- Menu & Tautan Col -->
+        <div class="footer-col">
+          <h5>Tautan Cepat</h5>
+          <ul class="footer-list">
+            <li><a href="#" class="open-wa-btn">Tanya Bot BOKU</a></li>
+            <li><a href="#services">Layanan Kami</a></li>
+            <li><a href="#facilities">Fasilitas RSMS</a></li>
+            <li><a href="#contact">Kontak & Lokasi</a></li>
+            <li><a href="#" class="open-admin-btn">Portal Admin RS</a></li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="footer-bottom" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+        <span>© 2026 RSUD Prof. Dr. Margono Soekarjo Purwokerto. Seluruh hak cipta dilindungi undang-undang. Sesuai UU No. 27/2022.</span>
+        <button class="footer-login-btn open-admin-btn" style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:#38bdf8; cursor:pointer; font-size:0.82rem; font-weight:600; padding:6px 14px; border-radius:var(--radius-full); display:inline-flex; align-items:center; gap:6px; transition:all 0.2s ease;">
+          <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Portal Login Admin RS
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ========================================================================
+       FLOATING WHATSAPP LAUNCHER (BOTTOM RIGHT - TANYA BOKU)
+       ======================================================================== -->
+  <div class="wa-floating-launcher">
+    <div class="wa-launcher-badge open-wa-btn" id="waBadgeLauncher">
+      <span style="color:#25d366; font-size:1.1rem; line-height:1;">●</span>
+      <span>Tanya BOKU</span>
+    </div>
+
+    <div class="wa-launcher-btn open-wa-btn" id="waCircleBtn" title="Tanya BOKU via WhatsApp">
+      <div class="wa-launcher-pulse"></div>
+      <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       WHATSAPP BOT SIMULATOR MODAL (BOKU SIMULATOR)
+       ======================================================================== -->
+  <div class="wa-modal-overlay" id="waModal">
+    <!-- Floating External Close Button -->
+    <button class="wa-floating-close-btn" id="btnCloseWaOutside" title="Tutup Simulator (Esc)">
+      <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+
+    <div class="smartphone-mockup">
+      <div class="phone-screen">
+        
+        <!-- Modern Mobile Status Bar (Non-overlapping) -->
+        <div class="phone-status-bar">
+          <span class="status-time">09:41</span>
+          <div class="status-island">
+            <span class="island-camera"></span>
+          </div>
+          <div class="status-icons">
+            <svg class="svg-icon" style="width:13px;height:13px;" viewBox="0 0 24 24"><path d="M2 20h20L12 4z" fill="currentColor"/></svg>
+            <svg class="svg-icon" style="width:13px;height:13px;" viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></svg>
+            <span class="status-battery">
+              <span class="battery-level"></span>
+            </span>
+          </div>
+        </div>
+
+        <!-- WhatsApp Header -->
+        <div class="wa-app-header">
+          <div class="wa-header-left">
+            <button class="wa-back-btn" id="closeWaBtn" title="Tutup Simulator">
+              <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            </button>
+            <div class="wa-header-avatar">
+              <img src="assets/images/boku-avatar.jpg" alt="Bot BOKU Avatar RSUD Margono">
+              <span class="avatar-online-dot"></span>
+            </div>
+            <div class="wa-header-meta">
+              <h6>
+                BOKU
+                <span class="wa-verified-badge" title="Akun Resmi Terverifikasi RSUD Prof. Dr. Margono Soekarjo">
+                  <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                </span>
+              </h6>
+              <span>Online • RSUD Margono Soekarjo Resmi</span>
+            </div>
+          </div>
+
+          <div class="wa-header-actions">
+            <button class="wa-header-action-btn" id="btnResetSimulatorChat" title="Reset / Ulangi Chat dari Menu Utama">
+              <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+            </button>
+            <button class="wa-header-action-btn" id="btnCallHotlineSimulator" title="Hotline IGD 24 Jam">
+              <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Chat Messages Container -->
+        <div class="wa-messages-container" id="waMessagesArea">
+          <div class="wa-chip-notice">
+            <svg class="svg-icon svg-icon-xs" style="width:12px;height:12px;" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span>Pesan terenkripsi end-to-end • Privasi UU No. 27/2022</span>
+          </div>
+          <div class="wa-date-chip">HARI INI</div>
+        </div>
+
+        <!-- Quick Response Action Chips (Hanya Nomor Pilihan) -->
+        <div class="wa-quick-replies" id="waQuickChipsContainer">
+          <button class="wa-quick-chip" data-val="1">1</button>
+          <button class="wa-quick-chip" data-val="2">2</button>
+          <button class="wa-quick-chip" data-val="3">3</button>
+          <button class="wa-quick-chip" data-val="4">4</button>
+          <button class="wa-quick-chip" data-val="0">0</button>
+        </div>
+
+        <!-- Input Field Bar -->
+        <div class="wa-input-bar">
+          <input type="text" class="wa-input-field" id="waChatInput" placeholder="Ketik pesan..." autocomplete="off">
+          <button class="wa-send-btn" id="waSendBtn" title="Kirim">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       ADMIN LOGIN PORTAL MODAL (PRD A-01: ADMIN AUTHENTICATION)
+       ======================================================================== -->
+  <div class="admin-login-modal" id="adminLoginModal">
+    <div class="login-card">
+      <button class="login-close-btn" id="closeLoginModalBtn" title="Tutup">
+        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+
+      <div class="login-brand-header">
+        <div class="login-brand-icon">
+          <img src="assets/images/logo-jateng.svg" alt="Logo RSUD Prof. Dr. Margono Soekarjo" class="login-rsud-logo">
+        </div>
+        <h3>Login Admin</h3>
+      </div>
+
+      <!-- Login Error Alert -->
+      <div class="login-error-alert" id="loginErrorAlert">
+        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+        <span id="loginErrorMessage">Email atau kata sandi tidak valid.</span>
+      </div>
+
+      <!-- Email & Password Form -->
+      <form id="adminLoginForm">
+        <div class="login-input-group">
+          <div class="input-icon-box">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          </div>
+          <input type="email" class="login-input" id="loginEmail" placeholder="Email" required autocomplete="email">
+        </div>
+
+        <div class="login-input-group">
+          <div class="input-icon-box">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <input type="password" class="login-input" id="loginPassword" placeholder="Kata Sandi" required autocomplete="current-password">
+          <button type="button" class="btn-toggle-password" id="btnTogglePassword" title="Tampilkan / Sembunyikan Kata Sandi">
+            <svg class="svg-icon svg-icon-sm eye-icon" id="eyeIconSvg" viewBox="0 0 24 24"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+
+        <div class="login-options-row">
+          <label class="remember-label">
+            <input type="checkbox" id="rememberMeCheckbox" checked>
+            <span>Ingat Saya</span>
+          </label>
+        </div>
+
+        <button type="submit" class="btn-login-submit" id="btnSubmitLogin">
+          <span>Masuk</span>
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       WEB ADMIN DASHBOARD MODAL (PRD SECTION 8: A-01 to A-14)
+       ======================================================================== -->
+  <div class="admin-portal-modal" id="adminModal">
+    
+    <!-- Top Admin Bar -->
+    <header class="admin-navbar">
+      <div class="admin-nav-left">
+        <!-- Mobile Hamburger Toggle Button (Garis 3) -->
+        <button class="admin-sidebar-toggle" id="btnToggleAdminSidebar" title="Buka Menu Navigasi" aria-label="Toggle Navigation">
+          <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <div class="admin-title-badge">
+          <img src="assets/images/logo-jateng.svg" alt="Logo RSUD" style="width:24px; height:24px; object-fit:contain; filter:drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
+          <span>RSMS PORTAL</span>
+          <span class="admin-role-pill" id="adminNavbarRolePill">SUPER ADMIN</span>
+        </div>
+      </div>
+
+      <div class="admin-nav-right">
+        <div class="admin-user-info" id="adminNavbarUserEmail">-</div>
+        <button class="admin-logout-btn" id="btnLogoutAdmin" title="Logout dari Portal Admin">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+          <span>Logout</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Layout: Sidebar + Main Panels -->
+    <div class="admin-layout">
+      
+      <!-- Mobile Sidebar Backdrop Overlay -->
+      <div class="admin-sidebar-overlay" id="adminSidebarOverlay"></div>
+
+      <!-- Sidebar Navigation Tabs -->
+      <aside class="admin-sidebar" id="adminSidebar">
+        <!-- Mobile Sidebar Header with Close Button -->
+        <div class="admin-sidebar-mobile-header">
+          <div class="admin-sidebar-mobile-brand">
+            <img src="assets/images/logo-jateng.svg" alt="Logo RSUD" style="width:22px; height:22px; object-fit:contain; margin-right:6px;">
+            <span>RSMS PORTAL</span>
+          </div>
+          <button class="admin-sidebar-close-btn" id="btnCloseAdminSidebar" title="Tutup Menu">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+          </button>
+        </div>
+
+        <button class="admin-tab-btn active" data-tab="panelDashboard">
+          <span class="tab-icon">
+            <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+          </span>
+          <span>Dasbor & Metrik</span>
+        </button>
+        <button class="admin-tab-btn" data-tab="panelBaileys" id="tabBaileysNavBtn">
+          <span class="tab-icon">
+            <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+          </span>
+          <span>Koneksi WhatsApp (QR)</span>
+        </button>
+        <button class="admin-tab-btn" data-tab="panelFaqs">
+          <span class="tab-icon">
+            <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </span>
+          <span>Kelola Tanya-Jawab</span>
+        </button>
+        <button class="admin-tab-btn" data-tab="panelEmergency" id="tabEmergencyNavBtn">
+          <span class="tab-icon">
+            <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </span>
+          <span>Panggilan Darurat IGD</span>
+        </button>
+        <button class="admin-tab-btn" data-tab="panelUsers" id="tabUsersNavBtn">
+          <span class="tab-icon">
+            <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </span>
+          <span>Kelola Pengguna</span>
+        </button>
+        <button class="admin-tab-btn" data-tab="panelSettings">
+          <span class="tab-icon">
+            <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          </span>
+          <span>Pengaturan Global</span>
+        </button>
+        <button class="admin-tab-btn" data-tab="panelLogs">
+          <span class="tab-icon">
+            <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
+          </span>
+          <span>Log Audit & Privasi</span>
+        </button>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="admin-content-area">
+
+        <!-- ================= PANEL BAILEYS: KONEKSI WHATSAPP & QR CODE ================= -->
+        <section class="admin-panel" id="panelBaileys">
+          <div class="panel-header">
+            <div class="panel-title">
+              <h3>Koneksi WhatsApp</h3>
+            </div>
+            <div>
+              <button class="btn btn-outline" id="btnRefreshQr" style="font-size:0.85rem; padding: 8px 16px;">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg>
+                Muat Ulang Barcode
+              </button>
+            </div>
+          </div>
+
+          <div class="wa-connect-card">
+            <!-- Left: QR Barcode Box -->
+            <div class="qr-display-box">
+              <div class="connection-status-pill waiting" id="waConnectionStatusPill">
+                <span class="sync-dot" style="background:#ca8a04;"></span>
+                <span id="waConnectionStatusText">Menunggu Scan Barcode</span>
+              </div>
+
+              <div class="qr-image-frame" id="qrImageFrame">
+                <div class="qr-loading-spinner" id="qrSpinner">
+                  <div class="spinner-ring"></div>
+                  <span>Menyiapkan Barcode Baileys...</span>
+                </div>
+                <img src="" alt="WhatsApp QR Code" id="waQrCodeImg" style="display:none;">
+              </div>
+
+
+              <button class="btn btn-outline" id="btnLogoutWa" style="font-size:0.8rem; padding: 6px 14px; border-color:#fca5a5; color:#ef4444; display:none;">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+                Putuskan Sesi (Logout)
+              </button>
+            </div>
+
+            <!-- Right: Instructions & Testing Tool -->
+            <div>
+              <h4 style="margin-bottom: 14px; color: var(--text-main);">Cara Menghubungkan Nomor WhatsApp RS</h4>
+              
+              <div class="scan-instructions" style="margin-bottom: 28px;">
+                <div class="instruction-step">
+                  <div class="step-num">1</div>
+                  <div>Buka aplikasi <strong>WhatsApp</strong> di smartphone Anda (disarankan nomor khusus bot).</div>
+                </div>
+                <div class="instruction-step">
+                  <div class="step-num">2</div>
+                  <div>Ketuk menu <strong>Titik Tiga</strong> (Android) atau <strong>Pengaturan / Settings</strong> (iPhone), lalu pilih <strong>Perangkat Tertaut (Linked Devices)</strong>.</div>
+                </div>
+                <div class="instruction-step">
+                  <div class="step-num">3</div>
+                  <div>Ketuk tombol <strong>Tautkan Perangkat (Link a Device)</strong>.</div>
+                </div>
+                <div class="instruction-step">
+                  <div class="step-num">4</div>
+                  <div>Arahkan kamera smartphone ke <strong>Barcode QR</strong> di samping kiri hingga terhubung.</div>
+                </div>
+              </div>
+
+              <!-- Connected Device Details Box -->
+              <div class="admin-card" id="connectedDeviceBox" style="background:#f0fdf4; border-color:#bbf7d0; display:none; margin-bottom: 24px;">
+                <h5 style="color:#166534; margin-bottom: 8px; display:flex; align-items:center; gap:6px;">
+                  <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" stroke="#166534" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+                  Perangkat Terhubung Aktif
+                </h5>
+                <p style="font-size:0.9rem; color:#14532d;">
+                  Nomor Bot: <strong id="connectedPhoneDisplay">-</strong><br>
+                  Status Bot: <strong>Siaga menjawab pesan pasien otomatis 24 Jam</strong>
+                </p>
+              </div>
+
+              <!-- Test Message Sender -->
+              <div class="admin-card" style="margin-bottom: 0;">
+                <h5 style="margin-bottom: 12px; color: var(--text-main);">Uji Coba Kirim Pesan WhatsApp</h5>
+                <div class="test-wa-grid">
+                  <input type="text" class="form-input" id="testPhoneInput" placeholder="Contoh: 081234567890">
+                  <input type="text" class="form-input" id="testMessageInput" placeholder="Ketik pesan tes...">
+                  <button class="btn btn-primary" id="btnSendTestWa" style="padding: 10px 18px; font-size: 0.85rem;">
+                    Kirim Tes
+                  </button>
+                </div>
+                <div id="testMessageResult" style="font-size:0.82rem; margin-top:8px;"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= PANEL 1: DASHBOARD & STATS (A-11) ================= -->
+        <section class="admin-panel active" id="panelDashboard">
+          <div class="panel-header">
+            <div class="panel-title">
+              <h3>Dasbor</h3>
+            </div>
+            <div>
+              <button class="btn btn-primary open-simulator-btn" id="btnOpenSimulatorDashboard" style="font-size: 0.85rem; padding: 8px 18px;">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                Simulator Chat
+              </button>
+            </div>
+          </div>
+
+          <!-- KPI Cards Grid -->
+          <!-- KPI Cards Grid -->
+          <div class="stats-grid">
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-card-title">Total Sesi</span>
+                <div class="stat-icon">
+                  <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </div>
+              </div>
+              <div class="stat-value" id="statTotalSessions">0</div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-card-title">Waktu Respon</span>
+                <div class="stat-icon">
+                  <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                </div>
+              </div>
+              <div class="stat-value" id="statResponseTime">&lt; 2s</div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-card-title">Kepuasan Pasien</span>
+                <div class="stat-icon">
+                  <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><path d="M7 10v12"/><path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z"/></svg>
+                </div>
+              </div>
+              <div class="stat-value" id="statCsat">-</div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-card-title">Pesan Tak Dikenal</span>
+                <div class="stat-icon">
+                  <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                </div>
+              </div>
+              <div class="stat-value" id="statFallbackRate">0%</div>
+            </div>
+          </div>
+
+          <!-- Recent Activity & Quick Table -->
+          <div class="admin-card">
+            <h4 style="margin-bottom: 16px;">Pertanyaan Terpopuler</h4>
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Kategori</th>
+                    <th>Pertanyaan</th>
+                    <th>Jumlah Sesi</th>
+                    <th>Kepuasan</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="topQuestionsTableBody">
+                  <tr>
+                    <td colspan="5" style="text-align:center; padding:32px; color:#94a3b8;">
+                      Memuat data interaksi pasien dari database Google Sheets...
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= PANEL 2: KELOLA TANYA-JAWAB (A-03, A-04, A-05) ================= -->
+        <section class="admin-panel" id="panelFaqs">
+          <div class="panel-header">
+            <div class="panel-title">
+              <h3>Kelola Tanya-Jawab</h3>
+            </div>
+          </div>
+
+          <!-- ================= KELOLA KATEGORI MENU WHATSAPP (DYNAMIC CATEGORIES) ================= -->
+          <div class="admin-card" style="margin-bottom: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+              <div>
+                <h4 style="margin: 0 0 4px 0; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+                  <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+                  Kategori Menu Bot WhatsApp (Dinamis)
+                </h4>
+              </div>
+              <button type="button" class="btn btn-primary" id="btnOpenAddCategoryModal" style="font-size: 0.85rem; padding: 9px 18px; border-radius: var(--radius-sm); display: inline-flex; align-items: center; gap: 6px;">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                + Tambah Kategori Baru
+              </button>
+            </div>
+
+            <!-- Table Daftar Kategori -->
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th style="width: 100px;">No. Menu</th>
+                    <th>Nama Kategori Menu</th>
+                    <th>Jumlah FAQ</th>
+                    <th>Tipe Layanan</th>
+                    <th>Status</th>
+                    <th style="width: 120px;">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="categoryTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- FAQ Editor with WhatsApp Bubble Live Preview -->
+          <div class="admin-card">
+            <h4 style="margin-bottom: 18px;">Tambah / Edit Jawaban Baku</h4>
+            
+            <div class="faq-editor-split">
+              <!-- Left Form -->
+              <div class="editor-form">
+                <div class="form-group">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                    <label class="form-label" for="faqCategorySelect" style="margin: 0;">Kategori Menu</label>
+                    <button type="button" id="btnQuickAddCat" style="background: none; border: none; color: var(--primary); font-size: 0.78rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+                      <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                      + Tambah Kategori
+                    </button>
+                  </div>
+                  <select class="form-select" id="faqCategorySelect"></select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="faqMenuTitleInput">
+                    Judul Menu Pilihan Pasien
+                    <span class="char-counter" id="titleCharCount">0/24 karakter (usulan batas)</span>
+                  </label>
+                  <input type="text" class="form-input" id="faqMenuTitleInput" placeholder="Contoh: Mual dan tidak bisa makan" maxlength="40">
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="faqAnswerInput">
+                    Isi Jawaban Baku
+                    <span class="char-counter" id="answerCharCount">0 karakter</span>
+                  </label>
+                  <textarea class="form-textarea" id="faqAnswerInput" placeholder="Tuliskan empati singkat dan anjuran umum yang aman. Format *tebal* atau _miring_ didukung."></textarea>
+                </div>
+
+                <!-- Clinical Dosage Safety Alert (Section 9) -->
+                <div class="clinical-alert-box" id="clinicalDosageAlert">
+                  <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24" stroke="#e11d48"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+                  <div>
+                    <strong>Peringatan Keamanan Medis (PRD Bagian 9):</strong><br>
+                    Terdeteksi indikasi penyebutan dosis/takaran obat. Bot dilarang menyebut dosis baru secara mandiri. Harap gunakan kalimat rujukan: <em>"sesuai resep dokter yang merawat Anda"</em>.
+                  </div>
+                </div>
+
+                <div>
+                  <button class="btn btn-primary" id="saveFaqBtn" style="border-radius: var(--radius-sm); padding: 12px 24px;">
+                    <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                    Simpan & Terbitkan Langsung (Live)
+                  </button>
+                </div>
+              </div>
+
+              <!-- Right: Realtime WhatsApp Bubble Previewer (A-05) -->
+              <div class="preview-card">
+                <h5 style="margin-bottom: 12px; color: #475569; font-size: 0.85rem; font-weight: 700;">
+                  PRATINJAU TAMPILAN WHATSAPP PASIEN
+                </h5>
+                <div class="preview-screen">
+                  <div class="preview-bubble" id="previewBubbleText">
+                    <strong>Judul Pertanyaan</strong><br><br>
+                    Isi jawaban baku yang disetujui dokter akan tampil persis seperti ini di layar ponsel pasien...
+                  </div>
+                  <div class="preview-footer-action">
+                    1 Membantu &nbsp; 2 Belum membantu &nbsp; 3 Hubungi perawat
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Existing FAQs Table with Search Filter -->
+          <div class="admin-card">
+            <div class="faq-table-top-bar" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
+              <h4 style="margin:0;">Daftar FAQ Aktif di WhatsApp</h4>
+              <div class="faq-search-wrapper" style="position:relative; min-width:280px;">
+                <svg class="svg-icon svg-icon-sm search-icon" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#94a3b8; pointer-events:none;" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <input type="text" class="form-input" id="faqTableSearchInput" placeholder="Cari pertanyaan / isi jawaban..." style="padding-left:38px; width:100%;">
+              </div>
+            </div>
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Kategori</th>
+                    <th>Judul Menu</th>
+                    <th>Cuplikan Jawaban</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="faqTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= PANEL 3: KELOLA PENGGUNA & STAF (PRD A-01, A-02) ================= -->
+        <section class="admin-panel" id="panelUsers">
+          <div class="panel-header">
+            <div class="panel-title">
+              <h3>Kelola Pengguna</h3>
+            </div>
+            <div>
+              <button type="button" class="btn btn-primary" id="btnOpenAddUserModal" style="font-size: 0.85rem; padding: 9px 18px; border-radius: var(--radius-sm); display: inline-flex; align-items: center; gap: 6px;">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                + Tambah Staf Baru
+              </button>
+            </div>
+          </div>
+
+          <!-- KPI Metrics Cards for Users -->
+          <div class="stats-grid" style="margin-bottom: 24px;">
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-card-title">Total Staf Whitelist</span>
+                <div class="stat-icon">
+                  <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                </div>
+              </div>
+              <div class="stat-value" id="statTotalUsers">3</div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-card-title">Super Admin</span>
+                <div class="stat-icon">
+                  <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+              </div>
+              <div class="stat-value" id="statSuperAdminCount">2</div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-card-title">Perawat Jaga</span>
+                <div class="stat-icon">
+                  <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                </div>
+              </div>
+              <div class="stat-value" id="statNurseCount">1</div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-card-header">
+                <span class="stat-card-title">Status Akun Aktif</span>
+                <div class="stat-icon">
+                  <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </div>
+              </div>
+              <div class="stat-value" id="statActiveUsersPercent">100%</div>
+            </div>
+          </div>
+
+          <!-- Users Table Card -->
+          <div class="admin-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 12px;">
+              <div>
+                <h4 style="margin: 0 0 4px 0; color: var(--text-main);">Daftar Staf Berwenang (Whitelist Akun)</h4>
+              </div>
+
+              <!-- Search & Filter Controls -->
+              <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                <div style="position: relative;">
+                  <input type="text" class="form-input" id="userSearchInput" placeholder="Cari nama atau email..." style="padding-left: 32px; font-size: 0.82rem; width: 220px;">
+                  <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); stroke: #94a3b8;"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                </div>
+                <select class="form-select" id="userRoleFilter" style="font-size: 0.82rem; padding: 7px 12px; width: auto;">
+                  <option value="">Semua Peran</option>
+                  <option value="Super Admin">Super Admin</option>
+                  <option value="Admin">Admin</option>
+                  <option value="Admin Perawat">Admin Perawat</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Table -->
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th style="width: 50px;">No</th>
+                    <th>Staf & Nama Lengkap</th>
+                    <th>Email Akun</th>
+                    <th>Peran (Role)</th>
+                    <th>Status Whitelist</th>
+                    <th style="width: 140px; text-align: center;">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="userTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= PANEL: KELOLA PANGGILAN DARURAT IGD (CUSTOMIZABLE) ================= -->
+        <section class="admin-panel" id="panelEmergency">
+          <div class="panel-header">
+            <div class="panel-title">
+              <h3>Kelola Panggilan Darurat IGD</h3>
+              <p>Kustomisasi nomor hotline siaga, pesan instruksi medis, dan kata kunci bahaya klinis (PRD B-06 & A-09).</p>
+            </div>
+            <div>
+              <button type="button" class="btn btn-outline" id="btnTestEmergencySimulator" style="font-size: 0.85rem; padding: 8px 16px; display: inline-flex; align-items: center; gap: 6px;">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                Uji Respon Darurat di Chat
+              </button>
+            </div>
+          </div>
+
+          <!-- Kustomisasi Editor with Live WhatsApp Bubble Preview (Sama Seperti Kelola Tanya-Jawab) -->
+          <div class="admin-card" style="margin-bottom: 24px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 12px;">
+              <div>
+                <h4 id="emergencyFormHeading" style="margin: 0 0 4px 0; color: var(--text-main);">Tambah / Edit Protokol Panggilan Darurat</h4>
+                <p style="margin: 0; font-size: 0.82rem; color: #64748b;">Konfigurasikan isi jawaban darurat dan pemicu kata kunci klinis.</p>
+              </div>
+              <button type="button" class="btn btn-outline" id="btnResetEmergencyForm" style="font-size: 0.8rem; padding: 7px 14px; display: inline-flex; align-items: center; gap: 6px;">
+                <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                + Form Protokol Baru
+              </button>
+            </div>
+
+            <div class="faq-editor-split">
+              <!-- Left: Customizable Form -->
+              <form id="emergencyCustomForm" class="editor-form">
+                <input type="hidden" id="editEmergencyIdInput" value="">
+
+                <div class="form-group">
+                  <label class="form-label" for="emgTitleInput">Nama Layanan / Protokol Darurat</label>
+                  <input type="text" class="form-input" id="emgTitleInput" placeholder="Contoh: Hotline IGD & Triage 24 Jam" required>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                  <div class="form-group">
+                    <label class="form-label" for="emgPhoneInput">Nomor Hotline IGD Utama</label>
+                    <input type="text" class="form-input" id="emgPhoneInput" placeholder="(021) 555-0911" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="emgAmbulanceInput">Nomor Ambulans Siaga</label>
+                    <input type="text" class="form-input" id="emgAmbulanceInput" placeholder="118 / 119" required>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="emgLocationInput">Lokasi Fisik / Gedung IGD</label>
+                  <input type="text" class="form-input" id="emgLocationInput" placeholder="Gedung Utama Lt. 1, Jl. Kesehatan No. 88" required>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="emgKeywordsInput">
+                    Kata Kunci Pemicu Klinis (Pisahkan dengan koma)
+                    <span class="char-counter" id="emgKeywordsCount">0 kata kunci</span>
+                  </label>
+                  <input type="text" class="form-input" id="emgKeywordsInput" placeholder="sesak napas, nyeri dada, pingsan, perdarahan hebat, kejang, darurat, igd" required>
+                  <span class="form-hint" style="font-size: 0.75rem; color: #64748b;">Bot otomatis memotong menu jika pesan pasien memuat salah satu kata kunci di atas.</span>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="emgInstructionsInput">
+                    Pesan Arahan & Instruksi Medis Pasien
+                    <span class="char-counter" id="emgInstructionsCharCount">0 karakter</span>
+                  </label>
+                  <textarea class="form-textarea" id="emgInstructionsInput" style="min-height: 95px;" placeholder="Tuliskan instruksi penanganan darurat yang jelas dan menenangkan pasien/keluarga..."></textarea>
+                </div>
+
+                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 6px;">
+                  <button type="submit" class="btn btn-primary" id="btnSaveEmergencyRule" style="border-radius: var(--radius-sm); padding: 11px 22px; display: inline-flex; align-items: center; gap: 6px;">
+                    <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                    Simpan & Terbitkan Langsung (Live)
+                  </button>
+                  <button type="button" class="btn btn-outline" id="btnCancelEditEmergency" style="display: none; padding: 11px 18px;">
+                    Batal Edit
+                  </button>
+                </div>
+              </form>
+
+              <!-- Right: Realtime WhatsApp Bubble Live Previewer -->
+              <div class="preview-card">
+                <h5 style="margin-bottom: 12px; color: #475569; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; justify-content: space-between;">
+                  <span>PRATINJAU TAMPILAN WHATSAPP PASIEN</span>
+                  <span class="status-badge" style="background:#fee2e2; color:#b91c1c; font-size:0.72rem;">Respon Darurat</span>
+                </h5>
+                <div class="preview-screen">
+                  <div class="preview-bubble" id="previewEmergencyBubbleText" style="border-left: 4px solid #ef4444;">
+                    <div style="font-weight: 800; color: #b91c1c; margin-bottom: 6px;" id="previewEmgHeading">LAYANAN DARURAT IGD 24 JAM</div>
+                    <div>RSUD Prof. Dr. Margono Soekarjo siap melayani penanganan kegawatdaruratan medis 24 jam.</div>
+                    <div style="margin: 8px 0; font-size: 0.83rem;">
+                      • Hotline IGD: <strong id="previewEmgPhone">(0281) 641992</strong><br>
+                      • Ambulans Siaga: <strong id="previewEmgAmbulance">118 / (0281) 641992</strong><br>
+                      • Lokasi: <span id="previewEmgLocation">Gedung Pusat & IGD, Jl. Dr. Gumbreg No. 1, Purwokerto Selatan</span>
+                    </div>
+                    <div id="previewEmgInstructions" style="color: #475569; font-size: 0.8rem; line-height: 1.45;">
+                      Jika pasien mengalami keluhan akut seperti sesak napas berat, nyeri dada, atau penurunan kesadaran, segera bawa ke IGD terdekat tanpa menunda.
+                    </div>
+                  </div>
+                  <div class="preview-footer-action" style="color: #dc2626;">
+                    Ketik 0 untuk kembali ke menu utama
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Existing Emergency Protocols Table with Search (Sama Seperti Tabel Daftar FAQ Aktif) -->
+          <div class="admin-card">
+            <div class="faq-table-top-bar" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
+              <div>
+                <h4 style="margin:0 0 4px 0; color: var(--text-main);">Daftar Protokol & Layanan Darurat Aktif</h4>
+                <p style="margin:0; font-size:0.82rem; color:#64748b;">Aturan respon darurat yang aktif beroperasi pada bot WhatsApp.</p>
+              </div>
+              <div class="faq-search-wrapper" style="position:relative; min-width:280px;">
+                <svg class="svg-icon svg-icon-sm search-icon" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#94a3b8; pointer-events:none;" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <input type="text" class="form-input" id="emergencyTableSearchInput" placeholder="Cari protokol / kontak / kata kunci..." style="padding-left:38px; width:100%;">
+              </div>
+            </div>
+
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th style="width: 80px;">Prioritas</th>
+                    <th>Nama Protokol</th>
+                    <th>Kontak Hotline</th>
+                    <th>Kata Kunci Pemicu Klinis</th>
+                    <th>Status</th>
+                    <th style="width: 140px; text-align: center;">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="emergencyTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= PANEL 4: PENGATURAN GLOBAL (A-08) ================= -->
+        <section class="admin-panel" id="panelSettings">
+          <div class="panel-header">
+            <div class="panel-title">
+              <h3>Pengaturan Global</h3>
+            </div>
+          </div>
+
+          <div class="admin-card">
+            <div class="editor-form" style="max-width: 680px;">
+              <div class="form-group">
+                <label class="form-label" for="settingGreeting">Pesan Sambutan Awal (Welcome Message)</label>
+                <textarea class="form-textarea" id="settingGreeting" style="min-height: 80px;" placeholder="Pesan sambutan awal bot WhatsApp"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="settingFallback">Pesan Tidak Dikenali (Fallback)</label>
+                <textarea class="form-textarea" id="settingFallback" style="min-height: 80px;" placeholder="Pesan ketika input tidak dikenali"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="settingIgdPhone">Nomor Hotline IGD 24 Jam</label>
+                <input type="text" class="form-input" id="settingIgdPhone" placeholder="Contoh: (021) 555-0911">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" for="settingHours">Jam Operasional Layanan Perawat Jaga</label>
+                <input type="text" class="form-input" id="settingHours" placeholder="Contoh: 08:00 - 20:00 WIB">
+              </div>
+
+              <div>
+                <button class="btn btn-primary" id="saveSettingsBtn" style="border-radius: var(--radius-sm); padding: 12px 24px;">
+                  Simpan Pengaturan
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= PANEL 5: LOG AUDIT & PRIVASI (A-14, UU PDP) ================= -->
+        <section class="admin-panel" id="panelLogs">
+          <div class="panel-header">
+            <div class="panel-title">
+              <h3>Log Audit & Privasi</h3>
+            </div>
+          </div>
+
+          <!-- Audit Log Table -->
+          <div class="admin-card">
+            <h4 style="margin-bottom: 14px;">Audit Log Perubahan oleh Admin</h4>
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Waktu</th>
+                    <th>Email Admin</th>
+                    <th>Aksi</th>
+                    <th>Rincian Perubahan</th>
+                  </tr>
+                </thead>
+                <tbody id="auditLogTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Event Log Table -->
+          <div class="admin-card">
+            <h4 style="margin-bottom: 14px;">Log Interaksi Pasien (Nomor Disamarkan)</h4>
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Waktu</th>
+                    <th>Nomor (Disamarkan)</th>
+                    <th>Jenis Kejadian</th>
+                    <th>Menu Terpilih / Catatan</th>
+                  </tr>
+                </thead>
+                <tbody id="eventLogTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+
+    <!-- ========================================================================
+         CRUD LOADING & SYNC OVERLAY (REALTIME GOOGLE APPS SCRIPT SYNC)
+         ======================================================================== -->
+    <div class="crud-loading-overlay" id="crudLoadingOverlay">
+      <div class="crud-loading-card">
+        <div class="crud-loading-spinner-wrap">
+          <div class="crud-spinner-glow"></div>
+          <div class="crud-spinner-ring"></div>
+          <div class="crud-spinner-icon" id="crudSpinnerIcon">
+            <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          </div>
+        </div>
+        <div class="crud-loading-info">
+          <h4 class="crud-loading-title" id="crudLoadingTitle">Menyinkronkan ke Google Sheets</h4>
+          <p class="crud-loading-desc" id="crudLoadingDesc">Menghubungkan ke database Google Apps Script...</p>
+        </div>
+        <div class="crud-loading-progress-bar">
+          <div class="crud-progress-indeterminate"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Floating Toast Notification Container -->
+    <div class="admin-toast-container" id="adminToastContainer"></div>
+
+    <!-- ========================================================================
+         BUBBLE SIMULATOR CHAT (RSMS PORTAL - SIMULASI STAF/ADMIN)
+         ======================================================================== -->
+    <div class="portal-simulator-bubble open-simulator-btn" id="portalSimulatorBubble" title="Buka Simulator WhatsApp Bot BOKU RSUD Margono">
+      <div class="portal-simulator-bubble-pulse"></div>
+      <div class="portal-simulator-bubble-icon">
+        <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <span class="portal-simulator-bubble-label">Simulator BOKU</span>
+    </div>
+
+  </div>
+
+  <!-- ========================================================================
+       MODAL TAMBAH PENGGUNA / STAF WHITELIST (PRD A-01, A-02)
+       ======================================================================== -->
+  <div class="admin-login-modal" id="userModal" style="z-index: 1200;">
+    <div class="login-card" style="max-width: 480px;">
+      <button class="login-close-btn" id="closeUserModalBtn" title="Tutup">
+        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+
+      <div class="login-brand-header" style="text-align: left; margin-bottom: 20px;">
+        <div class="login-brand-badge" style="background: #e0f2fe; color: #0284c7;">
+          <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          Akses Staf Medis Whitelist
+        </div>
+        <h3 id="userModalTitle" style="font-size: 1.28rem; margin-bottom: 6px;">Tambah Staf Whitelist Baru</h3>
+        <p style="font-size: 0.82rem; margin: 0; color: #64748b;">
+          Daftarkan email staf RSUD Margono agar dapat mengakses portal manajemen bot WhatsApp BOKU.
+        </p>
+      </div>
+
+      <form id="userForm">
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label" for="userNameInput">Nama Lengkap & Gelar</label>
+          <input type="text" class="form-input" id="userNameInput" placeholder="Contoh: Dr. Budi Santoso, Sp.B" required maxlength="60">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label" for="userEmailInput">Email Akun RSUD Margono</label>
+          <input type="email" class="form-input" id="userEmailInput" placeholder="nama.staf@rsmargono.id" required maxlength="60">
+          <span style="font-size: 0.74rem; color: #64748b; margin-top: 4px; display: block;">
+            Email ini wajib terdaftar di whitelist untuk dapat login.
+          </span>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 14px;">
+          <label class="form-label" for="userRoleSelect">Peran / Hak Akses</label>
+          <select class="form-select" id="userRoleSelect">
+            <option value="Super Admin">Super Admin (Akses Penuh & Kelola Pengguna)</option>
+            <option value="Admin">Admin (Kelola FAQ & Menu Bot)</option>
+            <option value="Admin Perawat">Admin Perawat (Pantau Chat & Log Privasi)</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label class="form-label" for="userPasswordInput">Kata Sandi Awal</label>
+          <input type="text" class="form-input" id="userPasswordInput" placeholder="Masukkan kata sandi awal" required maxlength="30">
+        </div>
+
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button type="button" class="btn btn-outline" id="btnCancelUserModal" style="padding: 10px 18px; font-size: 0.85rem;">
+            Batal
+          </button>
+          <button type="submit" class="btn btn-primary" id="btnSubmitUser" style="padding: 10px 22px; font-size: 0.85rem; border-radius: var(--radius-sm);">
+            Simpan Staf
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL TAMBAH / EDIT KATEGORI MENU (DYNAMIC CATEGORIES)
+       ======================================================================== -->
+  <div class="admin-login-modal" id="categoryModal" style="z-index: 1200;">
+    <div class="login-card" style="max-width: 460px;">
+      <button class="login-close-btn" id="closeCategoryModalBtn" title="Tutup">
+        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+
+      <div class="login-brand-header" style="text-align: left; margin-bottom: 20px;">
+        <div class="login-brand-badge" style="background: #e0f2fe; color: #0284c7;">
+          <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          Struktur Menu WhatsApp
+        </div>
+        <h3 id="categoryModalTitle" style="font-size: 1.28rem; margin-bottom: 6px;">Tambah Kategori Menu Baru</h3>
+        <p style="font-size: 0.82rem; margin: 0; color: #64748b;">
+          Kategori ini akan langsung tampil sebagai opsi angka menu di WhatsApp pasien.
+        </p>
+      </div>
+
+      <form id="categoryForm">
+        <input type="hidden" id="editCategoryIdInput" value="">
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label class="form-label" for="categoryTitleInput">Judul Kategori Menu</label>
+          <input type="text" class="form-input" id="categoryTitleInput" placeholder="Contoh: Panduan Nutrisi & Pola Makan Pasca-Kemo" required maxlength="50">
+          <span style="font-size: 0.74rem; color: #64748b; margin-top: 4px; display: block;">
+            Gunakan judul yang ringkas dan mudah dipahami oleh pasien (maks. 50 karakter).
+          </span>
+        </div>
+
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button type="button" class="btn btn-outline" id="btnCancelCategoryModal" style="padding: 10px 18px; font-size: 0.85rem;">
+            Batal
+          </button>
+          <button type="submit" class="btn btn-primary" id="btnSubmitCategory" style="padding: 10px 22px; font-size: 0.85rem; border-radius: var(--radius-sm);">
+            Simpan Kategori
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL KONFIRMASI / PERSETUJUAN AKSI (MODERN CONFIRMATION POPUP)
+       ======================================================================== -->
+  <div class="confirm-modal-overlay" id="adminConfirmModal">
+    <div class="confirm-modal-card">
+      <button class="confirm-close-btn" id="btnConfirmClose" title="Tutup">
+        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+
+      <div class="confirm-icon-wrap" id="confirmModalIconWrap">
+        <div class="confirm-icon-badge danger" id="confirmModalBadge">
+          <svg class="svg-icon svg-icon-md" id="confirmModalIconSvg" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+        </div>
+      </div>
+
+      <div class="confirm-modal-body">
+        <h4 class="confirm-modal-title" id="confirmModalTitle">Konfirmasi Tindakan</h4>
+        <p class="confirm-modal-desc" id="confirmModalDesc">Apakah Anda yakin ingin melanjutkan tindakan ini?</p>
+      </div>
+
+      <div class="confirm-modal-actions">
+        <button type="button" class="btn btn-outline" id="btnConfirmCancel">
+          Batal
+        </button>
+        <button type="button" class="btn btn-danger" id="btnConfirmProceed">
+          <span id="btnConfirmProceedText">Ya, Lanjutkan</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/bot-engine.js"></script>
+  <script src="js/admin-portal.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,21 @@
+# Dependency
+node_modules/
+
+# Environment Variables & Secrets
+.env
+.env.local
+*.env
+
+# Baileys WhatsApp Authentication Session
+auth_info_baileys/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# OS / Editor Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
