@@ -1,3 +1,13 @@
+---
+title: Chatbot BOKU RSUD Margono
+emoji: 🏥
+colorFrom: blue
+colorTo: green
+sdk: docker
+app_port: 7860
+pinned: false
+---
+
 # chatbot-BOKU
 
 Layanan Asisten Virtual WhatsApp dan Portal Web Terintegrasi untuk RSUD Prof. Dr. Margono Soekarjo Purwokerto (**BOKU**).
