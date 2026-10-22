@@ -619,8 +619,9 @@ export default async function handler(req, res) {
   }
 
   // 8. Katalog Obat Detail (GET)
-  if (reqPath.startsWith('/api/gas/obat/') && req.method === 'GET') {
-    const id = reqPath.replace('/api/gas/obat/', '').trim();
+  const isObatDetail = (reqPath.startsWith('/api/gas/obat/') && reqPath !== '/api/gas/obat') || (req.query && req.query.id && reqPath === '/api/gas/obat');
+  if (isObatDetail && req.method === 'GET') {
+    const id = (req.query && req.query.id) || reqPath.replace('/api/gas/obat/', '').trim();
     if (!id) {
       return sendResponse(res, 400, { success: false, error: 'ID obat tidak valid' });
     }
