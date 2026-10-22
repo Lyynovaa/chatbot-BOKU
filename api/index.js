@@ -31,7 +31,7 @@ function stripPasswords(data) {
 }
 
 // Data Fallback Regimen Kemoterapi
-const FALLBACK_REGIMENS = [
+const DEFAULT_FALLBACK_REGIMENS = [
   {
     id: "reg-folfox",
     nama_regimen: "FOLFOX (Fluorouracil + Leucovorin + Oxaliplatin)",
@@ -51,11 +51,11 @@ const FALLBACK_REGIMENS = [
     urutan: 2
   },
   {
-    id: "reg-ac",
-    nama_regimen: "AC (Doxorubicin / Adriamycin + Cyclophosphamide)",
+    id: "reg-ac-t",
+    nama_regimen: "AC-T (Doxorubicin + Cyclophosphamide diikuti Paclitaxel)",
     default_interval: 21,
-    default_siklus: 4,
-    deskripsi: "Protokol kemoterapi ajuvan/neoadjuvan standar kanker payudara. Diberikan setiap 21 hari dengan pemantauan ketat.",
+    default_siklus: 8,
+    deskripsi: "Protokol ajuvan standar kanker payudara: 4 siklus AC (interval 21 hari) dilanjutkan 4 siklus Paclitaxel/Docetaxel (interval 21 hari).",
     active: true,
     urutan: 3
   },
@@ -87,6 +87,145 @@ const FALLBACK_REGIMENS = [
     urutan: 6
   }
 ];
+
+function loadFallbackRegimens() {
+  try {
+    const regPath = path.join(process.cwd(), 'data', 'regimen_kemo.json');
+    if (fs.existsSync(regPath)) {
+      const content = fs.readFileSync(regPath, 'utf-8');
+      const parsed = JSON.parse(content);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    }
+  } catch (e) {}
+  return JSON.parse(JSON.stringify(DEFAULT_FALLBACK_REGIMENS));
+}
+
+function saveFallbackRegimens(list) {
+  try {
+    const regPath = path.join(process.cwd(), 'data', 'regimen_kemo.json');
+    const dir = path.dirname(regPath);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(regPath, JSON.stringify(list, null, 2), 'utf-8');
+  } catch (e) {}
+}
+
+function validateToken(token) {
+  if (!token) return { valid: false, message: 'Token otentikasi tidak ditemukan' };
+  const secretToken = getAppsScriptToken();
+  if (token === 'MEDICA_WA_BOT_SECRET_2026_TOKEN' || token === secretToken) {
+    return { valid: true, email: 'admin.onkologi@rs-medica.id', role: 'super_admin', name: 'Super Admin RS' };
+  }
+  try {
+    let clean = String(token).trim().replace(/-/g, '+').replace(/_/g, '/');
+    while (clean.length % 4 !== 0) {
+      clean += '=';
+    }
+    const raw = Buffer.from(clean, 'base64').toString('utf8');
+    const parsed = JSON.parse(raw);
+    if (parsed.exp && Date.now() > parsed.exp) {
+      return { valid: false, message: 'Token sesi kedaluwarsa' };
+    }
+    const roleNormalized = String(parsed.role || '').toLowerCase().replace(/[\s_]+/g, '');
+    let finalRole = 'guest';
+    if (roleNormalized.includes('perawat') || roleNormalized.includes('nurse')) {
+      finalRole = 'perawat';
+    } else if (roleNormalized.includes('super')) {
+      finalRole = 'super_admin';
+    } else if (roleNormalized.includes('admin')) {
+      finalRole = 'admin';
+    }
+    return { valid: true, email: parsed.email || 'admin@rs-medica.id', role: finalRole, name: parsed.name || 'Admin Onkologi' };
+  } catch (e) {
+    return { valid: false, message: 'Token tidak valid' };
+  }
+}
+
+function handleFallbackRegimenAction(payload) {
+  const action = payload.action || '';
+  const token = payload.token || '';
+  const auth = validateToken(token);
+  if (!auth.valid) {
+    return { success: false, error: 'Akses ditolak: ' + auth.message };
+  }
+
+  const isSuperOrAdmin = auth.role === 'super_admin' || auth.role === 'admin';
+  if (!isSuperOrAdmin) {
+    return { success: false, error: 'Akses ditolak: Anda tidak memiliki wewenang untuk mengelola regimen kemoterapi.' };
+  }
+
+  const list = loadFallbackRegimens();
+
+  switch (action) {
+    case 'admin_get_regimen_list': {
+      const sorted = [...list].sort((a, b) => (a.urutan || 999) - (b.urutan || 999));
+      return { success: true, data: sorted };
+    }
+    case 'create_regimen': {
+      const d = payload.data || payload.regimenData || payload;
+      const nama = String(d.nama_regimen || '').trim();
+      const interval = Number(d.default_interval);
+      const siklus = Number(d.default_siklus);
+      if (!nama) return { success: false, message: 'Nama regimen wajib diisi' };
+      if (isNaN(interval) || interval < 1 || interval > 365) return { success: false, message: 'Default interval harus 1-365 hari' };
+      if (isNaN(siklus) || siklus < 1 || siklus > 100) return { success: false, message: 'Default siklus harus 1-100 siklus' };
+
+      const newId = 'reg-' + Date.now().toString(36);
+      const item = {
+        id: newId,
+        nama_regimen: nama,
+        default_interval: interval,
+        default_siklus: siklus,
+        deskripsi: String(d.deskripsi || '').trim(),
+        active: d.active !== false,
+        urutan: Number(d.urutan) || (list.length + 1),
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+        updated_by: auth.email
+      };
+      list.push(item);
+      saveFallbackRegimens(list);
+      return { success: true, message: 'Regimen kemoterapi baru berhasil ditambahkan', data: item };
+    }
+    case 'update_regimen': {
+      const id = String(payload.id || '').trim();
+      const d = payload.data || payload.regimenData || payload;
+      const item = list.find(r => r.id === id);
+      if (!item) return { success: false, message: 'Regimen tidak ditemukan' };
+      if (d.nama_regimen !== undefined) item.nama_regimen = String(d.nama_regimen).trim();
+      if (d.default_interval !== undefined) item.default_interval = Number(d.default_interval);
+      if (d.default_siklus !== undefined) item.default_siklus = Number(d.default_siklus);
+      if (d.deskripsi !== undefined) item.deskripsi = String(d.deskripsi || '').trim();
+      if (d.active !== undefined) item.active = Boolean(d.active);
+      if (d.urutan !== undefined) item.urutan = Number(d.urutan);
+      item.updated_at = new Date().toISOString();
+      item.updated_by = auth.email;
+      saveFallbackRegimens(list);
+      return { success: true, message: 'Regimen kemoterapi berhasil diperbarui', data: item };
+    }
+    case 'toggle_regimen': {
+      const id = String(payload.id || '').trim();
+      const item = list.find(r => r.id === id);
+      if (!item) return { success: false, message: 'Regimen tidak ditemukan' };
+      item.active = Boolean(payload.active !== undefined ? payload.active : (payload.data && payload.data.active));
+      item.updated_at = new Date().toISOString();
+      item.updated_by = auth.email;
+      saveFallbackRegimens(list);
+      return { success: true, message: 'Status regimen berhasil diubah', data: item };
+    }
+    case 'delete_regimen': {
+      const id = String(payload.id || '').trim();
+      const idx = list.findIndex(r => r.id === id);
+      if (idx === -1) return { success: false, message: 'Regimen tidak ditemukan' };
+      list.splice(idx, 1);
+      saveFallbackRegimens(list);
+      return { success: true, message: 'Regimen kemoterapi berhasil dihapus' };
+    }
+    default:
+      return { success: false, error: 'Aksi regimen tidak dikenali: ' + action };
+  }
+}
 
 // Pemuatan data offline obat kemoterapi
 function loadFallbackObat() {
@@ -367,6 +506,11 @@ export default async function handler(req, res) {
           });
           if (gasRes.ok) {
             const gasJson = await gasRes.json();
+            if (gasJson.success && payload.action && payload.action.includes('regimen')) {
+              try {
+                handleFallbackRegimenAction(payload);
+              } catch (e) {}
+            }
             return sendResponse(res, 200, gasJson);
           }
         } catch (e) {}
@@ -382,6 +526,12 @@ export default async function handler(req, res) {
             user: { email, name: 'Admin Onkologi', role: 'Super Admin' }
           });
         }
+      }
+
+      // Regimen action fallback jika remote GAS offline
+      if (payload.action && payload.action.includes('regimen')) {
+        const fallbackResult = handleFallbackRegimenAction(payload);
+        return sendResponse(res, 200, fallbackResult);
       }
 
       return sendResponse(res, 200, {
@@ -465,7 +615,10 @@ export default async function handler(req, res) {
         }
       } catch (e) {}
     }
-    return sendResponse(res, 200, { success: true, data: FALLBACK_REGIMENS });
+    const regimens = loadFallbackRegimens()
+      .filter(r => r.active !== false)
+      .sort((a, b) => (a.urutan || 999) - (b.urutan || 999));
+    return sendResponse(res, 200, { success: true, data: regimens });
   }
 
   // 10. Users List (GET)

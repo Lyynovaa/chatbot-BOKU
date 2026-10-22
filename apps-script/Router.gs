@@ -146,6 +146,9 @@ function doPost(e) {
     if (typeof body.regimenData === "string") {
       try { body.regimenData = JSON.parse(body.regimenData); } catch (err) {}
     }
+    if (typeof body.data === "string") {
+      try { body.data = JSON.parse(body.data); } catch (err) {}
+    }
 
     var action = body.action || (e && e.parameter && e.parameter.action) || "";
     var token = body.token || (e && e.parameter && e.parameter.token) || CONFIG.API_SECRET_TOKEN;
@@ -257,22 +260,26 @@ function doPost(e) {
       case "admin_get_regimen_list":
         return createJsonResponse(adminGetRegimenList(token, body));
 
-      case "create_regimen":
-        return createJsonResponse(createRegimen(body.regimenData || body, token));
+      case "create_regimen": {
+        var regCreateData = body.regimenData || body.data || body;
+        return createJsonResponse(createRegimen(regCreateData, token));
+      }
 
       case "update_regimen": {
-        var regUpdateId = body.id || (body.regimenData && body.regimenData.id) || (e && e.parameter && e.parameter.id) || "";
-        return createJsonResponse(updateRegimen(regUpdateId, body.regimenData || body, token));
+        var regUpdateId = body.id || (body.regimenData && body.regimenData.id) || (body.data && body.data.id) || (e && e.parameter && e.parameter.id) || "";
+        var regUpdateData = body.regimenData || body.data || body;
+        return createJsonResponse(updateRegimen(regUpdateId, regUpdateData, token));
       }
 
       case "delete_regimen": {
-        var regDelId = body.id || (body.regimenData && body.regimenData.id) || (e && e.parameter && e.parameter.id) || "";
+        var regDelId = body.id || (body.regimenData && body.regimenData.id) || (body.data && body.data.id) || (e && e.parameter && e.parameter.id) || "";
         return createJsonResponse(deleteRegimen(regDelId, token));
       }
 
       case "toggle_regimen": {
-        var regToggleId = body.id || (body.regimenData && body.regimenData.id) || (e && e.parameter && e.parameter.id) || "";
-        return createJsonResponse(toggleRegimenStatus(regToggleId, body.active, token));
+        var regToggleId = body.id || (body.regimenData && body.regimenData.id) || (body.data && body.data.id) || (e && e.parameter && e.parameter.id) || "";
+        var regToggleActive = (body.active !== undefined) ? body.active : ((body.data && body.data.active !== undefined) ? body.data.active : (body.regimenData && body.regimenData.active));
+        return createJsonResponse(toggleRegimenStatus(regToggleId, regToggleActive, token));
       }
 
       // Default: Action tidak dikenali

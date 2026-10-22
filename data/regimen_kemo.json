@@ -1,0 +1,98 @@
+[
+  {
+    "id": "reg-folfox",
+    "nama_regimen": "FOLFOX (Fluorouracil + Leucovorin + Oxaliplatin)",
+    "default_interval": 14,
+    "default_siklus": 12,
+    "deskripsi": "Protokol kemoterapi kombinasi lini pertama untuk kanker kolorektal (usus besar/rektum) stadium ajuvan atau lanjut. Diberikan secara siklikal setiap 14 hari (2 minggu) dengan evaluasi profil darah tepi dan respons klinis berkala.",
+    "active": true,
+    "urutan": 1,
+    "created_at": "2026-10-22T00:00:00.000Z",
+    "updated_at": "2026-10-22T00:00:00.000Z",
+    "updated_by": "admin.onkologi@rs-medica.id"
+  },
+  {
+    "id": "reg-gem-cis",
+    "nama_regimen": "Gemcitabine + Cisplatin",
+    "default_interval": 21,
+    "default_siklus": 6,
+    "deskripsi": "Protokol kemoterapi kombinasi berbasis platinum untuk karsinoma saluran kemih, kandung kemih, karsinoma saluran empedu (kolangiokarsinoma), serta kanker paru. Diberikan setiap 21 hari (3 minggu) dengan hidrasi cairan optimal.",
+    "active": true,
+    "urutan": 2,
+    "created_at": "2026-10-22T00:00:00.000Z",
+    "updated_at": "2026-10-22T00:00:00.000Z",
+    "updated_by": "admin.onkologi@rs-medica.id"
+  },
+  {
+    "id": "reg-ac-t",
+    "nama_regimen": "AC-T (Doxorubicin + Cyclophosphamide diikuti Paclitaxel)",
+    "default_interval": 21,
+    "default_siklus": 8,
+    "deskripsi": "Protokol ajuvan standar kanker payudara: 4 siklus AC (interval 21 hari) dilanjutkan 4 siklus Paclitaxel/Docetaxel (interval 21 hari). Memerlukan pemantauan fungsi kardiovaskular (ECHO) dan hematologi rutin sebelum tiap siklus.",
+    "active": true,
+    "urutan": 3,
+    "created_at": "2026-10-22T00:00:00.000Z",
+    "updated_at": "2026-10-22T00:00:00.000Z",
+    "updated_by": "admin.onkologi@rs-medica.id"
+  },
+  {
+    "id": "reg-pac-carb",
+    "nama_regimen": "Paclitaxel + Carboplatin",
+    "default_interval": 21,
+    "default_siklus": 6,
+    "deskripsi": "Protokol kemoterapi lini pertama kanker ovarium epitelial dan kanker paru bukan sel kecil (NSCLC). Siklus infus diberikan setiap 21 hari (3 minggu) disertai premedikasi pencegah reaksi hipersensitivitas.",
+    "active": true,
+    "urutan": 4,
+    "created_at": "2026-10-22T00:00:00.000Z",
+    "updated_at": "2026-10-22T00:00:00.000Z",
+    "updated_by": "admin.onkologi@rs-medica.id"
+  },
+  {
+    "id": "reg-chop",
+    "nama_regimen": "CHOP (Cyclophosphamide + Doxorubicin + Vincristine + Prednisone)",
+    "default_interval": 21,
+    "default_siklus": 6,
+    "deskripsi": "Protokol kemoterapi kuratif lini utama untuk limfoma non-Hodgkin (NHL). Diberikan setiap 21 hari (3 minggu) dengan premedikasi antiemetik profilaksis dan kortikosteroid terjadwal.",
+    "active": true,
+    "urutan": 5,
+    "created_at": "2026-10-22T00:00:00.000Z",
+    "updated_at": "2026-10-22T00:00:00.000Z",
+    "updated_by": "admin.onkologi@rs-medica.id"
+  },
+  {
+    "id": "reg-cis-5fu",
+    "nama_regimen": "Cisplatin + 5-Fluorouracil (5-FU)",
+    "default_interval": 28,
+    "default_siklus": 6,
+    "deskripsi": "Protokol kemoradioterapi untuk karsinoma nasofaring (KNF), kanker kepala-leher stadium lanjut, dan kanker serviks. Diberikan setiap 28 hari (4 minggu) dengan hidrasi agresif dan pemantauan fungsi ginjal.",
+    "active": true,
+    "urutan": 6,
+    "created_at": "2026-10-22T00:00:00.000Z",
+    "updated_at": "2026-10-22T00:00:00.000Z",
+    "updated_by": "admin.onkologi@rs-medica.id"
+  },
+  {
+    "id": "reg-mvjs8avj",
+    "nama_regimen": "TEST REGIMEN CAPECITABINE + OXALIPLATIN (CAPOX) - 1792688131323",
+    "default_interval": 21,
+    "default_siklus": 8,
+    "deskripsi": "Protokol kemoterapi kombinasi ajuvan CAPOX untuk pengujian otomatis.",
+    "active": true,
+    "urutan": 7,
+    "created_at": "2026-10-22T16:55:36.463Z",
+    "updated_at": "2026-10-22T16:55:36.464Z",
+    "updated_by": "admin.onkologi@rs-medica.id"
+  },
+  {
+    "id": "reg-mvjsfd46",
+    "nama_regimen": "TESTING FOLFOX",
+    "default_interval": 21,
+    "default_siklus": 6,
+    "deskripsi": "mantap",
+    "active": true,
+    "urutan": 8,
+    "created_at": "2026-10-22T17:01:05.958Z",
+    "updated_at": "2026-10-22T17:01:05.958Z",
+    "updated_by": "noval@gmail.com"
+  }
+]

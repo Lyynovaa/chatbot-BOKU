@@ -1161,7 +1161,7 @@ function handleLocalAdminObatAction(payload) {
 // ============================================================================
 // SIMULATOR DATASET REGIMEN KEMOTERAPI LOKAL (FALLBACK JIKA REMOTE GAS BELUM DIPERBARUI)
 // ============================================================================
-const LOCAL_SAMPLE_REGIMENS = [
+const DEFAULT_SAMPLE_REGIMENS = [
   {
     id: "reg-folfox",
     nama_regimen: "FOLFOX (Fluorouracil + Leucovorin + Oxaliplatin)",
@@ -1236,6 +1236,31 @@ const LOCAL_SAMPLE_REGIMENS = [
   }
 ];
 
+const REGIMEN_DATA_FILE = path.join(process.cwd(), 'data', 'regimen_kemo.json');
+
+function loadLocalRegimens() {
+  try {
+    if (fs.existsSync(REGIMEN_DATA_FILE)) {
+      const content = fs.readFileSync(REGIMEN_DATA_FILE, 'utf-8');
+      const parsed = JSON.parse(content);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    }
+  } catch (e) {}
+  return JSON.parse(JSON.stringify(DEFAULT_SAMPLE_REGIMENS));
+}
+
+function saveLocalRegimens(list) {
+  try {
+    const dir = path.dirname(REGIMEN_DATA_FILE);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(REGIMEN_DATA_FILE, JSON.stringify(list, null, 2), 'utf-8');
+  } catch (e) {}
+}
+
+let LOCAL_SAMPLE_REGIMENS = loadLocalRegimens();
+
 function getLocalRegimenList() {
   const activeOnly = LOCAL_SAMPLE_REGIMENS
     .filter(r => r.active !== false)
@@ -1284,6 +1309,7 @@ function handleLocalAdminRegimenAction(payload) {
         updated_by: auth.email
       };
       LOCAL_SAMPLE_REGIMENS.push(item);
+      saveLocalRegimens(LOCAL_SAMPLE_REGIMENS);
       return { success: true, message: 'Regimen kemoterapi baru berhasil ditambahkan', data: item };
     }
     case 'update_regimen': {
@@ -1299,15 +1325,17 @@ function handleLocalAdminRegimenAction(payload) {
       if (d.urutan !== undefined) item.urutan = Number(d.urutan);
       item.updated_at = new Date().toISOString();
       item.updated_by = auth.email;
+      saveLocalRegimens(LOCAL_SAMPLE_REGIMENS);
       return { success: true, message: 'Regimen kemoterapi berhasil diperbarui', data: item };
     }
     case 'toggle_regimen': {
       const id = String(payload.id || '').trim();
       const item = LOCAL_SAMPLE_REGIMENS.find(r => r.id === id);
       if (!item) return { success: false, message: 'Regimen tidak ditemukan' };
-      item.active = Boolean(payload.active);
+      item.active = Boolean(payload.active !== undefined ? payload.active : (payload.data && payload.data.active));
       item.updated_at = new Date().toISOString();
       item.updated_by = auth.email;
+      saveLocalRegimens(LOCAL_SAMPLE_REGIMENS);
       return { success: true, message: 'Status regimen berhasil diubah', data: item };
     }
     case 'delete_regimen': {
@@ -1315,6 +1343,7 @@ function handleLocalAdminRegimenAction(payload) {
       const idx = LOCAL_SAMPLE_REGIMENS.findIndex(r => r.id === id);
       if (idx === -1) return { success: false, message: 'Regimen tidak ditemukan' };
       LOCAL_SAMPLE_REGIMENS.splice(idx, 1);
+      saveLocalRegimens(LOCAL_SAMPLE_REGIMENS);
       return { success: true, message: 'Regimen kemoterapi berhasil dihapus' };
     }
     default:

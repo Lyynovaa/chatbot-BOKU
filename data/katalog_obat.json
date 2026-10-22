@@ -47,7 +47,7 @@
     "efek_samping": "Pusing ringan, perubahan rasa kecap sementara.",
     "status": "Tayang",
     "urutan": 4,
-    "updated_at": "2026-10-22T06:15:41.404Z",
+    "updated_at": "2026-10-22T16:23:49.024Z",
     "fasilitas": [
       {
         "id": "fas-fiktif-401",
@@ -71,7 +71,8 @@
         "harga": 195000,
         "tanggal_diperbarui": "2026-10-22"
       }
-    ]
+    ],
+    "updated_by": "noval@gmail.com"
   },
   {
     "id": "obat-fiktif-006",
@@ -88,8 +89,29 @@
     "peringatan": "Hanya untuk simulasi draf internal tim admin.",
     "efek_samping": "Simulasi efek samping belum dipublikasikan.",
     "status": "Draft",
+    "urutan": 5,
+    "updated_at": "2026-10-22T16:23:50.334Z",
+    "fasilitas": [],
+    "updated_by": "noval@gmail.com"
+  },
+  {
+    "id": "obat-1792686590664",
+    "nama_obat": "Cistaplin 500mg",
+    "nama_produsen": "Kalbe farma",
+    "bentuk_sediaan": "Injeksi",
+    "jenis": "Generik",
+    "kode_kfa": "93001234560",
+    "golongan": "Obat Keras",
+    "indikasi_ringkas": "mantap",
+    "deskripsi": "mantap",
+    "indikasi_umum": "mantap",
+    "komposisi": "mantap",
+    "peringatan": "mantap",
+    "efek_samping": "mantap",
+    "status": "Tayang",
     "urutan": 6,
-    "updated_at": "2026-10-22T06:15:41.405Z",
+    "updated_at": "2026-10-22T16:29:50.665Z",
+    "updated_by": "noval@gmail.com",
     "fasilitas": []
   }
 ]

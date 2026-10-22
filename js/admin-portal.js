@@ -2300,7 +2300,7 @@ class WebAdminPortal {
 
     form.reset();
     document.getElementById('editObatIdInput').value = '';
-    document.getElementById('obatModalTitle').textContent = 'Tambah Obat Kemoterapi Baru';
+    document.getElementById('obatModalTitle').textContent = 'Tambah Obat Baru';
     document.getElementById('obatBentukSelect').value = 'Injeksi';
     document.getElementById('obatJenisSelect').value = 'Generik';
     document.getElementById('obatGolonganSelect').value = 'Obat Keras';
@@ -3585,7 +3585,7 @@ class WebAdminPortal {
   openAddRegimenModal() {
     this.editingRegimenId = null;
     const title = document.getElementById('regimenModalTitle');
-    if (title) title.textContent = 'Tambah Regimen Kemoterapi Baru';
+    if (title) title.textContent = 'Tambah Regimen Baru';
 
     const namaInput = document.getElementById('regimenNamaInput');
     const intervalInput = document.getElementById('regimenIntervalInput');
@@ -3691,7 +3691,9 @@ class WebAdminPortal {
           action: action,
           token: token,
           id: this.editingRegimenId || undefined,
-          data: payloadData
+          data: payloadData,
+          regimenData: payloadData,
+          ...payloadData
         })
       });
 
@@ -3711,8 +3713,11 @@ class WebAdminPortal {
         );
         document.getElementById('regimenModal')?.classList.remove('active');
         await this.fetchAdminRegimenList();
+        if (window.ChemoCalculator && typeof window.ChemoCalculator.fetchRegimens === 'function') {
+          window.ChemoCalculator.fetchRegimens();
+        }
       } else {
-        this.showToast(json.error || 'Gagal menyimpan regimen.', 'danger', 'Gagal Simpan');
+        this.showToast(json.message || json.error || 'Gagal menyimpan regimen.', 'danger', 'Gagal Simpan');
       }
     } catch (err) {
       this.hideCrudLoading();
@@ -3742,7 +3747,9 @@ class WebAdminPortal {
           action: 'toggle_regimen',
           token: token,
           id: id,
-          active: newActive
+          active: newActive,
+          data: { active: newActive },
+          regimenData: { active: newActive }
         })
       });
 
@@ -3752,10 +3759,13 @@ class WebAdminPortal {
           `Status regimen "${item.nama_regimen}" berhasil diubah menjadi ${newActive ? 'Aktif' : 'Nonaktif'}.`,
           'success'
         );
+        if (window.ChemoCalculator && typeof window.ChemoCalculator.fetchRegimens === 'function') {
+          window.ChemoCalculator.fetchRegimens();
+        }
       } else {
         item.active = oldStatus;
         this.renderRegimenTable();
-        this.showToast(json.error || 'Gagal mengubah status regimen.', 'danger');
+        this.showToast(json.message || json.error || 'Gagal mengubah status regimen.', 'danger');
       }
     } catch (err) {
       item.active = oldStatus;
@@ -3800,8 +3810,11 @@ class WebAdminPortal {
       if (json.success) {
         this.showToast(`Regimen "${item.nama_regimen}" berhasil dihapus.`, 'success');
         await this.fetchAdminRegimenList();
+        if (window.ChemoCalculator && typeof window.ChemoCalculator.fetchRegimens === 'function') {
+          window.ChemoCalculator.fetchRegimens();
+        }
       } else {
-        this.showToast(json.error || 'Gagal menghapus regimen.', 'danger');
+        this.showToast(json.message || json.error || 'Gagal menghapus regimen.', 'danger');
       }
     } catch (err) {
       this.hideCrudLoading();

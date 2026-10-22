@@ -70,6 +70,20 @@ const tests = [
     pass: js.includes('function printSchedule()') &&
           js.includes('renderPrintDocument()') &&
           js.includes('window.print()'),
+  },
+  {
+    name: 'CSS @media print menyembunyikan bubble launcher (.wa-floating-launcher) dan simulator bubble',
+    pass: css.includes('.wa-floating-launcher,') &&
+          css.includes('.portal-simulator-bubble,') &&
+          css.includes('#portalSimulatorBubble,'),
+  },
+  {
+    name: 'CSS @page margin: 0 disiapkan untuk mencegah pencetakan URL/domain oleh browser',
+    pass: css.includes('@page') && css.includes('margin: 0;') && css.includes('#kemoPrintDoc'),
+  },
+  {
+    name: 'JavaScript printSchedule() menyembunyikan elemen mengambang dan menonaktifkan title dengan URL',
+    pass: js.includes('floatingElements') && js.includes('is-printing-pdf'),
   }
 ];
 

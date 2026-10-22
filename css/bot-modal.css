@@ -2004,4 +2004,20 @@ body.full-chatbot-page {
   }
 }
 
+/* Sembunyikan floating launcher, bubble biru, dan modal chatbot saat mencetak ke PDF */
+@media print {
+  .wa-floating-launcher,
+  .wa-launcher-btn,
+  .wa-launcher-badge,
+  .wa-launcher-pulse,
+  .wa-modal-overlay,
+  .wa-floating-close-btn,
+  #waCircleBtn,
+  #waBadgeLauncher {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+}
+
 

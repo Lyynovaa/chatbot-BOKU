@@ -152,6 +152,8 @@
     const selectEl = document.getElementById('calcRegimenSelect');
     if (!selectEl) return;
 
+    const previousValue = selectEl.value || (state.selectedRegimen ? state.selectedRegimen.id : '');
+
     let html = '<option value="">-- Pilih Protokol / Regimen Kemoterapi --</option>';
     state.regimens.forEach(r => {
       html += `<option value="${escapeHtml(r.id)}">${escapeHtml(r.nama_regimen)} (Default: ${r.default_siklus} Siklus @ ${r.default_interval} Hari)</option>`;
@@ -159,8 +161,11 @@
 
     selectEl.innerHTML = html;
 
-    // Default pilih regimen pertama jika belum ada
-    if (state.regimens.length > 0 && !selectEl.value) {
+    // Pertahankan pilihan sebelumnya jika masih ada dalam daftar, atau pilih yang pertama
+    if (previousValue && state.regimens.some(r => r.id === previousValue)) {
+      selectEl.value = previousValue;
+      handleRegimenSelected(previousValue);
+    } else if (state.regimens.length > 0) {
       selectEl.value = state.regimens[0].id;
       handleRegimenSelected(state.regimens[0].id);
     }
@@ -749,6 +754,39 @@
       return;
     }
     renderPrintDocument();
+
+    // Sembunyikan secara eksplisit seluruh launcher, bubble chat, dan elemen mengambang
+    const floatingElements = document.querySelectorAll(
+      '.wa-floating-launcher, .portal-simulator-bubble, #portalSimulatorBubble, #waCircleBtn, #waBadgeLauncher, .wa-modal-overlay, .admin-toast-container'
+    );
+    const prevStyles = [];
+    floatingElements.forEach(el => {
+      prevStyles.push({ el, display: el.style.display, visibility: el.style.visibility });
+      el.style.setProperty('display', 'none', 'important');
+      el.style.setProperty('visibility', 'hidden', 'important');
+    });
+
+    document.body.classList.add('is-printing-pdf');
+
+    // Ubah title sementara ke format nama dokumen resmi agar nama berkas PDF bersih tanpa URL/domain
+    const originalTitle = document.title;
+    document.title = 'Jadwal-Perencanaan-Kemoterapi-RSUD-Margono';
+
+    const restoreAfterPrint = () => {
+      document.title = originalTitle;
+      document.body.classList.remove('is-printing-pdf');
+      floatingElements.forEach((item, idx) => {
+        if (prevStyles[idx]) {
+          item.el.style.display = prevStyles[idx].display;
+          item.el.style.visibility = prevStyles[idx].visibility;
+        }
+      });
+      window.removeEventListener('afterprint', restoreAfterPrint);
+    };
+
+    window.addEventListener('afterprint', restoreAfterPrint, { once: true });
+    setTimeout(restoreAfterPrint, 3000);
+
     window.print();
   }
 
@@ -883,6 +921,9 @@
       navLink?.classList.add('active');
       mobileNavLink?.classList.add('active');
 
+      // Refresh data regimen dari server/proxy saat membuka kalkulator
+      fetchRegimens();
+
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else if (hash.startsWith('#/obat') || hash.startsWith('#obat')) {
       if (kalkulatorSection) {
@@ -916,6 +957,7 @@
   // Ekspor API publik ke window
   window.ChemoCalculator = {
     init,
+    fetchRegimens,
     calculateSchedule,
     exportToIcs,
     printSchedule,

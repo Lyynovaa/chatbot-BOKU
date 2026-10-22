@@ -4631,11 +4631,11 @@ img, picture, video, canvas, svg, table, input, select, textarea {
 
 @page {
   size: A4 portrait;
-  margin: 12mm 15mm 15mm 15mm;
+  margin: 0; /* Menghilangkan URL domain dan header/footer otomatis browser (margin: 12mm 15mm 15mm 15mm dialihkan ke padding #kemoPrintDoc) */
 }
 
 @media print {
-  /* Reset browser display untuk print */
+  /* Reset browser display untuk print murni */
   html, body {
     background: #ffffff !important;
     color: #111827 !important;
@@ -4650,7 +4650,12 @@ img, picture, video, canvas, svg, table, input, select, textarea {
     print-color-adjust: exact !important;
   }
 
-  /* Sembunyikan seluruh UI web yang tidak relevan untuk PDF */
+  /* Hilangkan URL href yang dicetak browser setelah link */
+  a[href]:after {
+    content: none !important;
+  }
+
+  /* Sembunyikan seluruh UI web, bubble launcher chatbot biru, bubble simulator admin, dan elemen floating dari PDF */
   header,
   footer,
   aside,
@@ -4669,12 +4674,30 @@ img, picture, video, canvas, svg, table, input, select, textarea {
   .admin-login-modal,
   .confirm-modal-overlay,
   .portal-simulator-bubble,
+  #portalSimulatorBubble,
+  .portal-simulator-bubble-pulse,
+  .portal-simulator-bubble-icon,
+  .portal-simulator-bubble-label,
+  .wa-floating-launcher,
+  #waCircleBtn,
+  #waBadgeLauncher,
+  .wa-launcher-btn,
+  .wa-launcher-badge,
+  .wa-launcher-pulse,
+  .wa-modal-overlay,
+  .wa-floating-close-btn,
+  .admin-toast-container,
+  .admin-portal-wrapper,
+  .admin-sidebar,
+  .admin-header,
   .kalkulator-header-block,
   .kemo-calc-container,
   .no-print,
   button,
   .btn {
     display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
   }
 
   /* Kontainer Utama Kalkulator saat Print */
@@ -4696,11 +4719,14 @@ img, picture, video, canvas, svg, table, input, select, textarea {
     margin: 0 !important;
   }
 
-  /* Tampilkan Hanya Dokumen Resmi #kemoPrintDoc */
+  /* Tampilkan Hanya Dokumen Resmi #kemoPrintDoc dengan margin cetak proporsional */
   #kemoPrintDoc,
   .kemo-print-doc {
     display: block !important;
     width: 100% !important;
+    box-sizing: border-box !important;
+    padding: 12mm 15mm 15mm 15mm !important;
+    margin: 0 auto !important;
     background: #ffffff !important;
     color: #111827 !important;
   }

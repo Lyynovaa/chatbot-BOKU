@@ -22,19 +22,19 @@ function validateRegimenInput(data, isUpdate) {
     }
   }
 
-  // 2. default_interval (dalam hari: 1 - 90 hari)
+  // 2. default_interval (dalam hari: 1 - 365 hari)
   if (!isUpdate || data.default_interval !== undefined) {
     var interval = Number(data.default_interval);
-    if (isNaN(interval) || interval < 1 || interval > 90) {
-      return { valid: false, message: "Default interval harus bernilai angka antara 1 hingga 90 hari." };
+    if (isNaN(interval) || interval < 1 || interval > 365) {
+      return { valid: false, message: "Default interval harus bernilai angka antara 1 hingga 365 hari." };
     }
   }
 
-  // 3. default_siklus (jumlah siklus: 1 - 50 siklus)
+  // 3. default_siklus (jumlah siklus: 1 - 100 siklus)
   if (!isUpdate || data.default_siklus !== undefined) {
     var siklus = Number(data.default_siklus);
-    if (isNaN(siklus) || siklus < 1 || siklus > 50) {
-      return { valid: false, message: "Default jumlah siklus harus bernilai angka antara 1 hingga 50 siklus." };
+    if (isNaN(siklus) || siklus < 1 || siklus > 100) {
+      return { valid: false, message: "Default jumlah siklus harus bernilai angka antara 1 hingga 100 siklus." };
     }
   }
 

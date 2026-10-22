@@ -2297,3 +2297,19 @@
   }
 }
 
+/* Sembunyikan bubble simulator admin dan elemen modal saat mencetak ke PDF */
+@media print {
+  .portal-simulator-bubble,
+  #portalSimulatorBubble,
+  .portal-simulator-bubble-pulse,
+  .portal-simulator-bubble-icon,
+  .portal-simulator-bubble-label,
+  .admin-toast-container,
+  .admin-login-modal,
+  .confirm-modal-overlay {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+  }
+}
+
