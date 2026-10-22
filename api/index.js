@@ -7,13 +7,16 @@ import path from 'path';
  * Acts as secure cloud proxy between browser frontend and Google Apps Script backend.
  */
 
+const DEFAULT_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzUO5HJ-tO1Gl8SXfcfaqtrctENrEnOLBNpcckr5Kf5kB9FcnFQ5mlRSA0t0YeL8IpKhw/exec';
+const DEFAULT_APPS_SCRIPT_TOKEN = 'MEDICA_WA_BOT_SECRET_2026_TOKEN';
+
 // Konfigurasi Environment Variables
 function getAppsScriptUrl() {
-  return process.env.APPS_SCRIPT_URL?.trim() || '';
+  return process.env.APPS_SCRIPT_URL?.trim() || DEFAULT_APPS_SCRIPT_URL;
 }
 
 function getAppsScriptToken() {
-  return process.env.APPS_SCRIPT_TOKEN?.trim() || 'MEDICA_WA_BOT_SECRET_2026_TOKEN';
+  return process.env.APPS_SCRIPT_TOKEN?.trim() || DEFAULT_APPS_SCRIPT_TOKEN;
 }
 
 // Sanitasi password dari seluruh output JSON
@@ -410,12 +413,45 @@ export default async function handler(req, res) {
   }
 
   // Tentukan path dan querystring asli
-  const rawUrl = req.headers['x-forwarded-uri'] || req.url || '';
-  const [urlPath, queryStr] = rawUrl.split('?');
-  const reqPath = decodeURI(urlPath || '');
+  let reqPath = '';
+  if (req.query && req.query.path) {
+    const p = Array.isArray(req.query.path) ? req.query.path.join('/') : req.query.path;
+    reqPath = '/api/' + p;
+  }
+  if (!reqPath || reqPath === '/api/' || reqPath.includes('[...path]')) {
+    const rawUrl = req.headers['x-forwarded-uri'] || req.url || '';
+    const [urlPath] = rawUrl.split('?');
+    reqPath = decodeURI(urlPath || '');
+  }
+
+  // Normalisasi path
+  reqPath = reqPath.replace(/\/+/g, '/').replace(/\/$/, '') || '/api';
+  if (!reqPath.startsWith('/api')) {
+    reqPath = '/api' + (reqPath.startsWith('/') ? reqPath : '/' + reqPath);
+  }
+
+  let queryStr = '';
+  try {
+    const parsedUrl = new URL(req.url, 'http://localhost');
+    parsedUrl.searchParams.delete('path');
+    queryStr = parsedUrl.searchParams.toString();
+  } catch (e) {
+    const parts = (req.url || '').split('?');
+    queryStr = parts[1] || '';
+  }
 
   const scriptUrl = getAppsScriptUrl();
   const scriptToken = getAppsScriptToken();
+
+  // Root API Health Check
+  if ((reqPath === '/api' || reqPath === '') && req.method === 'GET') {
+    return sendResponse(res, 200, {
+      status: 'online',
+      service: 'BOKU Chatbot & Hospital Portal Serverless API',
+      gasConnected: !!scriptUrl,
+      timestamp: new Date().toISOString()
+    });
+  }
 
   // 1. Status Web Chatbot
   if (reqPath === '/api/wa/status' && req.method === 'GET') {
