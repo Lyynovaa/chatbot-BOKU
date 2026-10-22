@@ -140,6 +140,26 @@ button {
   max-width: 600px;
 }
 
+/* SVG Icons */
+.svg-icon {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  vertical-align: middle;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
+}
+
+.svg-icon-xs { width: 14px; height: 14px; }
+.svg-icon-sm { width: 16px; height: 16px; }
+.svg-icon-md { width: 20px; height: 20px; }
+.svg-icon-lg { width: 24px; height: 24px; }
+.svg-icon-xl { width: 32px; height: 32px; }
+
 /* Buttons */
 .btn {
   display: inline-flex;
@@ -833,6 +853,221 @@ button {
 
 .learn-more-link:hover {
   gap: 10px;
+}
+
+/* Gedung Onkologi Terpadu Wijayakusuma Profile Styling */
+.about-image-card {
+  position: relative;
+  width: 100%;
+  height: 480px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border-light);
+}
+
+.about-image-badge-floating {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  background: rgba(15, 23, 42, 0.88);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #ffffff;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.about-image-badge-floating .badge-title {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #38bdf8;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.about-image-badge-floating .badge-desc {
+  font-size: 0.78rem;
+  color: #cbd5e1;
+  line-height: 1.4;
+}
+
+.about-stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.about-stat-box {
+  background: #ffffff;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 12px 10px;
+  text-align: center;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.about-stat-box:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary);
+}
+
+.about-stat-num {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--primary);
+  line-height: 1.2;
+}
+
+.about-stat-lbl {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-top: 3px;
+  line-height: 1.3;
+}
+
+.about-section-subtitle {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--text-sub);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 4px;
+  margin-bottom: -6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.about-badges-flex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.about-feature-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: var(--bg-alt);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-main);
+  box-shadow: var(--shadow-sm);
+}
+
+.about-feature-chip svg {
+  color: var(--primary);
+}
+
+.about-pillars-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.about-pillar-card {
+  background: #ffffff;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+.about-pillar-card:hover {
+  border-color: var(--primary);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.about-pillar-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--primary-light);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.about-pillar-card h5 {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.about-pillar-card p {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.about-twocol-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.about-info-panel {
+  background: var(--bg-alt);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+}
+
+.about-info-panel h5 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 10px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.about-info-panel ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.about-info-panel li {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.about-info-panel li svg {
+  flex-shrink: 0;
+  margin-top: 3px;
+  color: var(--primary);
 }
 
 /* ==========================================================================
@@ -1707,6 +1942,16 @@ img, picture, video, canvas, svg, table, input, select, textarea {
     gap: 12px;
   }
 
+  .about-pillars-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .about-twocol-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
   /* Services, Facilities & Doctors Grids */
   .services-grid, .gallery-grid, .doctors-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -1892,7 +2137,7 @@ img, picture, video, canvas, svg, table, input, select, textarea {
     font-weight: 600;
   }
 
-  /* Action Buttons - 2-Column Responsive Grid that FITS phone screens */
+  /* Action Buttons - Responsive Grid that FITS phone screens */
   .hero-buttons {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1905,11 +2150,11 @@ img, picture, video, canvas, svg, table, input, select, textarea {
   .hero-buttons .btn {
     width: 100%;
     min-width: 0;
-    padding: 10px 12px;
-    font-size: clamp(0.78rem, 2.4vw, 0.88rem);
+    padding: 11px 14px;
+    font-size: clamp(0.8rem, 2.4vw, 0.9rem);
     font-weight: 700;
     border-radius: var(--radius-full);
-    white-space: nowrap;
+    white-space: normal;
     justify-content: center;
     text-align: center;
     gap: 6px;
@@ -1944,6 +2189,16 @@ img, picture, video, canvas, svg, table, input, select, textarea {
   .about-campuses-grid {
     grid-template-columns: 1fr;
     gap: 10px;
+  }
+
+  .about-pillars-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .about-stats-row {
+    grid-template-columns: 1fr;
+    gap: 8px;
   }
 
   /* Single Column Collapse for Services, Facilities & Doctors */
@@ -2050,6 +2305,27 @@ img, picture, video, canvas, svg, table, input, select, textarea {
 }
 
 /* ==========================================================================
+   2.5. PHABLETS & SMARTPHONES (<= 540px)
+   ========================================================================== */
+@media (max-width: 540px) {
+  .hero-buttons {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .hero-buttons .btn {
+    width: 100%;
+    min-height: 46px;
+    padding: 12px 18px;
+    font-size: 0.92rem;
+    white-space: normal;
+    justify-content: center;
+    text-align: center;
+  }
+}
+
+/* ==========================================================================
    3. COMPACT SMARTPHONES (<= 480px)
    ========================================================================== */
 @media (max-width: 480px) {
@@ -2091,14 +2367,25 @@ img, picture, video, canvas, svg, table, input, select, textarea {
   }
 
   .hero-buttons {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
+    grid-template-columns: 1fr;
+    gap: 10px;
     margin-bottom: 18px;
   }
 
   .hero-buttons .btn {
-    padding: 9px 8px;
-    font-size: clamp(0.72rem, 2.2vw, 0.8rem);
+    width: 100%;
+    min-height: 44px;
+    padding: 11px 16px;
+    font-size: 0.88rem;
+    white-space: normal;
+  }
+
+  .hero-metrics {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 14px 8px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
   }
 
   .hero-desc {
@@ -2227,15 +2514,17 @@ img, picture, video, canvas, svg, table, input, select, textarea {
   }
 
   .hero-buttons {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 6px;
+    grid-template-columns: 1fr;
+    gap: 8px;
     margin-bottom: 16px;
   }
 
   .hero-buttons .btn {
-    padding: 8px 5px;
-    font-size: 0.7rem;
-    letter-spacing: -0.01em;
+    width: 100%;
+    min-height: 42px;
+    padding: 10px 14px;
+    font-size: 0.84rem;
+    white-space: normal;
   }
 
   .hero-metrics {
@@ -2286,5 +2575,2556 @@ img, picture, video, canvas, svg, table, input, select, textarea {
   }
 }
 
+/* ==========================================================================
+   DROPDOWN MENU NAVBAR DESKTOP & SUBMENU MOBILE
+   ========================================================================== */
+.nav-item-dropdown {
+  position: relative;
+  list-style: none;
+}
 
+.dropdown-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.dropdown-caret {
+  transition: transform 0.25s ease;
+}
+
+.nav-item-dropdown:hover .dropdown-caret,
+.nav-item-dropdown:focus-within .dropdown-caret {
+  transform: rotate(180deg);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 260px;
+  background: #ffffff;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: 8px 0;
+  margin-top: 8px;
+  list-style: none;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 200;
+}
+
+.nav-item-dropdown:hover .dropdown-menu,
+.nav-item-dropdown:focus-within .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-sub);
+  transition: all 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background: var(--primary-ultralight);
+  color: var(--primary);
+  padding-left: 22px;
+}
+
+.dropdown-item.highlight-item {
+  color: var(--primary);
+  font-weight: 700;
+  border-top: 1px solid var(--bg-alt);
+  margin-top: 4px;
+  padding-top: 10px;
+}
+
+.dropdown-item.highlight-item:hover {
+  background: var(--primary-light);
+}
+
+/* Submenu Mobile Drawer */
+.mobile-nav-item.mobile-sub-item {
+  padding-left: 28px;
+  font-size: 0.92rem;
+  color: var(--primary);
+  font-weight: 700;
+  background: var(--primary-ultralight);
+  border-radius: var(--radius-sm);
+  margin: 4px 12px;
+}
+
+/* ==========================================================================
+   KATALOG OBAT KEMOTERAPI (FARMAPLUS STYLE)
+   ========================================================================== */
+.katalog-obat-section {
+  padding: 40px 0 80px;
+  background-color: var(--bg-alt);
+  min-height: 80vh;
+}
+
+/* 1. Disclaimer Medis Resmi */
+.obat-disclaimer-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-left: 4px solid var(--primary);
+  border-radius: var(--radius-md);
+  padding: 12px 18px;
+  margin-bottom: 24px;
+  color: #334155;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.disclaimer-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(30, 58, 138, 0.08);
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.disclaimer-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.disclaimer-content {
+  flex: 1;
+}
+
+.disclaimer-content strong {
+  color: var(--text-main);
+  font-weight: 700;
+}
+
+/* 2. Header & Toolbar */
+.katalog-header-block {
+  background: #ffffff;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.katalog-header-top .section-title {
+  font-size: 1.85rem;
+  margin-top: 4px;
+}
+
+.katalog-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-light);
+}
+
+.katalog-search-wrapper {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.search-input-icon {
+  position: absolute;
+  left: 14px;
+  color: var(--text-muted);
+  pointer-events: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-input-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.katalog-search-input {
+  width: 100%;
+  height: 44px;
+  padding: 0 40px 0 42px;
+  font-size: 0.92rem;
+  font-family: inherit;
+  color: var(--text-main);
+  background: var(--bg-alt);
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.katalog-search-input:focus {
+  background: #ffffff;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.12);
+}
+
+.btn-clear-search {
+  position: absolute;
+  right: 12px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #e2e8f0;
+  border: none;
+  color: #475569;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+
+.btn-clear-search:hover {
+  background: #cbd5e1;
+  color: #0f172a;
+}
+
+.katalog-filters-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  gap: 12px;
+  width: 100%;
+  align-items: center;
+}
+
+.filter-select-wrap {
+  width: 100%;
+  position: relative;
+}
+
+.katalog-filter-select {
+  width: 100%;
+  height: 44px;
+  padding: 0 34px 0 14px;
+  font-size: 0.88rem;
+  font-family: inherit;
+  color: var(--text-main);
+  background-color: #ffffff;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 16px;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-md);
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.katalog-filter-select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+}
+
+.btn-reset-filter {
+  height: 44px;
+  padding: 0 20px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.katalog-status-bar {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.result-count-label {
+  font-size: 0.88rem;
+  color: var(--text-muted);
+}
+
+/* 3. Cards Grid (2 Kolom Desktop, 1 Kolom Mobile) */
+.katalog-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.obat-card {
+  background: #ffffff;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+.obat-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--primary-light);
+  box-shadow: var(--shadow-md);
+}
+
+.obat-card:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.obat-produsen {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  word-break: break-word;
+}
+
+.obat-name {
+  font-size: 1.18rem;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1.35;
+  margin-bottom: 12px;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.obat-chips-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.obat-chip {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 6px;
+  line-height: 1.4;
+}
+
+.chip-bentuk {
+  background: var(--primary-light);
+  color: var(--primary);
+}
+
+.chip-jenis {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.chip-kfa {
+  background: #f8fafc;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+/* Badge Obat Keras (K Merah Tanpa Merek Pihak Lain) */
+.badge-obat-keras {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+
+.badge-k-circle {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #dc2626;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 900;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.badge-k-label {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: #dc2626;
+}
+
+.badge-obat-bebas {
+  background: #ecfdf5;
+  color: #059669;
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+.obat-summary-desc {
+  font-size: 0.86rem;
+  color: var(--text-sub);
+  line-height: 1.5;
+  margin-bottom: 16px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.obat-card-bottom {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-light);
+}
+
+.obat-facility-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.facility-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.facility-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: #e0f2fe;
+  color: #0284c7;
+  flex-shrink: 0;
+}
+
+.facility-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.facility-info {
+  min-width: 0;
+}
+
+.facility-name {
+  display: block;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.facility-provinsi {
+  display: block;
+  font-size: 0.74rem;
+  color: var(--text-muted);
+}
+
+.facility-price {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.price-prefix {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.price-value {
+  display: block;
+  font-size: 1.12rem;
+  font-weight: 800;
+  color: #059669; /* Hijau format Rp */
+}
+
+.obat-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed #f1f5f9;
+}
+
+.obat-updated-at {
+  font-size: 0.74rem;
+  color: var(--text-muted);
+}
+
+.btn-detail-link {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: transform 0.2s ease;
+}
+
+.obat-card:hover .btn-detail-link {
+  transform: translateX(3px);
+}
+
+/* 4. Pagination / Load More */
+.katalog-pagination-wrap {
+  margin-top: 32px;
+  display: flex;
+  justify-content: center;
+}
+
+.btn-load-more {
+  padding: 12px 32px;
+  font-size: 0.92rem;
+  border-radius: var(--radius-full);
+}
+
+/* 5. Skeleton Loading */
+.obat-card-skeleton {
+  background: #ffffff;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 22px;
+}
+
+.sk-line {
+  height: 14px;
+  background: #e2e8f0;
+  border-radius: 4px;
+  margin-bottom: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.sk-line::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.7), transparent);
+  animation: skShimmer 1.5s infinite;
+}
+
+@keyframes skShimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.sk-produsen { width: 35%; height: 10px; }
+.sk-title { width: 75%; height: 20px; }
+.sk-chips { width: 55%; height: 16px; }
+.sk-desc { width: 90%; height: 12px; }
+.sk-price { width: 40%; height: 18px; margin-top: 20px; }
+
+/* 6. Empty & Error State */
+.katalog-empty-card, .katalog-error-card {
+  grid-column: 1 / -1;
+  background: #ffffff;
+  border: 1.5px dashed var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 48px 24px;
+  text-align: center;
+}
+
+.empty-icon-wrap, .error-icon-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  margin: 0 auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f5f9;
+  color: var(--text-muted);
+}
+
+.error-icon-wrap {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+.katalog-empty-card h4, .katalog-error-card h4 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 8px;
+}
+
+.katalog-empty-card p, .katalog-error-card p {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  max-width: 480px;
+  margin: 0 auto 20px;
+}
+
+/* ==========================================================================
+   HALAMAN DETAIL OBAT (FARMAPLUS DETAIL VIEW)
+   ========================================================================== */
+.katalog-detail-container {
+  max-width: var(--container-max);
+  margin: 0 auto;
+}
+
+.katalog-detail-nav {
+  margin-bottom: 20px;
+}
+
+.btn-back-katalog {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #ffffff;
+  border: 1.5px solid var(--border-light);
+  border-radius: var(--radius-full);
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-main);
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-back-katalog:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  transform: translateX(-3px);
+}
+
+.detail-hero-banner {
+  background: #ffffff;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.detail-produsen {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.detail-nama-obat {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1.2;
+}
+
+.detail-highlight-indikasi {
+  margin-top: 16px;
+  padding: 14px 18px;
+  background: var(--primary-ultralight);
+  border-left: 4px solid var(--primary);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  font-size: 0.95rem;
+  color: var(--text-main);
+  line-height: 1.5;
+}
+
+/* Detail 2-Column Grid (Desktop) */
+.katalog-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.detail-section-card {
+  background: #ffffff;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  margin-bottom: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.detail-section-card.warning-card {
+  border-left: 4px solid #f59e0b;
+}
+
+.section-card-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.sec-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: #e0f2fe;
+  color: #0284c7;
+  flex-shrink: 0;
+}
+
+.sec-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.detail-section-card.warning-card .sec-icon {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.section-card-title.warning-title {
+  color: #b45309;
+}
+
+.section-card-content {
+  font-size: 0.94rem;
+  color: var(--text-sub);
+  line-height: 1.7;
+  word-break: break-word;
+}
+
+/* Sidebar Fasilitas Sticky */
+.facility-sticky-box {
+  background: #ffffff;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  box-shadow: var(--shadow-md);
+  position: sticky;
+  top: 96px;
+}
+
+.facility-box-header h3 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 4px;
+}
+
+.facility-box-header p {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+.facility-tabs-wrap {
+  margin-bottom: 16px;
+}
+
+.facility-tabs-label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+}
+
+.facility-tabs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.facility-tab-btn {
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--bg-alt);
+  border: 1px solid var(--border-light);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-sub);
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.facility-tab-btn.active, .facility-tab-btn:hover {
+  background: var(--primary-light);
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.facility-active-card {
+  background: var(--bg-alt);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-sm);
+  padding: 18px;
+}
+
+.facility-provinsi-tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  background: #e2e8f0;
+  color: #334155;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-bottom: 6px;
+}
+
+.facility-name-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 10px;
+}
+
+.facility-main-price {
+  padding: 10px 14px;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.facility-main-price .price-lbl {
+  display: block;
+  font-size: 0.72rem;
+  color: #047857;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.facility-main-price .price-val {
+  display: block;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #059669;
+}
+
+.facility-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.facility-info-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.info-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  background: #e0f2fe;
+  color: #0284c7;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.info-icon svg {
+  width: 15px;
+  height: 15px;
+}
+
+.info-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.info-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.info-value {
+  font-size: 0.88rem;
+  color: var(--text-main);
+  line-height: 1.45;
+  margin-top: 2px;
+}
+
+.info-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+
+.btn-copy-chip {
+  padding: 4px 10px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  background: #ffffff;
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  color: var(--text-sub);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-copy-chip:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}
+
+.btn-copy-chip.copied {
+  background: #10b981;
+  color: #ffffff;
+  border-color: #10b981;
+}
+
+.btn-map-link {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.btn-wa-chat {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 10px 16px;
+  background: #25d366;
+  color: #ffffff;
+  border-radius: var(--radius-full);
+  font-size: 0.88rem;
+  font-weight: 700;
+  margin-top: 6px;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+  transition: all 0.2s ease;
+}
+
+.btn-wa-chat:hover {
+  background: #22bf5b;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(37, 211, 102, 0.4);
+}
+
+.facility-info-item.updated-strip {
+  padding-top: 8px;
+  border-top: 1px dashed var(--border-light);
+  font-size: 0.76rem;
+  color: var(--text-muted);
+}
+
+.facility-empty-box {
+  padding: 16px;
+  background: var(--bg-alt);
+  border-radius: var(--radius-sm);
+  text-align: center;
+  font-size: 0.88rem;
+  color: var(--text-sub);
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN (360px & 1280px)
+   ========================================================================== */
+@media (max-width: 992px) {
+  .katalog-detail-grid {
+    grid-template-columns: 1fr;
+  }
+  .facility-sticky-box {
+    position: static;
+  }
+  .katalog-filters-group {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .btn-reset-filter {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 768px) {
+  .katalog-cards-grid {
+    grid-template-columns: 1fr; /* 1 Kolom di Mobile */
+    gap: 16px;
+  }
+
+  .obat-card {
+    padding: 20px 18px;
+  }
+
+  .obat-name {
+    font-size: 1.15rem;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .obat-summary-desc {
+    font-size: 0.86rem;
+    line-height: 1.5;
+    -webkit-line-clamp: 3;
+    word-break: break-word;
+  }
+
+  .katalog-header-block {
+    padding: 20px 16px;
+  }
+
+  .katalog-header-top .section-title {
+    font-size: 1.45rem;
+  }
+
+  .detail-nama-obat {
+    font-size: 1.65rem;
+    word-break: break-word;
+  }
+
+  .detail-hero-banner {
+    padding: 20px 16px;
+  }
+
+  .katalog-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin-top: 14px;
+    padding-top: 14px;
+  }
+
+  .katalog-search-wrapper {
+    flex: 1 1 100%;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .katalog-search-input {
+    font-size: 16px; /* iOS zoom prevention */
+    height: 44px;
+    padding: 0 38px 0 40px;
+  }
+
+  .katalog-filters-group {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .filter-select-wrap {
+    width: 100%;
+  }
+
+  .katalog-filter-select {
+    font-size: 16px; /* iOS zoom prevention */
+    height: 44px;
+    padding: 0 34px 0 14px;
+  }
+
+  .btn-reset-filter {
+    width: 100%;
+    height: 44px;
+    justify-content: center;
+    grid-column: auto;
+  }
+}
+
+/* Penyesuaian Responsif Layar HP Kecil (<= 520px): Card Menyesuaikan, Deskripsi & Elemen Turun ke Bawah */
+@media (max-width: 520px) {
+  .obat-card {
+    padding: 16px 14px;
+    gap: 12px;
+  }
+
+  .obat-name {
+    font-size: 1.08rem;
+    line-height: 1.35;
+    margin-bottom: 8px;
+  }
+
+  .obat-chips-wrap {
+    gap: 5px;
+    margin-bottom: 10px;
+  }
+
+  .obat-chip {
+    font-size: 0.72rem;
+    padding: 2px 7px;
+  }
+
+  .badge-obat-keras, .badge-obat-bebas {
+    padding: 2px 7px;
+  }
+
+  /* Deskripsi turun ke bawah dengan nyaman dan tidak terpotong sempit */
+  .obat-summary-desc {
+    font-size: 0.84rem;
+    line-height: 1.5;
+    margin-bottom: 12px;
+    -webkit-line-clamp: 4;
+    word-break: break-word;
+  }
+
+  .obat-card-bottom {
+    padding-top: 12px;
+  }
+
+  /* Fasilitas & Harga tersusun bertumpuk (ke bawah) secara rapi dan estetis */
+  .obat-facility-strip {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .facility-meta {
+    width: 100%;
+  }
+
+  .facility-name {
+    font-size: 0.86rem;
+    white-space: normal;
+    line-height: 1.35;
+    word-break: break-word;
+  }
+
+  .facility-price {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: var(--radius-sm);
+    padding: 8px 12px;
+    text-align: left;
+  }
+
+  .price-prefix {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #166534;
+  }
+
+  .price-value {
+    font-size: 1.12rem;
+    font-weight: 800;
+    color: #15803d;
+  }
+
+  /* Footer kartu: tanggal pembaruan dan tombol Lihat Detail bertumpuk rapi */
+  .obat-card-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin-top: 10px;
+    padding-top: 10px;
+  }
+
+  .obat-updated-at {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+  }
+
+  .btn-detail-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 9px 14px;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: var(--radius-sm);
+    font-size: 0.84rem;
+    font-weight: 700;
+    color: var(--primary);
+    transition: all 0.2s ease;
+  }
+
+  .btn-detail-link:hover, .btn-detail-link:active {
+    background: var(--primary);
+    color: #ffffff;
+    border-color: var(--primary);
+  }
+}
+
+@media (max-width: 360px) {
+  .katalog-obat-section {
+    padding: 16px 0 40px;
+  }
+
+  .katalog-header-block {
+    padding: 16px 12px;
+  }
+
+  .katalog-header-top .section-title {
+    font-size: 1.25rem;
+  }
+
+  .obat-card {
+    padding: 14px 10px;
+  }
+
+  .obat-name {
+    font-size: 1rem;
+  }
+
+  .facility-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .facility-icon svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .facility-name {
+    font-size: 0.8rem;
+  }
+
+  .facility-price {
+    padding: 6px 10px;
+  }
+
+  .facility-price .price-value {
+    font-size: 1.02rem;
+  }
+
+  .btn-detail-link {
+    padding: 8px 10px;
+    font-size: 0.8rem;
+  }
+
+  .obat-disclaimer-box {
+    padding: 10px 12px;
+    font-size: 0.78rem;
+    gap: 8px;
+  }
+}
+
+/* ==========================================================================
+   CUSTOM CHEMOTHERAPY CALCULATOR STYLES
+   ========================================================================== */
+
+.kalkulator-kemo-section {
+  padding: 40px 0 80px;
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+  min-height: 80vh;
+}
+
+.kalkulator-header-block {
+  text-align: center;
+  max-width: 920px;
+  margin: 0 auto 36px;
+}
+
+.kalkulator-badge-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.kalkulator-header-block .section-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #e0e7ff;
+  color: #3730a3;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 6px 16px;
+  border-radius: 9999px;
+  border: 1px solid #c7d2fe;
+  letter-spacing: 0.3px;
+}
+
+.kalkulator-header-block .section-title {
+  font-size: clamp(1.65rem, 3.5vw, 2.2rem);
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.025em;
+  margin-bottom: 14px;
+  line-height: 1.25;
+}
+
+.kalkulator-header-block .section-desc {
+  font-size: 0.98rem;
+  color: #475569;
+  line-height: 1.68;
+  max-width: 840px;
+  margin: 0 auto 24px;
+}
+
+/* Feature Guide Grid (4 Steps / Keunggulan Terstruktur) */
+.calc-guide-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.calc-guide-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 14px 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  text-align: left;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  transition: all 0.2s ease;
+}
+
+.calc-guide-card:hover {
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+
+.guide-card-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: #eff6ff;
+  color: #1e3a8a;
+  border: 1px solid #bfdbfe;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.guide-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.guide-card-content strong {
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.25;
+}
+
+.guide-card-content span {
+  font-size: 0.73rem;
+  color: #64748b;
+  line-height: 1.35;
+}
+
+.calc-header-disclaimer-note {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 9999px;
+  padding: 6px 16px;
+  font-size: 0.78rem;
+  color: #64748b;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.kemo-calc-container {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  max-width: 1060px;
+  margin: 0 auto;
+}
+
+/* Form Card */
+.calc-input-card {
+  background: #ffffff;
+  border-radius: var(--radius-lg, 16px);
+  padding: 28px;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+  border: 1px solid #e2e8f0;
+}
+
+.card-header-badge {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 22px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #f1f5f9;
+  width: 100%;
+}
+
+.card-header-badge svg {
+  color: #1e3a8a;
+  flex-shrink: 0;
+}
+
+.badge-title-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.badge-title-main {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+.badge-title-sub {
+  font-size: 0.78rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.calc-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px 24px;
+}
+
+.form-group-full {
+  grid-column: 1 / -1;
+}
+
+.form-group-half {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.calc-input-select {
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.form-hint {
+  font-size: 0.76rem;
+  color: #64748b;
+  line-height: 1.35;
+}
+
+/* Regimen Clinical Info Card */
+.regimen-info-card {
+  background: #f0fdf4;
+  border: 1.5px solid #86efac;
+  border-radius: var(--radius-md, 14px);
+  padding: 18px 20px;
+  margin-top: 12px;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.06);
+}
+
+.regimen-info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.regimen-title-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #15803d;
+}
+
+.regimen-title-badge svg {
+  color: #16a34a;
+}
+
+.regimen-tag {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #166534;
+}
+
+.regimen-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  background: #dcfce7;
+  color: #14532d;
+  border: 1px solid #bbf7d0;
+  padding: 4px 12px;
+  border-radius: 9999px;
+}
+
+.regimen-desc-body {
+  background: #ffffff;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 10px;
+}
+
+.regimen-desc-text {
+  font-size: 0.88rem;
+  color: #1e293b;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.regimen-note-tip {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.78rem;
+  color: #166534;
+  background: rgba(220, 252, 231, 0.55);
+  border-radius: 8px;
+  padding: 8px 12px;
+  line-height: 1.45;
+}
+
+.regimen-note-tip .tip-icon {
+  margin-top: 2px;
+  flex-shrink: 0;
+  color: #15803d;
+}
+
+.form-actions-row {
+  grid-column: 1 / -1;
+  display: flex;
+  gap: 12px;
+  margin-top: 6px;
+  flex-wrap: wrap;
+}
+
+.btn-calc-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 26px;
+  font-weight: 700;
+  border-radius: var(--radius-sm, 8px);
+}
+
+.btn-reset-calc {
+  padding: 12px 20px;
+  font-size: 0.88rem;
+}
+
+/* Results Wrapper */
+.calc-results-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Summary Card */
+.calc-summary-card {
+  background: #ffffff;
+  border-radius: var(--radius-lg, 16px);
+  padding: 28px;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+  border: 1px solid #e2e8f0;
+}
+
+.summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.summary-pill {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #0284c7;
+  background: #e0f2fe;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  display: inline-block;
+  margin-bottom: 6px;
+}
+
+.summary-heading {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.summary-actions-bar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-print-schedule, .btn-export-ics {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  padding: 9px 16px;
+  border-radius: var(--radius-sm, 8px);
+}
+
+.btn-export-ics {
+  background: #4338ca;
+  border-color: #4338ca;
+}
+
+.btn-export-ics:hover {
+  background: #3730a3;
+  border-color: #3730a3;
+}
+
+/* Summary Metrics Grid */
+.summary-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.metric-box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-md, 12px);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+.metric-box.highlight {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.metric-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #64748b;
+  margin-bottom: 6px;
+  letter-spacing: 0.4px;
+}
+
+.metric-val {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.3;
+}
+
+.metric-val.text-primary {
+  color: #2563eb;
+}
+
+.metric-sub {
+  font-size: 0.76rem;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.summary-user-notes {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-left: 4px solid #0284c7;
+  border-radius: var(--radius-sm, 8px);
+  padding: 14px 18px;
+  margin-bottom: 20px;
+}
+
+.user-notes-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: #0369a1;
+  margin-bottom: 6px;
+}
+
+.summary-user-notes p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: #1e293b;
+  line-height: 1.55;
+}
+
+/* Weekend Warning Alert */
+.calc-weekend-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  background: #fffbeb;
+  border: 1.5px solid #fde68a;
+  border-radius: var(--radius-md, 14px);
+  padding: 18px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.08);
+}
+
+.alert-icon-box {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #fef3c7;
+  color: #b45309;
+  border: 1px solid #fde68a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.alert-body {
+  font-size: 0.88rem;
+  color: #92400e;
+  line-height: 1.6;
+}
+
+.alert-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #78350f;
+  margin: 0 0 4px 0;
+}
+
+.calc-weekend-alert .alert-body p {
+  margin: 0;
+}
+
+/* Medical Disclaimer Box */
+.calc-medical-disclaimer {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: var(--radius-sm, 10px);
+  padding: 12px 16px;
+  margin-top: 14px;
+}
+
+.disclaimer-text {
+  font-size: 0.82rem;
+  color: #991b1b;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Timeline Card */
+.calc-timeline-card {
+  background: #ffffff;
+  border-radius: var(--radius-lg, 16px);
+  padding: 28px;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+  border: 1px solid #e2e8f0;
+}
+
+.timeline-header {
+  margin-bottom: 20px;
+}
+
+.timeline-header h4 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 4px 0;
+}
+
+.timeline-sub {
+  font-size: 0.82rem;
+  color: #64748b;
+}
+
+.calc-table-wrap {
+  overflow-x: auto;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-md, 12px);
+}
+
+.calc-schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.88rem;
+}
+
+.calc-schedule-table thead th {
+  background: #f8fafc;
+  padding: 12px 16px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #475569;
+  border-bottom: 1px solid #e2e8f0;
+  letter-spacing: 0.4px;
+}
+
+.calc-schedule-table tbody tr {
+  border-bottom: 1px solid #f1f5f9;
+  transition: background 0.15s ease;
+}
+
+.calc-schedule-table tbody tr:last-child {
+  border-bottom: none;
+}
+
+.calc-schedule-table tbody tr:hover {
+  background: #f8fafc;
+}
+
+.calc-schedule-table tbody tr.row-weekend {
+  background: #fffdf5;
+}
+
+.calc-schedule-table tbody tr.row-weekend:hover {
+  background: #fefce8;
+}
+
+.calc-schedule-table td {
+  padding: 14px 16px;
+  vertical-align: middle;
+}
+
+.col-cycle-num {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cycle-number-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #e0e7ff;
+  color: #4338ca;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.86rem;
+  flex-shrink: 0;
+}
+
+.row-weekend .cycle-number-circle {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.cycle-title-sub {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.cycle-date-display .date-main {
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.badge-status-weekend {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #fef3c7;
+  color: #b45309;
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  border: 1px solid #fde68a;
+}
+
+.badge-status-weekday {
+  display: inline-flex;
+  align-items: center;
+  background: #ecfdf5;
+  color: #059669;
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 9999px;
+  border: 1px solid #a7f3d0;
+}
+
+.badge-overridden {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.override-action-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.override-date-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: #64748b;
+  margin: 0;
+}
+
+.cycle-date-picker {
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  width: 140px;
+}
+
+.btn-cascade-cycle {
+  background: #f1f5f9;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+  padding: 4px 9px;
+  border-radius: 6px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-cascade-cycle:hover {
+  background: #e2e8f0;
+  color: #0f172a;
+  border-color: #94a3b8;
+}
+
+.btn-reset-cycle {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fecaca;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.timeline-footer-actions {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* Empty State */
+.calc-empty-card,
+.calc-empty-state {
+  background: #ffffff;
+  border: 1.5px dashed #cbd5e1;
+  border-radius: var(--radius-lg, 16px);
+  padding: 42px 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-icon-box {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: #eff6ff;
+  color: #1e3a8a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  border: 1px solid #bfdbfe;
+}
+
+.calc-empty-card h4,
+.calc-empty-state h4 {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 6px 0;
+}
+
+.empty-desc,
+.calc-empty-state p {
+  font-size: 0.88rem;
+  color: #64748b;
+  max-width: 500px;
+  margin: 0 auto 14px;
+  line-height: 1.6;
+}
+
+.empty-steps-hint {
+  display: inline-flex;
+  align-items: center;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+  border-radius: 9999px;
+  padding: 6px 16px;
+  font-size: 0.78rem;
+}
+
+/* ==========================================================================
+   PRINT MEDIA RULES (Cetak Jadwal Pasien)
+   ========================================================================== */
+
+/* Sembunyikan dokumen cetak resmi di layar biasa */
+#kemoPrintDoc,
+.kemo-print-doc {
+  display: none;
+}
+
+@page {
+  size: A4 portrait;
+  margin: 12mm 15mm 15mm 15mm;
+}
+
+@media print {
+  /* Reset browser display untuk print */
+  html, body {
+    background: #ffffff !important;
+    color: #111827 !important;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif !important;
+    font-size: 10pt !important;
+    line-height: 1.4 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Sembunyikan seluruh UI web yang tidak relevan untuk PDF */
+  header,
+  footer,
+  aside,
+  nav,
+  .site-header,
+  .site-footer,
+  .hero-section,
+  .about-section,
+  .services-section,
+  .stories-section,
+  .facilities-section,
+  .contact-section,
+  .katalog-obat-section,
+  .mobile-nav-overlay,
+  .mobile-nav-drawer,
+  .admin-login-modal,
+  .confirm-modal-overlay,
+  .portal-simulator-bubble,
+  .kalkulator-header-block,
+  .kemo-calc-container,
+  .no-print,
+  button,
+  .btn {
+    display: none !important;
+  }
+
+  /* Kontainer Utama Kalkulator saat Print */
+  #kalkulatorSection {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  #kalkulatorSection > .container {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Tampilkan Hanya Dokumen Resmi #kemoPrintDoc */
+  #kemoPrintDoc,
+  .kemo-print-doc {
+    display: block !important;
+    width: 100% !important;
+    background: #ffffff !important;
+    color: #111827 !important;
+  }
+
+  /* Kop Surat Resmi */
+  .print-kop-header {
+    display: flex !important;
+    align-items: center !important;
+    gap: 16px !important;
+    padding-bottom: 6px !important;
+  }
+
+  .print-kop-logo {
+    width: 68px !important;
+    height: 68px !important;
+    object-fit: contain !important;
+    flex-shrink: 0 !important;
+  }
+
+  .print-kop-text {
+    flex: 1 !important;
+    text-align: center !important;
+  }
+
+  .print-kop-text h3 {
+    font-size: 10pt !important;
+    font-weight: 700 !important;
+    margin: 0 0 2px 0 !important;
+    letter-spacing: 0.5px !important;
+    color: #1f2937 !important;
+  }
+
+  .print-kop-text h2 {
+    font-size: 13pt !important;
+    font-weight: 800 !important;
+    margin: 0 0 2px 0 !important;
+    color: #111827 !important;
+  }
+
+  .print-kop-text h4 {
+    font-size: 10pt !important;
+    font-weight: 700 !important;
+    margin: 0 0 4px 0 !important;
+    color: #0284c7 !important;
+  }
+
+  .print-kop-text p {
+    font-size: 8pt !important;
+    margin: 0 !important;
+    color: #4b5563 !important;
+  }
+
+  .print-kop-divider {
+    border-bottom: 2.5px solid #111827 !important;
+    margin: 6px 0 12px 0 !important;
+    position: relative !important;
+  }
+
+  .print-kop-divider::after {
+    content: "" !important;
+    display: block !important;
+    border-bottom: 1px solid #111827 !important;
+    margin-top: 2px !important;
+  }
+
+  /* Judul Dokumen */
+  .print-title-box {
+    text-align: center !important;
+    margin-bottom: 12px !important;
+  }
+
+  .print-doc-title {
+    font-size: 13pt !important;
+    font-weight: 800 !important;
+    text-decoration: underline !important;
+    margin: 0 0 3px 0 !important;
+    letter-spacing: 0.4px !important;
+    color: #0f172a !important;
+  }
+
+  .print-doc-sub {
+    font-size: 8.5pt !important;
+    color: #475569 !important;
+    margin: 0 !important;
+  }
+
+  /* Info Meta Perawatan */
+  .print-meta-grid {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 8px !important;
+    margin-bottom: 12px !important;
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 6px !important;
+    padding: 8px 12px !important;
+    background: #f8fafc !important;
+    page-break-inside: avoid !important;
+  }
+
+  .print-meta-col table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    font-size: 8.5pt !important;
+  }
+
+  .print-meta-col td {
+    padding: 2px 4px !important;
+    vertical-align: top !important;
+  }
+
+  .print-meta-label {
+    width: 40% !important;
+    color: #475569 !important;
+    font-weight: 600 !important;
+  }
+
+  .print-meta-val {
+    color: #0f172a !important;
+    font-weight: 700 !important;
+  }
+
+  .print-user-notes-row {
+    grid-column: 1 / -1 !important;
+    border-top: 1px dashed #cbd5e1 !important;
+    padding-top: 6px !important;
+    margin-top: 4px !important;
+    font-size: 8.5pt !important;
+    color: #1e293b !important;
+  }
+
+  /* Tabel Rincian Jadwal Kemoterapi */
+  .print-schedule-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin-bottom: 12px !important;
+    font-size: 8.5pt !important;
+  }
+
+  .print-schedule-table th {
+    background: #f1f5f9 !important;
+    color: #0f172a !important;
+    font-weight: 700 !important;
+    text-align: left !important;
+    padding: 6px 8px !important;
+    border: 1px solid #94a3b8 !important;
+    text-transform: uppercase !important;
+    font-size: 7.8pt !important;
+    letter-spacing: 0.4px !important;
+  }
+
+  .print-schedule-table td {
+    padding: 6px 8px !important;
+    border: 1px solid #cbd5e1 !important;
+    color: #1e293b !important;
+    vertical-align: middle !important;
+  }
+
+  .print-schedule-table tr:nth-child(even) {
+    background: #f8fafc !important;
+  }
+
+  .print-schedule-table tr {
+    page-break-inside: avoid !important;
+  }
+
+  .print-weekend-tag {
+    display: inline-block !important;
+    font-size: 7.5pt !important;
+    font-weight: 700 !important;
+    color: #b45309 !important;
+    border: 1px solid #f59e0b !important;
+    background: #fef3c7 !important;
+    padding: 1px 6px !important;
+    border-radius: 4px !important;
+  }
+
+  .print-weekday-tag {
+    display: inline-block !important;
+    font-size: 7.5pt !important;
+    color: #15803d !important;
+    font-weight: 600 !important;
+  }
+
+  /* Kotak Instruksi Pasien */
+  .print-guidelines-box {
+    border: 1px solid #cbd5e1 !important;
+    border-radius: 6px !important;
+    padding: 8px 12px !important;
+    margin-bottom: 14px !important;
+    background: #f8fafc !important;
+    font-size: 8pt !important;
+    page-break-inside: avoid !important;
+  }
+
+  .print-guidelines-box h5 {
+    font-size: 8.5pt !important;
+    font-weight: 700 !important;
+    margin: 0 0 4px 0 !important;
+    color: #0369a1 !important;
+  }
+
+  .print-guidelines-box ul {
+    margin: 0 !important;
+    padding-left: 16px !important;
+    color: #334155 !important;
+  }
+
+  .print-guidelines-box li {
+    margin-bottom: 2px !important;
+    line-height: 1.35 !important;
+  }
+
+  /* Area Tanda Tangan */
+  .print-signature-row {
+    display: flex !important;
+    justify-content: space-between !important;
+    margin-top: 16px !important;
+    padding: 0 10px !important;
+    font-size: 8.5pt !important;
+    page-break-inside: avoid !important;
+  }
+
+  .print-sign-col {
+    width: 42% !important;
+    text-align: center !important;
+  }
+
+  .print-sign-spacer {
+    height: 48px !important;
+  }
+
+  .print-sign-line {
+    border-top: 1px solid #0f172a !important;
+    display: inline-block !important;
+    width: 80% !important;
+    margin-top: 4px !important;
+  }
+
+  /* Footer Dokumen */
+  .print-doc-footer {
+    text-align: center !important;
+    font-size: 7pt !important;
+    color: #64748b !important;
+    margin-top: 12px !important;
+    border-top: 1px dotted #cbd5e1 !important;
+    padding-top: 4px !important;
+  }
+}
+
+/* ==========================================================================
+   RESPONSIVE MEDIA QUERIES FOR CALCULATOR
+   ========================================================================== */
+
+@media (max-width: 900px) {
+  .summary-metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .calc-guide-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 680px) {
+  .calc-guide-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .kalkulator-header-block .section-desc {
+    font-size: 0.92rem;
+    line-height: 1.6;
+    margin-bottom: 18px;
+  }
+
+  .calc-header-disclaimer-note {
+    border-radius: 14px;
+    font-size: 0.74rem;
+    padding: 8px 12px;
+  }
+
+  .calc-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .calc-input-card,
+  .calc-summary-card,
+  .calc-timeline-card {
+    padding: 18px 14px;
+    border-radius: 14px;
+  }
+
+  .summary-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .summary-actions-bar {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .summary-actions-bar button {
+    width: 100%;
+    justify-content: center;
+    padding: 11px 16px;
+    font-size: 0.88rem;
+  }
+
+  .summary-metrics-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  /* Card Transformation for Schedule Table */
+  .calc-table-wrap {
+    border: none;
+    background: transparent;
+    overflow: visible;
+  }
+
+  .calc-schedule-table,
+  .calc-schedule-table tbody,
+  .calc-schedule-table tr.cycle-row {
+    display: block;
+    width: 100%;
+  }
+
+  .calc-schedule-table thead {
+    display: none;
+  }
+
+  .calc-schedule-table tbody tr.cycle-row {
+    background: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 16px 14px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+    box-sizing: border-box;
+  }
+
+  .calc-schedule-table tbody tr.row-weekend {
+    background: #fffdf5;
+    border-color: #fde68a;
+  }
+
+  .calc-schedule-table td {
+    display: block;
+    padding: 0;
+    border: none;
+  }
+
+  .calc-schedule-table td.col-cycle-num {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f1f5f9;
+    margin-bottom: 10px;
+  }
+
+  .calc-schedule-table td.col-cycle-date {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+  }
+
+  .calc-schedule-table td.col-cycle-date .date-main {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #1e293b;
+  }
+
+  .calc-schedule-table td.col-cycle-status {
+    margin-bottom: 12px;
+  }
+
+  .calc-schedule-table td.col-cycle-actions {
+    padding-top: 12px;
+    border-top: 1px dashed #e2e8f0;
+  }
+
+  .override-action-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .override-date-label {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    font-size: 0.82rem;
+    color: #64748b;
+    gap: 8px;
+  }
+
+  .cycle-date-picker {
+    flex: 1;
+    width: 100%;
+    max-width: 180px;
+    padding: 8px 10px;
+    font-size: 16px; /* iOS zoom prevention */
+    border-radius: 8px;
+    border: 1.5px solid #cbd5e1;
+    background: #ffffff;
+    box-sizing: border-box;
+  }
+
+  .btn-cascade-cycle,
+  .btn-reset-cycle {
+    width: 100%;
+    padding: 9px 12px;
+    text-align: center;
+    justify-content: center;
+    font-size: 0.82rem;
+    border-radius: 8px;
+  }
+}
 

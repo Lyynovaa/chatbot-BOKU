@@ -1,21 +1,37 @@
-# Dependency
+# Dependencies
 node_modules/
+
+# Vercel Deployment & Cache
+.vercel/
+.vercel
 
 # Environment Variables & Secrets
 .env
 .env.local
+.env.*
 *.env
 
-# Baileys WhatsApp Authentication Session
+# WhatsApp Bot Session (Baileys)
 auth_info_baileys/
 
-# Logs
+# Logs & Temporary Files
 logs/
 *.log
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+scratch/
+temp/
+.temp/
+*.tmp
+.tempmediaStorage/
 
-# OS / Editor Files
+# IDE & OS Metadata
 .DS_Store
 Thumbs.db
 .vscode/
 .idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln

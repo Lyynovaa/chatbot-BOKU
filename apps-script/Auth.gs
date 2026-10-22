@@ -139,10 +139,23 @@ function validateSession(token) {
     return { email: "admin.onkologi@rs-medica.id", role: "Super Admin", name: "Super Admin RS" };
   }
   try {
-    var jsonStr = Utilities.newBlob(Utilities.base64DecodeWebSafe(token)).getDataAsString();
+    var rawStr = String(token).trim();
+    var base64Standard = rawStr.replace(/-/g, "+").replace(/_/g, "/");
+    while (base64Standard.length % 4 !== 0) {
+      base64Standard += "=";
+    }
+
+    var decodedBytes;
+    try {
+      decodedBytes = Utilities.base64Decode(base64Standard);
+    } catch (e1) {
+      decodedBytes = Utilities.base64DecodeWebSafe(rawStr);
+    }
+
+    var jsonStr = Utilities.newBlob(decodedBytes).getDataAsString();
     var payload = JSON.parse(jsonStr);
 
-    if (new Date().getTime() > payload.exp) {
+    if (payload.exp && new Date().getTime() > payload.exp) {
       return null; // Kedaluwarsa
     }
     return payload;
@@ -152,12 +165,24 @@ function validateSession(token) {
 }
 
 /**
+ * Helper otorisasi: Super Admin dan Admin diizinkan, Perawat dilarang mengelola konten/katalog
+ */
+function isAuthorizedAdmin(session) {
+  if (!session) return false;
+  var role = String(session.role || "").trim().toLowerCase().replace(/[\s_]+/g, "");
+  if (role.indexOf("perawat") !== -1 || role.indexOf("nurse") !== -1) {
+    return false;
+  }
+  return role === "superadmin" || role === "admin" || role.indexOf("super") !== -1;
+}
+
+/**
  * Mengambil daftar staf admin terdaftar (Khusus Super Admin)
  */
 function getUsersList(token) {
   var session = validateSession(token);
-  if (!session || (session.role !== "Super Admin" && session.role !== "Admin")) {
-    return { success: false, message: "Akses ditolak: Membutuhkan peran Super Admin." };
+  if (!session || !isAuthorizedAdmin(session)) {
+    return { success: false, message: "Akses ditolak: Membutuhkan peran Super Admin atau Admin." };
   }
 
   var users = getSheetRowsAsObjects(CONFIG.SHEETS.USERS);
@@ -197,7 +222,7 @@ function addAdminUser(newUserData, token) {
   var sheet = getOrCreateSheet(CONFIG.SHEETS.USERS);
   sheet.appendRow([
     cleanEmail,
-    newUserData.password || "medica2026",
+    newUserData.password || "",
     newUserData.name || "Staf RS Medica",
     newUserData.role || "Admin",
     true,

@@ -156,9 +156,8 @@ function deleteCategory(id, userEmail) {
   var target = catRows.find(function(c) { return String(c.id).trim() === String(id).trim(); });
   if (target) {
     var isEsc = target.is_escalation === true || String(target.is_escalation).toLowerCase() === "true";
-    var isEmg = target.is_emergency === true || String(target.is_emergency).toLowerCase() === "true" || /darurat|igd/i.test(String(target.title));
-    if (isEsc || isEmg) {
-      return { success: false, message: "Menu sistem (Eskalasi Perawat & Panggilan Darurat IGD) adalah menu default sistem dan tidak boleh dihapus." };
+    if (isEsc) {
+      return { success: false, message: "Menu sistem Hubungi Perawat Jaga adalah menu default sistem dan tidak boleh dihapus." };
     }
   }
 

@@ -67,15 +67,11 @@ function getBotBundle(requestToken) {
   // Urutkan kategori berdasarkan order
   categoriesBundle.sort(function(a, b) { return a.order - b.order; });
 
-  // Ambil daftar protokol darurat IGD terkini
-  var emergencyRes = getEmergencyRules();
-
   return {
     success: true,
     data: {
       categories: categoriesBundle,
-      settings: settingsRes.data,
-      emergencyRules: (emergencyRes && emergencyRes.data) ? emergencyRes.data : []
+      settings: settingsRes.data
     },
     syncedAt: new Date().toISOString()
   };

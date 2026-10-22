@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RSUD Prof. Dr. Margono Soekarjo Purwokerto | Bot Layanan Kesehatan BOKU 24 Jam</title>
-  <meta name="description" content="Portal Resmi RSUD Prof. Dr. Margono Soekarjo Purwokerto (RSMS) - Rumah Sakit Rujukan Regional Kelas A Pendidikan Pemprov Jawa Tengah dengan Layanan Asisten Virtual WhatsApp BOKU 24 Jam.">
+  <title>RSUD Prof. Dr. Margono Soekarjo Purwokerto | Asisten Virtual Chatbot BOKU 24 Jam</title>
+  <meta name="description" content="Portal Resmi RSUD Prof. Dr. Margono Soekarjo Purwokerto (RSMS) - Rumah Sakit Rujukan Regional Kelas A Pendidikan Pemprov Jawa Tengah dengan Layanan Asisten Virtual Web BOKU 24 Jam.">
 
   <!-- Google Fonts: Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -19,7 +19,7 @@
 <body>
 
   <!-- ========================================================================
-       TOP NAVIGATION BAR (RSUD PROF. DR. MARGONO SOEKARJO & BOT BOKU)
+       TOP NAVIGATION BAR (RSUD PROF. DR. MARGONO SOEKARJO & CHATBOT BOKU)
        ======================================================================== -->
   <header class="site-header">
     <div class="container nav-container">
@@ -34,8 +34,19 @@
       <ul class="nav-links">
         <li><a href="#home" class="nav-link active">Beranda</a></li>
         <li><a href="#about" class="nav-link">Profil</a></li>
-        <li><a href="#services" class="nav-link">Layanan</a></li>
+        <li class="nav-item-dropdown">
+          <a href="#services" class="nav-link dropdown-toggle" id="navServicesDropdown">
+            Layanan
+            <svg class="svg-icon svg-icon-xs dropdown-caret" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navServicesDropdown">
+            <li><a href="#services" class="dropdown-item">Semua Layanan Onkologi</a></li>
+            <li><a href="#/obat" class="dropdown-item highlight-item" id="navDaftarObatLink">Daftar Obat Kemoterapi</a></li>
+            <li><a href="#/kalkulator" class="dropdown-item highlight-item" id="navKalkulatorLink">Kalkulator Jadwal Kemoterapi</a></li>
+          </ul>
+        </li>
         <li><a href="#facilities" class="nav-link">Fasilitas</a></li>
+        <li><a href="chatbot.html" class="nav-link" id="navChatbotLink">Chatbot BOKU</a></li>
         <li><a href="#contact" class="nav-link">Kontak</a></li>
       </ul>
 
@@ -44,7 +55,7 @@
           <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
           Portal Admin RS
         </button>
-        <button class="btn btn-primary open-wa-btn" id="openWaNavBtn">
+        <button class="btn btn-primary open-wa-btn open-chatbot-btn" id="openWaNavBtn" title="Buka Asisten Virtual Chatbot BOKU">
           <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           Tanya BOKU
         </button>
@@ -78,13 +89,16 @@
     <ul class="mobile-nav-list">
       <li><a href="#home" class="mobile-nav-item active">Beranda</a></li>
       <li><a href="#about" class="mobile-nav-item">Profil</a></li>
-      <li><a href="#services" class="mobile-nav-item">Layanan</a></li>
+      <li><a href="#services" class="mobile-nav-item">Layanan Onkologi</a></li>
+      <li><a href="#/obat" class="mobile-nav-item mobile-sub-item" id="mobileNavDaftarObatLink">Daftar Obat Kemoterapi</a></li>
+      <li><a href="#/kalkulator" class="mobile-nav-item mobile-sub-item" id="mobileNavKalkulatorLink">Kalkulator Jadwal Kemoterapi</a></li>
       <li><a href="#facilities" class="mobile-nav-item">Fasilitas</a></li>
+      <li><a href="chatbot.html" class="mobile-nav-item" id="mobileNavChatbotLink">Chatbot BOKU</a></li>
       <li><a href="#contact" class="mobile-nav-item">Kontak</a></li>
     </ul>
 
     <div class="mobile-nav-actions">
-      <button class="btn btn-primary open-wa-btn" style="width:100%; justify-content:center;">
+      <button class="btn btn-primary open-wa-btn open-chatbot-btn" style="width:100%; justify-content:center;">
         <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         Tanya BOKU
       </button>
@@ -96,7 +110,7 @@
   </aside>
 
   <!-- ========================================================================
-       HERO SECTION (RSUD PROF. DR. MARGONO SOEKARJO & BOT BOKU)
+       HERO SECTION (GEDUNG ONKOLOGI TERPADU WIJAYAKUSUMA & BOT BOKU)
        ======================================================================== -->
   <section class="hero-section" id="home">
     <div class="container hero-grid">
@@ -105,23 +119,23 @@
       <div class="hero-content">
         <div class="hero-pill-tag">
           <span class="pulse-dot"></span>
-          RSUD Kelas A Pendidikan • Rujukan Utama Jawa Tengah
+          Pusat Rujukan Onkologi & Hematologi Terpadu • Wilayah Barat-Selatan Jateng
         </div>
 
         <h1 class="hero-title">
-          Pelayanan Medis Prima & Terpadu dengan <span>Bot BOKU</span>
+          Pelayanan Kanker & Onkologi Terpadu di <span>Gedung Wijayakusuma</span>
         </h1>
 
         <p class="hero-desc">
-          Pusat rujukan regional RSUD Prof. Dr. Margono Soekarjo Purwokerto, didampingi <strong>BOKU</strong> — asisten WhatsApp pintar 24 jam untuk informasi jadwal dokter, panduan mandiri pasien, dan respon tanggap darurat.
+          Unit Onkologi Terpadu & Hematologi RSUD Prof. Dr. Margono Soekarjo Purwokerto (Ruang Wijaya Kusuma). Pelayanan kemoterapi, bedah tumor, dan rawat inap paripurna dengan pendampingan <strong>BOKU</strong> — asisten virtual 24 jam untuk panduan kemoterapi, jadwal poliklinik onkologi, dan informasi alur pasien.
         </p>
 
         <!-- Hero Interactive Search Bar -->
         <div class="hero-search-wrap">
           <div class="hero-search-input-box">
             <svg class="svg-icon svg-icon-sm search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            <input type="text" id="heroSearchInput" placeholder="Cari info poli, jadwal dokter, atau panduan rawat..." autocomplete="off">
-            <button type="button" class="btn btn-primary btn-search-hero" id="btnHeroSearch" title="Cari di Bot BOKU">
+            <input type="text" id="heroSearchInput" placeholder="Cari panduan kemoterapi, jadwal dokter onkologi, rawat inap..." autocomplete="off">
+            <button type="button" class="btn btn-primary btn-search-hero" id="btnHeroSearch" title="Cari di Chatbot BOKU">
               <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
               <span>Cari</span>
             </button>
@@ -131,9 +145,9 @@
           <div class="hero-search-pills">
             <span class="pills-label">Topik Populer:</span>
             <button type="button" class="search-pill-btn" data-search="Panduan Kemoterapi">Panduan Kemoterapi</button>
-            <button type="button" class="search-pill-btn" data-search="Jadwal Dokter Poli">Jadwal Dokter Poli</button>
-            <button type="button" class="search-pill-btn" data-search="Paviliun Abiyasa">Paviliun Abiyasa</button>
-            <button type="button" class="search-pill-btn" data-search="Layanan IGD 24 Jam">Layanan IGD 24 Jam</button>
+            <button type="button" class="search-pill-btn" data-search="Jadwal Dokter Poli Onkologi">Jadwal Poli Onkologi</button>
+            <button type="button" class="search-pill-btn" data-search="Kemoterapi One Day Care">Kemoterapi Day Care</button>
+            <button type="button" class="search-pill-btn" data-search="Pencampuran Obat Sitotoksik">Farmasi Sitotoksik</button>
           </div>
 
           <!-- Topik Populer: Mobile Dropdown -->
@@ -143,9 +157,9 @@
               <select id="heroTopicSelect" class="hero-topic-select" aria-label="Pilih Topik Populer">
                 <option value="" disabled selected>Pilih Topik Populer...</option>
                 <option value="Panduan Kemoterapi">Panduan Kemoterapi</option>
-                <option value="Jadwal Dokter Poli">Jadwal Dokter Poli</option>
-                <option value="Paviliun Abiyasa">Paviliun Abiyasa</option>
-                <option value="Layanan IGD 24 Jam">Layanan IGD 24 Jam</option>
+                <option value="Jadwal Dokter Poli Onkologi">Jadwal Poli Onkologi</option>
+                <option value="Kemoterapi One Day Care">Kemoterapi Day Care</option>
+                <option value="Pencampuran Obat Sitotoksik">Farmasi Sitotoksik</option>
               </select>
               <svg class="topic-select-arrow" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
             </div>
@@ -153,27 +167,27 @@
         </div>
 
         <div class="hero-buttons">
-          <button class="btn btn-primary open-wa-btn" id="heroMakeAppointmentBtn">
-            Daftar Janji Temu / Poli
+          <button class="btn btn-primary open-wa-btn open-chatbot-btn" id="heroMakeAppointmentBtn">
+            Pendaftaran Onkologi / Poli
           </button>
-          <button class="btn btn-outline open-wa-btn" id="heroChatWithUsBtn">
-            Konsultasi via BOKU
+          <button class="btn btn-outline open-wa-btn open-chatbot-btn" id="heroChatWithUsBtn">
+            Tanya Asisten BOKU
           </button>
         </div>
 
         <!-- Key Metrics Summary -->
         <div class="hero-metrics">
           <div class="metric-item">
-            <h4>Kelas A</h4>
-            <p>RS Rujukan Regional</p>
+            <h4>1.000+</h4>
+            <p>Kasus Onkologi / Bulan</p>
           </div>
           <div class="metric-item">
             <h4>&lt; 3 Detik</h4>
             <p>Respon Cepat BOKU</p>
           </div>
           <div class="metric-item">
-            <h4>24 Jam</h4>
-            <p>Siaga IGD & Rawat Inap</p>
+            <h4>One-Stop</h4>
+            <p>Layanan Kanker Terpadu</p>
           </div>
         </div>
       </div>
@@ -181,33 +195,33 @@
       <!-- Hero Right: Visual Asset with Floating Badges & Integrated BOKU Card -->
       <div class="hero-visual-wrap">
         <div class="hero-image-card">
-          <img src="assets/images/rsud-margono-hero-opt.jpg" alt="Gedung Utama RSUD Prof. Dr. Margono Soekarjo Purwokerto" id="heroDoctorImg">
+          <img src="assets/images/gedung-onkologi-wijayakusuma.jpg" alt="Fasad Gedung Onkologi Terpadu Wijayakusuma RSUD Prof. Dr. Margono Soekarjo" id="heroDoctorImg">
           
-          <!-- Floating Badge 1: 100+ Dokter Spesialis -->
+          <!-- Floating Badge 1: Tim Onkologi Multidisiplin -->
           <div class="float-badge-top-left">
             <div class="badge-dot">
               <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
             </div>
-            <span>100+ Dokter Spesialis</span>
+            <span>Tim Onkologi Multidisiplin</span>
           </div>
 
-          <!-- Floating Badge 2: Pusat Onkologi & Jantung -->
+          <!-- Floating Badge 2: One-Stop Oncology Service -->
           <div class="float-badge-top-right">
             <div class="badge-dot-gold">
               <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
             </div>
-            <span>Pusat Onkologi & Jantung</span>
+            <span>One-Stop Oncology Service</span>
           </div>
 
           <!-- Docked BOKU Profile Card (Clean & Floating at Bottom) -->
-          <div class="hero-boku-card open-wa-btn" title="Chat dengan Bot BOKU via WhatsApp">
+          <a href="chatbot.html" class="hero-boku-card" title="Buka Halaman Khusus Chatbot BOKU" style="text-decoration:none;">
             <img src="assets/images/boku-avatar.jpg" alt="Maskot Bot BOKU RSUD Margono" class="boku-avatar">
             <div class="boku-info">
-              <h5>BOKU • Asisten Virtual RSMS</h5>
-              <p>Siaga 24 Jam via WhatsApp</p>
+              <h5>BOKU • Asisten Onkologi RSMS</h5>
+              <p>Siaga 24 Jam Panduan Kemoterapi</p>
             </div>
-            <span class="boku-action">Chat BOKU →</span>
-          </div>
+            <span class="boku-action">Buka Chatbot →</span>
+          </a>
         </div>
       </div>
 
@@ -215,60 +229,164 @@
   </section>
 
   <!-- ========================================================================
-       ABOUT US SECTION (PROFIL RSUD PROF. DR. MARGONO SOEKARJO)
+       PROFIL GEDUNG ONKOLOGI TERPADU WIJAYAKUSUMA (UNIT ONKOLOGI & HEMATOLOGI)
        ======================================================================== -->
   <section class="about-section" id="about">
     <div class="container">
       
       <div class="about-grid">
-        <!-- About Left Image Card (Clean, No Negative Offset) -->
+        <!-- About Left: Image Card & Quick Badges -->
         <div class="about-image-wrap">
           <div class="about-image-card">
-            <img src="assets/images/rsud-margono-building-opt.jpg" alt="Fasad Gedung Pelayanan RSUD Prof. Dr. Margono Soekarjo" id="aboutDoctorImg">
+            <img src="assets/images/gedung-onkologi-wijayakusuma.jpg" alt="Gedung Onkologi Terpadu Wijayakusuma RSUD Prof. Dr. Margono Soekarjo" id="aboutDoctorImg">
+            
+            <div class="about-image-badge-floating">
+              <div class="badge-title">
+                <svg class="svg-icon svg-icon-xs" style="width:16px; height:16px; stroke:currentColor;" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <span>Gedung Onkologi Terpadu Wijayakusuma</span>
+              </div>
+              <div class="badge-desc">
+                Pusat Pelayanan Kanker & Hematologi Terpadu (One-Stop Oncology Service) Rujukan Utama Wilayah Jawa Tengah Bagian Barat-Selatan.
+              </div>
+            </div>
+          </div>
+
+          <!-- Highlight Stats Strip -->
+          <div class="about-stats-row">
+            <div class="about-stat-box">
+              <div class="about-stat-num">1.000+</div>
+              <div class="about-stat-lbl">Kunjungan Onkologi / Bulan</div>
+            </div>
+            <div class="about-stat-box">
+              <div class="about-stat-num">One-Stop</div>
+              <div class="about-stat-lbl">Layanan Terpadu & Terintegrasi</div>
+            </div>
+            <div class="about-stat-box">
+              <div class="about-stat-num">Dewasa & Anak</div>
+              <div class="about-stat-lbl">Kemoterapi Inap & Day Care</div>
+            </div>
           </div>
         </div>
 
-        <!-- About Right Content (Clean & Streamlined) -->
+        <!-- About Right: Comprehensive Details -->
         <div class="about-details">
-          <div class="section-tag">Profil Rumah Sakit</div>
-          <h2 class="about-title">Pelayanan Prima, Sub-Spesialistik & Berorientasi Pasien</h2>
-          <p class="about-desc">
-            RSUD Prof. Dr. Margono Soekarjo adalah rumah sakit rujukan utama kelas A pendidikan milik Pemprov Jawa Tengah yang mengedepankan keunggulan klinis, keselamatan pasien, dan inovasi pelayanan digital modern.
-          </p>
+          <div class="section-tag">Profil Gedung Pelayanan</div>
+          <h2 class="about-title">Gedung Onkologi Terpadu Wijayakusuma</h2>
 
-          <!-- Budaya Kerja PRIMA (Clean Badges) -->
-          <div class="prima-wrap">
-            <div class="prima-label">Budaya Kerja PRIMA:</div>
-            <div class="prima-pills">
-              <span class="prima-pill"><strong>P</strong>rofesional</span>
-              <span class="prima-pill"><strong>R</strong>amah</span>
-              <span class="prima-pill"><strong>I</strong>khlas</span>
-              <span class="prima-pill"><strong>M</strong>utu</span>
-              <span class="prima-pill"><strong>A</strong>kuntabel</span>
+          <!-- Gambaran Umum -->
+          <div class="about-desc">
+            <p style="margin-bottom: 12px; line-height: 1.7;">
+              <strong>Ruang Wijaya Kusuma</strong> merupakan bagian dari <strong>Unit Onkologi Terpadu dan Hematologi RSUD Prof. Dr. Margono Soekarjo Purwokerto</strong> yang menyediakan pelayanan kesehatan komprehensif bagi pasien dengan berbagai kondisi onkologi dan hematologi. Unit ini didukung oleh tenaga kesehatan multidisiplin serta fasilitas pelayanan mutakhir yang menunjang proses diagnosis, terapi, pembedahan, dan perawatan pasien sesuai kebutuhan medis secara terpadu (<em>One-Stop Oncology Service</em>).
+            </p>
+            <p style="margin-bottom: 0; line-height: 1.7;">
+              Pelayanan yang diselenggarakan mencakup rawat inap kemoterapi, pelayanan operasi onkologi, perawatan untuk perbaikan kondisi kesehatan, serta rawat jalan kemoterapi bagi pasien dewasa dan anak. Selain memberikan pelayanan medis paripurna, unit ini juga berperan aktif sebagai tempat pendidikan klinik dan pusat penelitian di bidang kesehatan onkologi.
+            </p>
+          </div>
+
+          <!-- Quick Feature Badges -->
+          <div class="about-badges-flex">
+            <span class="about-feature-chip">
+              <svg class="svg-icon svg-icon-xs" style="width:13px; height:13px;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              Pelayanan Terintegrasi
+            </span>
+            <span class="about-feature-chip">
+              <svg class="svg-icon svg-icon-xs" style="width:13px; height:13px;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              Kemoterapi Dewasa & Anak
+            </span>
+            <span class="about-feature-chip">
+              <svg class="svg-icon svg-icon-xs" style="width:13px; height:13px;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              Farmasi Pencampuran Sitotoksik
+            </span>
+            <span class="about-feature-chip">
+              <svg class="svg-icon svg-icon-xs" style="width:13px; height:13px;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+              Pendidikan Klinik & Riset
+            </span>
+          </div>
+
+          <!-- Pelayanan Utama (3 Pillars) -->
+          <div class="about-section-subtitle">
+            <svg class="svg-icon svg-icon-xs" style="width:15px; height:15px; stroke:var(--primary);" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            Pelayanan Utama Gedung Wijayakusuma
+          </div>
+          <div class="about-pillars-grid">
+            <div class="about-pillar-card">
+              <div class="about-pillar-icon">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v8"/><path d="M8 12h8"/></svg>
+              </div>
+              <h5>Onkologi & Hematologi</h5>
+              <p>Pelayanan bagi pasien dengan masalah kesehatan onkologi dan hematologi melalui penanganan medis serta perawatan terintegrasi.</p>
+            </div>
+
+            <div class="about-pillar-card">
+              <div class="about-pillar-icon">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+              </div>
+              <h5>Pelayanan Kemoterapi</h5>
+              <p>Pelayanan kemoterapi rawat inap dan rawat jalan (<em>One Day Care</em>) bagi pasien dewasa maupun anak sesuai kebutuhan terapi.</p>
+            </div>
+
+            <div class="about-pillar-card">
+              <div class="about-pillar-icon">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+              </div>
+              <h5>Operasi & Perawatan</h5>
+              <p>Mendukung tindakan pembedahan onkologi serta perawatan intensif pasien untuk membantu pemulihan dan perbaikan kondisi kesehatan.</p>
             </div>
           </div>
 
-          <!-- 2 Kampus Pelayanan Terintegrasi -->
-          <div class="about-campuses-grid">
-            <div class="about-campus-card">
+          <!-- Fasilitas Pendukung, Mutu & Riset (2 Columns) -->
+          <div class="about-twocol-grid">
+            <div class="about-info-panel">
               <h5>
-                <svg class="svg-icon svg-icon-xs" style="color:var(--primary); width:14px; height:14px;" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                Kampus Pusat (Gumbreg)
+                <svg class="svg-icon svg-icon-xs" style="width:16px; height:16px; stroke:var(--primary);" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                Fasilitas Pendukung & Keselamatan
               </h5>
-              <p>Pusat Rujukan Regional, IGD Trauma Center 24 Jam, Pusat Onkologi & Bedah Jantung di Jl. Dr. Gumbreg No. 1.</p>
+              <ul>
+                <li>
+                  <svg class="svg-icon svg-icon-xs" style="width:14px; height:14px;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span><strong>Fasilitas Farmasi:</strong> Ruang pencampuran obat kemoterapi steril (Clean Room BSC) menjamin keamanan penyiapan dan pelayanan obat.</span>
+                </li>
+                <li>
+                  <svg class="svg-icon svg-icon-xs" style="width:14px; height:14px;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span><strong>Ruang Isolasi & Perawatan:</strong> Ruang isolasi imunosupresi serta ruang perawatan pasien yang dirancang untuk kenyamanan dan proteksi infeksi.</span>
+                </li>
+                <li>
+                  <svg class="svg-icon svg-icon-xs" style="width:14px; height:14px;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span><strong>Fasilitas Keselamatan Gedung:</strong> Jalur evakuasi, sistem alarm kebakaran otomatis, APAR, dan sarana keselamatan gedung terstandar.</span>
+                </li>
+              </ul>
             </div>
-            <div class="about-campus-card">
+
+            <div class="about-info-panel">
               <h5>
-                <svg class="svg-icon svg-icon-xs" style="color:var(--primary); width:14px; height:14px;" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
-                Paviliun Abiyasa
+                <svg class="svg-icon svg-icon-xs" style="width:16px; height:16px; stroke:var(--primary);" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                Mutu, Keselamatan & Pendidikan-Penelitian
               </h5>
-              <p>Pusat Pelayanan Geriatri ramah lanjut usia dan perawatan rawat inap asri di Jl. Dr. Angka No. 1-2.</p>
+              <ul>
+                <li>
+                  <svg class="svg-icon svg-icon-xs" style="width:14px; height:14px;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span><strong>Mutu & Keselamatan Pasien:</strong> Identifikasi akurat, pencegahan risiko jatuh, keselamatan pemberian sitostatika, PPI, serta pemantauan kondisi pasien.</span>
+                </li>
+                <li>
+                  <svg class="svg-icon svg-icon-xs" style="width:14px; height:14px;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span><strong>Kolaborasi Antarprofesi:</strong> Sinergi terpadu dokter subspesialis onkologi, perawat kemoterapi, farmasis klinis, dan nutrisionis.</span>
+                </li>
+                <li>
+                  <svg class="svg-icon svg-icon-xs" style="width:14px; height:14px;" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span><strong>Pendidikan & Penelitian:</strong> Mendukung pembelajaran mahasiswa kedokteran, perawat, dan tenaga kesehatan serta penelitian klinis onkologi.</span>
+                </li>
+              </ul>
             </div>
           </div>
 
-          <div>
-            <a href="#services" class="learn-more-link" id="aboutLearnMoreLink">Pelajari Layanan Unggulan →</a>
+          <!-- Bottom Action Links -->
+          <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 4px;">
+            <a href="#services" class="learn-more-link" id="aboutLearnMoreLink">
+              <span>Pelajari Layanan Unggulan Onkologi</span>
+              <svg class="svg-icon svg-icon-xs" style="width:14px; height:14px;" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
           </div>
+
         </div>
 
       </div>
@@ -277,28 +395,28 @@
   </section>
 
   <!-- ========================================================================
-       OUR SERVICES SECTION (LAYANAN UNGGULAN RSMS)
+       OUR SERVICES SECTION (LAYANAN UNGGULAN ONKOLOGI WIJAYAKUSUMA)
        ======================================================================== -->
   <section class="services-section" id="services">
     <div class="container">
       
       <div class="section-header-center">
-        <div class="section-tag">Layanan Unggulan RSMS</div>
-        <h2 class="section-title">Solusi Layanan Medis Terpadu & Terpercaya</h2>
-        <p class="section-desc" style="margin:12px auto 0;">Fasilitas rujukan regional modern dengan dukungan teknologi kedokteran terkini dan asistensi digital 24 jam.</p>
+        <div class="section-tag">Layanan Unggulan Onkologi & Hematologi</div>
+        <h2 class="section-title">Pelayanan Paripurna di Gedung Wijayakusuma</h2>
+        <p class="section-desc" style="margin:12px auto 0;">Sistem pelayanan kanker terpadu satu atap (One-Stop Oncology Service) dengan dukungan teknologi kedokteran mutakhir dan asisten cerdas BOKU 24 jam.</p>
       </div>
 
       <div class="services-grid">
-        <!-- Service Card 1: Onkologi Terpadu -->
+        <!-- Service Card 1: Katalog Obat Kemoterapi -->
         <div class="service-card">
           <div class="service-header-row">
-            <div class="service-icon-box">
-              <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/><path d="M8 15v1a6 6 0 0 0 6 6v0a6 6 0 0 0 6-6v-4"/><circle cx="20" cy="10" r="2"/></svg>
+            <div class="service-icon-box" style="background:#f0fdf4; color:#16a34a; border-color:#bbf7d0;">
+              <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/></svg>
             </div>
           </div>
-          <h4>Pusat Onkologi Terpadu</h4>
-          <p>Pelayanan kemoterapi modern, radioterapi Linear Accelerator (LINAC), bedah tumor, dan ruang paliatif komprehensif.</p>
-          <a href="#" class="service-link open-wa-btn">Konsultasi Onkologi →</a>
+          <h4>Katalog Obat Kemoterapi</h4>
+          <p>Informasi resmi ketersediaan, bentuk sediaan, dan estimasi biaya obat kemoterapi di Ruang Wijayakusuma secara transparan dan terstandar.</p>
+          <a href="#/obat" class="service-link">Lihat Katalog Obat Kemoterapi →</a>
         </div>
 
         <!-- Service Card 2: Bot WhatsApp BOKU 24/7 (Highlight) -->
@@ -310,56 +428,20 @@
             <span class="service-top-pill">● 24 Jam Siaga</span>
           </div>
           <h4>Bot Pintar BOKU 24 Jam</h4>
-          <p>Asisten WhatsApp resmi RSUD Margono untuk triase keluhan pasca-kemo, informasi jadwal dokter, dan panduan pasien.</p>
-          <a href="#" class="service-link open-wa-btn">Chat dengan BOKU →</a>
+          <p>Asisten virtual resmi Ruang Wijaya Kusuma untuk panduan persiapan kemoterapi, penanganan mual/lemas pasca-kemo, info jadwal dokter onkologi, dan triase keluhan.</p>
+          <a href="#" class="service-link open-wa-btn">Konsultasi dengan BOKU →</a>
         </div>
 
-        <!-- Service Card 3: Pusat Kardiovaskular & Bedah Jantung -->
+        <!-- Service Card 3: Kalkulator Jadwal Kemoterapi -->
         <div class="service-card">
           <div class="service-header-row">
-            <div class="service-icon-box" style="background:#eff6ff; color:#1e40af;">
-              <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+            <div class="service-icon-box" style="background:#eff6ff; color:#2563eb; border-color:#bfdbfe;">
+              <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
             </div>
           </div>
-          <h4>Pusat Kardiovaskular (Cath Lab)</h4>
-          <p>Layanan kateterisasi jantung intervensi 24 jam, bedah jantung terbuka, serta ruang ICCU berstandar tinggi.</p>
-          <a href="#" class="service-link open-wa-btn">Jadwal Cath Lab →</a>
-        </div>
-
-        <!-- Service Card 4: Paviliun Abiyasa & Pusat Geriatri -->
-        <div class="service-card">
-          <div class="service-header-row">
-            <div class="service-icon-box">
-              <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
-            </div>
-          </div>
-          <h4>Paviliun Abiyasa (Pusat Geriatri)</h4>
-          <p>Pelayanan kesehatan paripurna khusus lanjut usia di lingkungan asri dengan pendekatan tim dokter multi-disiplin.</p>
-          <a href="#" class="service-link open-wa-btn">Info Paviliun Abiyasa →</a>
-        </div>
-
-        <!-- Service Card 5: IGD & Trauma Center 24 Jam -->
-        <div class="service-card">
-          <div class="service-header-row">
-            <div class="service-icon-box" style="background:#fef2f2; color:#ef4444; border-color:#fecaca;">
-              <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-            </div>
-          </div>
-          <h4>IGD & Trauma Center 24 Jam</h4>
-          <p>Penanganan kegawatdaruratan medis, bedah cito cepat, dan armada ambulans SPGDT di nomor darurat (0281) 641992.</p>
-          <a href="#" class="service-link open-wa-btn">Hotline IGD 24 Jam →</a>
-        </div>
-
-        <!-- Service Card 6: Poliklinik Rawat Jalan Eksekutif -->
-        <div class="service-card">
-          <div class="service-header-row">
-            <div class="service-icon-box">
-              <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><path d="m6 18 8-8"/><path d="M3 21h18"/><path d="m14 4 4 4"/><circle cx="9" cy="9" r="2"/><path d="M12 12v3"/><path d="M14 18a2 2 0 0 1-2-2v-1"/></svg>
-            </div>
-          </div>
-          <h4>Poli Rawat Jalan & Eksekutif</h4>
-          <p>28+ poliklinik sub-spesialis dan poli eksekutif dengan pendaftaran online nyaman dan waktu layanan terukur.</p>
-          <a href="#" class="service-link open-wa-btn">Jadwal Poliklinik →</a>
+          <h4>Kalkulator Jadwal Kemoterapi</h4>
+          <p>Estimasi perkiraan siklus kemoterapi, deteksi otomatis hari libur/akhir pekan, dan panduan perencanaan jadwal perawatan di Ruang Wijayakusuma.</p>
+          <a href="#/kalkulator" class="service-link">Hitung Jadwal Kemoterapi →</a>
         </div>
       </div>
 
@@ -367,7 +449,7 @@
   </section>
 
   <!-- ========================================================================
-       TESTIMONIALS & SUCCESS STORIES
+       TESTIMONIALS & SUCCESS STORIES (RUANG WIJAYA KUSUMA)
        ======================================================================== -->
   <section class="testimonials-section" id="stories">
     <div class="container">
@@ -375,36 +457,36 @@
       <div class="stories-grid">
         <!-- Left: Story List (Clean & Decluttered) -->
         <div class="stories-content">
-          <div class="section-tag">Kisah Pemulihan</div>
-          <h3>Dedikasi Sepenuh Hati untuk Setiap Pasien</h3>
+          <div class="section-tag">Kisah Pemulihan Pasien</div>
+          <h3>Dedikasi Sepenuh Hati untuk Kesembuhan Pasien Kanker</h3>
           <p class="stories-desc">
-            Komitmen kami menghadirkan pelayanan medis terbaik serta pendampingan yang menenangkan bagi setiap pasien dan keluarga:
+            Komitmen kami menghadirkan pelayanan onkologi terbaik serta pendampingan yang menenangkan bagi setiap pasien dan keluarga di Ruang Wijaya Kusuma:
           </p>
 
           <div class="story-cards-wrap">
             <div class="story-card">
-              <div class="story-quote">"Pendampingan kemoterapi di RSUD Margono sangat memuaskan. Bot BOKU membantu saya mengatasi rasa cemas dan mual saat istirahat di rumah."</div>
-              <div class="story-author"><strong>Ibu Sulastri</strong> <span>• Pasien Onkologi Terpadu</span></div>
+              <div class="story-quote">"Pendampingan kemoterapi di Ruang Wijaya Kusuma sangat memuaskan. Bot BOKU membantu saya mengatasi rasa cemas dan mual saat istirahat mandiri di rumah."</div>
+              <div class="story-author"><strong>Ibu Sulastri</strong> <span>• Pasien Kemoterapi Onkologi</span></div>
             </div>
 
             <div class="story-card">
-              <div class="story-quote">"Penanganan darurat di IGD dan tindakan kateterisasi di Cath Lab sangat cepat. Tim medis siaga penuh saat kondisi kritis."</div>
-              <div class="story-author"><strong>Bpk. Bambang S.</strong> <span>• Pasien Kardiovaskular</span></div>
+              <div class="story-quote">"Tindakan operasi pengangkatan tumor di Gedung Wijayakusuma berjalan lancar didukung tim dokter bedah onkologi yang profesional dan penuh empati."</div>
+              <div class="story-author"><strong>Bpk. Bambang S.</strong> <span>• Pasien Bedah Onkologi</span></div>
             </div>
 
             <div class="story-card">
-              <div class="story-quote">"Perawatan orang tua kami di Paviliun Abiyasa terasa nyaman seperti di rumah sendiri. Pelayanannya sangat ramah, asri, dan sabar."</div>
-              <div class="story-author"><strong>Keluarga Bpk. Hadi</strong> <span>• Pasien Paviliun Abiyasa</span></div>
+              <div class="story-quote">"Fasilitas kamar rawat inap tenang dan bersih, perawat selalu sigap memantau kondisi pasien serta memberikan edukasi jadwal siklus kemoterapi berikutnya."</div>
+              <div class="story-author"><strong>Keluarga Bpk. Hadi</strong> <span>• Pasien Rawat Inap Onkologi</span></div>
             </div>
           </div>
         </div>
 
         <!-- Right: Photo Showcase Card -->
         <div class="photo-showcase-card">
-          <img src="assets/images/rsud-margono-facade-opt.jpg" alt="Fasilitas Gedung Rawat Inap RSUD Margono Soekarjo" id="patientRecoveryImg">
+          <img src="assets/images/fasilitas-kemoterapi-rawat.jpg" alt="Fasilitas Perawatan Pasien Ruang Wijaya Kusuma RSUD Margono" id="patientRecoveryImg">
           <div class="photo-overlay">
-            <h5>Standar Pelayanan Akreditasi Paripurna</h5>
-            <p>Ruang rawat inap modern didukung pemantauan medis sentral dan tim perawat spesialis berdedikasi.</p>
+            <h5>Kenyamanan Perawatan Ruang Wijaya Kusuma</h5>
+            <p>Ruang rawat inap dan day care didesain khusus guna memberikan ketenangan, sterilitas, dan privasi selama masa kemoterapi.</p>
           </div>
         </div>
 
@@ -414,46 +496,46 @@
   </section>
 
   <!-- ========================================================================
-       CAMPUS & FACILITY SHOWCASE GALLERY (FASILITAS RSUD MARGONO)
+       CAMPUS & FACILITY SHOWCASE GALLERY (FASILITAS GEDUNG ONKOLOGI WIJAYAKUSUMA)
        ======================================================================== -->
   <section class="facility-gallery-section" id="facilities">
     <div class="container">
       
       <div class="section-header-center">
-        <div class="section-tag">Fasilitas & Lingkungan</div>
-        <h2 class="section-title">Infrastruktur Modern Menunjang Kesembuhan</h2>
-        <p class="section-desc" style="margin:12px auto 0;">RSUD Prof. Dr. Margono Soekarjo didesain dengan fasilitas lengkap, ruang terbuka hijau asri, serta kemudahan akses mobilitas pasien.</p>
+        <div class="section-tag">Fasilitas Gedung Wijayakusuma</div>
+        <h2 class="section-title">Infrastruktur Modern Pelayanan Onkologi Terpadu</h2>
+        <p class="section-desc" style="margin:12px auto 0;">Gedung Onkologi Terpadu Wijayakusuma dirancang khusus dengan fasilitas terintegrasi untuk keamanan medikasi sitotoksik, tindakan bedah, dan kenyamanan pemulihan pasien.</p>
       </div>
 
       <!-- 3 Equal Symmetrical Columns Grid -->
       <div class="gallery-grid">
-        <!-- Card 1: Kampus Utama Gumbreg -->
+        <!-- Card 1: Fasad Gedung Onkologi Wijayakusuma -->
         <div class="gallery-card">
-          <img src="assets/images/rsud-margono-hero-opt.jpg" alt="Gedung Utama RSUD Prof. Dr. Margono Soekarjo">
+          <img src="assets/images/gedung-onkologi-wijayakusuma.jpg" alt="Fasad Gedung Onkologi Terpadu Wijayakusuma RSUD Prof. Dr. Margono Soekarjo">
           <div class="gallery-overlay">
-            <span class="gallery-badge">Kampus Pusat</span>
-            <h4>Kampus Utama Jl. Dr. Gumbreg</h4>
-            <p>Pusat rujukan regional pelayanan rawat jalan sub-spesialis, IGD Trauma Center 24 Jam, dan Pusat Onkologi.</p>
+            <span class="gallery-badge">Gedung 4 Lantai</span>
+            <h4>Fasad Gedung Wijayakusuma</h4>
+            <p>Pusat One-Stop Oncology Service regional yang menghubungkan poliklinik terpadu, instalasi bedah, dan ruang rawat inap kemoterapi.</p>
           </div>
         </div>
 
-        <!-- Card 2: Gedung Paviliun Rawat Inap -->
+        <!-- Card 2: Ruang Farmasi Sitotoksik Clean Room -->
         <div class="gallery-card">
-          <img src="assets/images/rsud-margono-facade-opt.jpg" alt="Gedung Paviliun Baru RSUD Margono">
+          <img src="assets/images/fasilitas-onkologi-farmasi.jpg" alt="Ruang Rekonstitusi Obat Kemoterapi Clean Room BSC Farmasi Wijayakusuma">
           <div class="gallery-overlay">
-            <span class="gallery-badge">Paviliun & Inpatient</span>
-            <h4>Gedung Perawatan Modern</h4>
-            <p>Kamar rawat inap representatif dilengkapi pemantauan medis sentral dan lingkungan tenang.</p>
+            <span class="gallery-badge">Farmasi Steril BSC</span>
+            <h4>Rekonstitusi Obat Sitotoksik</h4>
+            <p>Clean room bertekanan negatif berstandar internasional dengan Biological Safety Cabinet (BSC) untuk penyiapan obat kemoterapi secara aseptis.</p>
           </div>
         </div>
 
-        <!-- Card 3: Lanskap Asri & Akses Terbuka -->
+        <!-- Card 3: Ruang Kemoterapi Rawat Jalan & Inap -->
         <div class="gallery-card">
-          <img src="assets/images/rsud-margono-entrance-opt.jpg" alt="Lanskap Area Terbuka RSUD Margono Purwokerto">
+          <img src="assets/images/fasilitas-kemoterapi-rawat.jpg" alt="Ruang Kemoterapi One Day Care dan Rawat Inap Gedung Wijayakusuma">
           <div class="gallery-overlay">
-            <span class="gallery-badge">Lingkungan Hijau</span>
-            <h4>Area Terbuka & Ramah Lingkungan</h4>
-            <p>Kawasan asri ramah pasien lanjut usia dan penyandang disabilitas dengan sirkulasi udara segar.</p>
+            <span class="gallery-badge">Rawat Inap & Day Care</span>
+            <h4>Ruang Rawat Inap & Kemoterapi</h4>
+            <p>Ruang kemoterapi rawat jalan (One Day Care) yang nyaman serta ruang perawatan inap bertekanan positif dengan proteksi imunosupresi pasien.</p>
           </div>
         </div>
       </div>
@@ -461,6 +543,131 @@
     </div>
   </section>
 
+  <!-- ========================================================================
+       CHATBOT BOKU SECTION - ASISTEN VIRTUAL WEB 24 JAM
+       ======================================================================== -->
+  <section class="chatbot-section" id="chatbot">
+    <div class="container">
+      
+      <div class="chatbot-grid">
+        <!-- Chatbot Left: Information & Features -->
+        <div class="chatbot-info-col">
+          <div class="section-tag">Asisten Virtual Web 24 Jam</div>
+          <h2 class="section-title">Konsultasi Cepat & Informasi Terpadu Bersama <span>BOKU</span></h2>
+          <p class="section-desc">
+            Asisten virtual pintar RSUD Prof. Dr. Margono Soekarjo siap menjawab pertanyaan Anda seputar jadwal poliklinik, alur pendaftaran BPJS, panduan rawat mandiri, hingga deteksi tanggap darurat IGD 24 jam langsung di browser Anda.
+          </p>
+
+          <div class="chatbot-feature-list">
+            <div class="chatbot-feature-item">
+              <div class="chatbot-feature-icon">
+                <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              </div>
+              <div class="chatbot-feature-text">
+                <h5>Respon Cepat & Real-Time</h5>
+                <p>Informasi jadwal dokter spesialis, poliklinik, rawat inap, dan fasilitas rujukan seketika.</p>
+              </div>
+            </div>
+
+            <div class="chatbot-feature-item">
+              <div class="chatbot-feature-icon">
+                <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <div class="chatbot-feature-text">
+                <h5>Standar Klinis & Aman</h5>
+                <p>Berpedoman resmi pada protokol medis rumah sakit tanpa memberikan rekomendasi resep obat mandiri.</p>
+              </div>
+            </div>
+
+            <div class="chatbot-feature-item">
+              <div class="chatbot-feature-icon" style="background:#fee2e2; color:#ef4444;">
+                <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              </div>
+              <div class="chatbot-feature-text">
+                <h5>Respon Tanggap Darurat IGD</h5>
+                <p>Deteksi otomatis kata kunci klinis akut (sesak, nyeri dada, pingsan) dengan akses cepat hotline IGD 24 Jam.</p>
+              </div>
+            </div>
+
+            <div class="chatbot-feature-item">
+              <div class="chatbot-feature-icon">
+                <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              </div>
+              <div class="chatbot-feature-text">
+                <h5>Eskalasi ke Perawat Jaga</h5>
+                <p>Notifikasi terhubung ke tim perawat jaga jika informasi membutuhkan konfirmasi langsung tenaga medis.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Starter Prompts Box -->
+          <div class="starter-prompts-box">
+            <span class="starter-prompts-label">Coba Tanyakan Langsung:</span>
+            <div class="starter-chips-wrap">
+              <a href="chatbot.html?prompt=Jadwal%20Dokter%20Poli" class="starter-chip-btn">
+                <span>Jadwal Dokter Poli</span>
+              </a>
+              <a href="chatbot.html?prompt=Panduan%20Kemoterapi" class="starter-chip-btn">
+                <span>Panduan Kemoterapi</span>
+              </a>
+              <a href="chatbot.html?prompt=Paviliun%20Abiyasa" class="starter-chip-btn">
+                <span>Paviliun Abiyasa</span>
+              </a>
+              <a href="chatbot.html?prompt=Pendaftaran%20Pasien%20BPJS" class="starter-chip-btn">
+                <span>Alur BPJS</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chatbot Right: Showcase & Direct Launch to Dedicated Landing Page -->
+        <div class="chatbot-console-col">
+          <div class="chatbot-showcase-card">
+            
+            <div class="showcase-card-header">
+              <div class="showcase-badge">
+                <span class="live-pulse"></span>
+                <span>Halaman Khusus Chatbot Web</span>
+              </div>
+              <span class="showcase-status">Online 24 Jam</span>
+            </div>
+
+            <div class="showcase-avatar-center">
+              <img src="assets/images/boku-avatar.jpg" alt="Avatar BOKU RSUD Margono">
+              <div class="showcase-avatar-meta">
+                <h4>BOKU • Asisten Medis Virtual</h4>
+                <p>RSUD Prof. Dr. Margono Soekarjo Purwokerto</p>
+              </div>
+            </div>
+
+            <!-- Preview Conversation Snippet -->
+            <div class="showcase-chat-preview">
+              <div class="preview-bubble-user">
+                <span>"Halo BOKU, apa saja jadwal dokter poliklinik dan alur BPJS minggu ini?"</span>
+              </div>
+              <div class="preview-bubble-bot">
+                <span>"Halo! Selamat datang di Layanan BOKU RSUD Margono. Kami siap memberikan informasi poliklinik, panduan rawat mandiri, dan tanggap darurat IGD 24 jam."</span>
+              </div>
+            </div>
+
+            <!-- Action Buttons Connecting to chatbot.html -->
+            <div class="showcase-actions">
+              <a href="chatbot.html" class="btn btn-primary" style="width:100%; justify-content:center; padding:15px 24px; font-size:1.02rem; border-radius:14px; box-shadow:0 8px 24px rgba(30,58,138,0.35);">
+                <span>Buka Halaman Chatbot BOKU Penuh</span>
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+              </a>
+              <button type="button" class="btn btn-outline open-simulator-btn" style="width:100%; justify-content:center; padding:12px 20px; font-size:0.88rem; border-radius:12px;">
+                <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+                <span>Buka Widget Cepat Pop-up</span>
+              </button>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
 
   <!-- ========================================================================
        GET IN TOUCH / CALL TO ACTION BANNER
@@ -478,15 +685,197 @@
 
         <div class="cta-banner-content">
           <div class="section-tag" style="background:rgba(255,255,255,0.18); color:#ffffff;">Siaga 24 Jam Melayani</div>
-          <h2 class="cta-banner-title">Butuh Asistensi Medis atau Info Rumah Sakit?</h2>
+          <h2 class="cta-banner-title">Butuh Panduan Kemoterapi atau Info Pelayanan?</h2>
           <p class="cta-banner-desc">
-            Hubungi Bot WhatsApp resmi RSUD Prof. Dr. Margono Soekarjo Purwokerto untuk konsultasi keluhan mandiri, informasi jadwal dokter, persiapan rawat inap, atau panggilan darurat IGD 24 jam.
+            Gunakan Asisten Virtual BOKU resmi Gedung Onkologi Terpadu Wijayakusuma RSUD Prof. Dr. Margono Soekarjo untuk konsultasi mandiri, panduan kemoterapi, jadwal poliklinik onkologi, alur rujukan BPJS, hingga persiapan rawat inap 24 jam langsung di browser Anda.
           </p>
-          <button class="btn btn-primary open-wa-btn" id="ctaContactUsBtn">
-            Chat BOKU via WhatsApp
+          <button class="btn btn-primary open-wa-btn open-chatbot-btn" id="ctaContactUsBtn">
+            Buka Chatbot BOKU
           </button>
         </div>
       </div>
+
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       KATALOG OBAT KEMOTERAPI (FARMAPLUS STYLE)
+       ======================================================================== -->
+  <section class="katalog-obat-section" id="katalogObatSection" style="display:none;">
+    <div class="container">
+      
+      <!-- Disclaimer Medis Resmi -->
+      <aside class="obat-disclaimer-box" role="alert" aria-label="Disclaimer Medis">
+        <div class="disclaimer-icon">
+          <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <div class="disclaimer-content">
+          <strong>Perhatian Medis:</strong> Informasi ini bersifat edukatif dan tidak menggantikan saran dokter atau apoteker. Jangan mengubah dosis tanpa arahan tenaga kesehatan.
+        </div>
+      </aside>
+
+      <!-- View 1: List View (Header, Filter, Grid, Paginasi) -->
+      <div id="katalogListView" class="katalog-view-pane">
+        <!-- Header Ringkas Katalog -->
+        <header class="katalog-header-block">
+          <div class="katalog-header-top">
+            <div>
+              <span class="section-tag">Katalog Obat Kemoterapi</span>
+              <h1 class="section-title">Ketersediaan Obat Kemoterapi & Onkologi</h1>
+              <p class="section-desc">Pencarian ketersediaan medikasi sitotoksik dan terapi target resmi di Ruang Wijaya Kusuma RSUD Margono & Jejaring Farmasi.</p>
+            </div>
+          </div>
+
+          <!-- Toolbar Pencarian & Filter Ringkas -->
+          <div class="katalog-toolbar">
+            <div class="katalog-search-wrapper">
+              <svg class="search-input-icon svg-icon svg-icon-sm" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="katalogSearchInput" class="katalog-search-input" placeholder="Cari nama obat, produsen, atau kode KFA..." aria-label="Cari nama obat">
+              <button type="button" id="btnKatalogClearSearch" class="btn-clear-search" style="display:none;" title="Bersihkan pencarian">✕</button>
+            </div>
+
+            <div class="katalog-filters-group">
+              <div class="filter-select-wrap">
+                <label for="filterBentuk" class="sr-only">Bentuk Sediaan</label>
+                <select id="filterBentuk" class="katalog-filter-select">
+                  <option value="">Semua Bentuk Sediaan</option>
+                  <option value="Injeksi">Injeksi</option>
+                  <option value="Tablet">Tablet</option>
+                  <option value="Infus">Infus</option>
+                  <option value="Kapsul">Kapsul</option>
+                  <option value="Sirup">Sirup</option>
+                  <option value="Lainnya">Lainnya</option>
+                </select>
+              </div>
+
+              <div class="filter-select-wrap">
+                <label for="filterJenis" class="sr-only">Jenis Obat</label>
+                <select id="filterJenis" class="katalog-filter-select">
+                  <option value="">Semua Jenis (Generik/Bermerek)</option>
+                  <option value="Generik">Generik</option>
+                  <option value="Bermerek">Bermerek</option>
+                </select>
+              </div>
+
+              <div class="filter-select-wrap">
+                <label for="filterProvinsi" class="sr-only">Provinsi</label>
+                <select id="filterProvinsi" class="katalog-filter-select">
+                  <option value="">Semua Provinsi</option>
+                  <option value="Jawa Tengah">Jawa Tengah</option>
+                  <option value="DKI Jakarta">DKI Jakarta</option>
+                  <option value="Jawa Barat">Jawa Barat</option>
+                  <option value="DI Yogyakarta">DI Yogyakarta</option>
+                  <option value="Jawa Timur">Jawa Timur</option>
+                  <option value="Banten">Banten</option>
+                </select>
+              </div>
+
+              <button type="button" id="btnResetKatalogFilter" class="btn btn-outline btn-reset-filter" title="Reset Filter">
+                Reset
+              </button>
+            </div>
+          </div>
+
+          <div class="katalog-status-bar">
+            <span id="katalogResultCount" class="result-count-label">Memuat katalog obat...</span>
+          </div>
+        </header>
+
+        <!-- Grid Kartu (2 Kolom Desktop, 1 Kolom Mobile) -->
+        <main id="katalogCardsGrid" class="katalog-cards-grid" aria-live="polite">
+          <!-- Diisi secara dinamis oleh js/katalog-obat.js -->
+        </main>
+
+        <!-- Paginasi / Tombol Muat Lebih Banyak -->
+        <div id="katalogPagination" class="katalog-pagination-wrap">
+          <!-- Diisi secara dinamis oleh js/katalog-obat.js -->
+        </div>
+      </div>
+
+      <!-- View 2: Detail View (Klik Kartu) -->
+      <div id="katalogDetailView" class="katalog-view-pane" style="display:none;">
+        <!-- Diisi secara dinamis oleh js/katalog-obat.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       MODUL USER: KALKULATOR ESTIMASI JADWAL KEMOTERAPI (CUSTOM CALCULATOR)
+       ======================================================================== -->
+  <section class="kalkulator-kemo-section" id="kalkulatorSection" style="display:none;">
+    <div class="container">
+      
+      <!-- Header Kalkulator -->
+      <header class="kalkulator-header-block">
+        <div class="kalkulator-badge-wrap">
+          <span class="section-tag">
+            <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Unit Onkologi Terpadu Wijayakusuma • RSUD Margono
+          </span>
+        </div>
+        <h1 class="section-title">Kalkulator Perkiraan Jadwal Kemoterapi</h1>
+        <p class="section-desc">
+          Estimasi mandiri perkiraan tanggal siklus kemoterapi untuk pasien dan keluarga di Ruang Wijayakusuma RSUD Prof. Dr. Margono Soekarjo.
+        </p>
+      </header>
+
+      <!-- Grid Form Input Kalkulator & Info Box -->
+      <div class="kemo-calc-container">
+        <div class="calc-input-card">
+          <div class="card-header-badge">
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span class="badge-title-main">Parameter Jadwal Kemoterapi</span>
+          </div>
+
+          <form id="kemoCalcForm" onsubmit="return false;" class="calc-form-grid">
+            <div class="form-group-full">
+              <label class="form-label required" for="calcRegimenSelect">Pilih Protokol / Regimen Kemoterapi</label>
+              <select id="calcRegimenSelect" class="form-select calc-input-select" aria-label="Pilih Regimen">
+                <option value="">Memuat daftar regimen dari server...</option>
+              </select>
+              <div id="calcRegimenDescBox" style="display:none; margin-top:10px;"></div>
+            </div>
+
+            <div class="form-group-half">
+              <label class="form-label required" for="calcStartDateInput">Tanggal Siklus Pertama</label>
+              <input type="date" id="calcStartDateInput" class="form-input" required>
+            </div>
+
+            <div class="form-group-half">
+              <label class="form-label required" for="calcIntervalInput">Jarak / Interval Siklus (Hari)</label>
+              <input type="number" id="calcIntervalInput" class="form-input" min="1" max="180" value="21" required>
+            </div>
+
+            <div class="form-group-half">
+              <label class="form-label required" for="calcSiklusInput">Jumlah Total Siklus</label>
+              <input type="number" id="calcSiklusInput" class="form-input" min="1" max="50" value="6" required>
+            </div>
+
+            <div class="form-group-half">
+              <label class="form-label" for="calcCatatanInput">Catatan Tambahan (Opsional)</label>
+              <textarea id="calcCatatanInput" class="form-textarea" rows="2" placeholder="Contoh: Jadwal kontrol lab H-2, nama dokter DPJP..."></textarea>
+            </div>
+
+            <div class="form-actions-row">
+              <button type="button" id="btnCalculateSchedule" class="btn btn-primary btn-calc-action">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                <span>Hitung Perkiraan Jadwal</span>
+              </button>
+              <button type="button" id="btnResetSchedule" class="btn btn-outline btn-reset-calc">
+                <span>Reset Nilai</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Kontainer Output Hasil Kalkulasi (Direncanakan oleh js/kalkulator-kemo.js) -->
+        <div id="calcResultsArea" class="calc-results-wrapper" aria-live="polite">
+          <!-- Diisi secara dinamis oleh js/kalkulator-kemo.js -->
+        </div>
+      </div>
+
+      <!-- Kontainer Dokumen Cetak / PDF Resmi (Hanya tampil saat window.print() / media print) -->
+      <div id="kemoPrintDoc" class="kemo-print-doc" aria-hidden="true"></div>
 
     </div>
   </section>
@@ -582,51 +971,44 @@
   </footer>
 
   <!-- ========================================================================
-       FLOATING WHATSAPP LAUNCHER (BOTTOM RIGHT - TANYA BOKU)
+       FLOATING CHATBOT LAUNCHER (BOTTOM RIGHT - CHAT BOKU)
        ======================================================================== -->
   <div class="wa-floating-launcher">
-    <div class="wa-launcher-badge open-wa-btn" id="waBadgeLauncher">
-      <span style="color:#25d366; font-size:1.1rem; line-height:1;">●</span>
-      <span>Tanya BOKU</span>
+    <div class="wa-launcher-badge open-wa-btn open-chatbot-btn" id="waBadgeLauncher">
+      <span class="online-pulse"></span>
+      <span>Chat BOKU • 24 Jam</span>
     </div>
 
-    <div class="wa-launcher-btn open-wa-btn" id="waCircleBtn" title="Tanya BOKU via WhatsApp">
+    <div class="wa-launcher-btn open-wa-btn open-chatbot-btn" id="waCircleBtn" title="Buka Asisten Virtual Chatbot BOKU">
       <div class="wa-launcher-pulse"></div>
       <svg class="svg-icon svg-icon-lg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
     </div>
   </div>
 
   <!-- ========================================================================
-       WHATSAPP BOT SIMULATOR MODAL (BOKU SIMULATOR)
+       WEB CHATBOT MODAL (BOKU ASISTEN VIRTUAL)
        ======================================================================== -->
   <div class="wa-modal-overlay" id="waModal">
     <!-- Floating External Close Button -->
-    <button class="wa-floating-close-btn" id="btnCloseWaOutside" title="Tutup Simulator (Esc)">
+    <button class="wa-floating-close-btn" id="btnCloseWaOutside" title="Tutup Chat (Esc)">
       <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
     </button>
 
-    <div class="smartphone-mockup">
-      <div class="phone-screen">
+    <div class="web-chat-card smartphone-mockup">
+      <div class="web-chat-screen phone-screen">
         
-        <!-- Modern Mobile Status Bar (Non-overlapping) -->
-        <div class="phone-status-bar">
-          <span class="status-time">09:41</span>
-          <div class="status-island">
-            <span class="island-camera"></span>
-          </div>
+        <!-- Top Hospital Service Strip -->
+        <div class="boku-status-bar phone-status-bar">
+          <span class="boku-service-status">● Siaga 24 Jam Non-Stop</span>
           <div class="status-icons">
-            <svg class="svg-icon" style="width:13px;height:13px;" viewBox="0 0 24 24"><path d="M2 20h20L12 4z" fill="currentColor"/></svg>
-            <svg class="svg-icon" style="width:13px;height:13px;" viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></svg>
-            <span class="status-battery">
-              <span class="battery-level"></span>
-            </span>
+            <span>RSUD Prof. Dr. Margono Soekarjo</span>
           </div>
         </div>
 
-        <!-- WhatsApp Header -->
-        <div class="wa-app-header">
+        <!-- Web Chat App Header -->
+        <div class="boku-app-header wa-app-header">
           <div class="wa-header-left">
-            <button class="wa-back-btn" id="closeWaBtn" title="Tutup Simulator">
+            <button class="wa-back-btn" id="closeWaBtn" title="Tutup Chat">
               <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
             </button>
             <div class="wa-header-avatar">
@@ -636,20 +1018,17 @@
             <div class="wa-header-meta">
               <h6>
                 BOKU
-                <span class="wa-verified-badge" title="Akun Resmi Terverifikasi RSUD Prof. Dr. Margono Soekarjo">
+                <span class="wa-verified-badge" title="Layanan Resmi Terverifikasi RSUD Prof. Dr. Margono Soekarjo">
                   <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
                 </span>
               </h6>
-              <span>Online • RSUD Margono Soekarjo Resmi</span>
+              <span>Asisten Virtual Web • Online 24 Jam</span>
             </div>
           </div>
 
           <div class="wa-header-actions">
-            <button class="wa-header-action-btn" id="btnResetSimulatorChat" title="Reset / Ulangi Chat dari Menu Utama">
-              <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
-            </button>
-            <button class="wa-header-action-btn" id="btnCallHotlineSimulator" title="Hotline IGD 24 Jam">
-              <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <button class="wa-header-action-btn" id="btnResetSimulatorChat" title="Reset Percakapan (Menu Utama)">
+              <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
             </button>
           </div>
         </div>
@@ -658,12 +1037,11 @@
         <div class="wa-messages-container" id="waMessagesArea">
           <div class="wa-chip-notice">
             <svg class="svg-icon svg-icon-xs" style="width:12px;height:12px;" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            <span>Pesan terenkripsi end-to-end • Privasi UU No. 27/2022</span>
+            <span>Privasi Terlindungi • UU No. 27/2022 • Standar Medis Teruji</span>
           </div>
-          <div class="wa-date-chip">HARI INI</div>
         </div>
 
-        <!-- Quick Response Action Chips (Hanya Nomor Pilihan) -->
+        <!-- Quick Response Action Chips -->
         <div class="wa-quick-replies" id="waQuickChipsContainer">
           <button class="wa-quick-chip" data-val="1">1</button>
           <button class="wa-quick-chip" data-val="2">2</button>
@@ -674,9 +1052,9 @@
 
         <!-- Input Field Bar -->
         <div class="wa-input-bar">
-          <input type="text" class="wa-input-field" id="waChatInput" placeholder="Ketik pesan..." autocomplete="off">
+          <input type="text" class="wa-input-field" id="waChatInput" placeholder="Ketik pesan atau pilih opsi nomor..." autocomplete="off">
           <button class="wa-send-btn" id="waSendBtn" title="Kirim">
-            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M3.4 20.4l17.45-7.48a1 1 0 0 0 0-1.84L3.4 3.6a.993.993 0 0 0-1.39.91L2 9.12c0 .5.37.93.87.99L17 12 2.87 13.88c-.5.07-.87.49-.87 1l.01 4.61c0 .71.73 1.2 1.39.91z"/></svg>
           </button>
         </div>
 
@@ -761,6 +1139,10 @@
 
       <div class="admin-nav-right">
         <div class="admin-user-info" id="adminNavbarUserEmail">-</div>
+        <button type="button" class="admin-logout-btn" id="btnCloseAdminModal" style="background:rgba(255,255,255,0.12); color:#ffffff; margin-right:8px;" title="Tutup Dashboard dan Kembali ke Website">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          <span>Tutup Dashboard</span>
+        </button>
         <button class="admin-logout-btn" id="btnLogoutAdmin" title="Logout dari Portal Admin">
           <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
           <span>Logout</span>
@@ -793,29 +1175,29 @@
           </span>
           <span>Dasbor & Metrik</span>
         </button>
-        <button class="admin-tab-btn" data-tab="panelBaileys" id="tabBaileysNavBtn">
-          <span class="tab-icon">
-            <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
-          </span>
-          <span>Koneksi WhatsApp (QR)</span>
-        </button>
         <button class="admin-tab-btn" data-tab="panelFaqs">
           <span class="tab-icon">
             <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           </span>
           <span>Kelola Tanya-Jawab</span>
         </button>
-        <button class="admin-tab-btn" data-tab="panelEmergency" id="tabEmergencyNavBtn">
-          <span class="tab-icon">
-            <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-          </span>
-          <span>Panggilan Darurat IGD</span>
-        </button>
         <button class="admin-tab-btn" data-tab="panelUsers" id="tabUsersNavBtn">
           <span class="tab-icon">
             <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           </span>
           <span>Kelola Pengguna</span>
+        </button>
+        <button class="admin-tab-btn" data-tab="panelObat" id="tabObatNavBtn">
+          <span class="tab-icon">
+            <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/></svg>
+          </span>
+          <span>Daftar Obat</span>
+        </button>
+        <button class="admin-tab-btn" data-tab="panelRegimen" id="tabRegimenNavBtn">
+          <span class="tab-icon">
+            <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="m9 16 2 2 4-4"/></svg>
+          </span>
+          <span>Regimen Kemo</span>
         </button>
         <button class="admin-tab-btn" data-tab="panelSettings">
           <span class="tab-icon">
@@ -834,94 +1216,6 @@
       <!-- Main Content Area -->
       <main class="admin-content-area">
 
-        <!-- ================= PANEL BAILEYS: KONEKSI WHATSAPP & QR CODE ================= -->
-        <section class="admin-panel" id="panelBaileys">
-          <div class="panel-header">
-            <div class="panel-title">
-              <h3>Koneksi WhatsApp</h3>
-            </div>
-            <div>
-              <button class="btn btn-outline" id="btnRefreshQr" style="font-size:0.85rem; padding: 8px 16px;">
-                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg>
-                Muat Ulang Barcode
-              </button>
-            </div>
-          </div>
-
-          <div class="wa-connect-card">
-            <!-- Left: QR Barcode Box -->
-            <div class="qr-display-box">
-              <div class="connection-status-pill waiting" id="waConnectionStatusPill">
-                <span class="sync-dot" style="background:#ca8a04;"></span>
-                <span id="waConnectionStatusText">Menunggu Scan Barcode</span>
-              </div>
-
-              <div class="qr-image-frame" id="qrImageFrame">
-                <div class="qr-loading-spinner" id="qrSpinner">
-                  <div class="spinner-ring"></div>
-                  <span>Menyiapkan Barcode Baileys...</span>
-                </div>
-                <img src="" alt="WhatsApp QR Code" id="waQrCodeImg" style="display:none;">
-              </div>
-
-
-              <button class="btn btn-outline" id="btnLogoutWa" style="font-size:0.8rem; padding: 6px 14px; border-color:#fca5a5; color:#ef4444; display:none;">
-                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
-                Putuskan Sesi (Logout)
-              </button>
-            </div>
-
-            <!-- Right: Instructions & Testing Tool -->
-            <div>
-              <h4 style="margin-bottom: 14px; color: var(--text-main);">Cara Menghubungkan Nomor WhatsApp RS</h4>
-              
-              <div class="scan-instructions" style="margin-bottom: 28px;">
-                <div class="instruction-step">
-                  <div class="step-num">1</div>
-                  <div>Buka aplikasi <strong>WhatsApp</strong> di smartphone Anda (disarankan nomor khusus bot).</div>
-                </div>
-                <div class="instruction-step">
-                  <div class="step-num">2</div>
-                  <div>Ketuk menu <strong>Titik Tiga</strong> (Android) atau <strong>Pengaturan / Settings</strong> (iPhone), lalu pilih <strong>Perangkat Tertaut (Linked Devices)</strong>.</div>
-                </div>
-                <div class="instruction-step">
-                  <div class="step-num">3</div>
-                  <div>Ketuk tombol <strong>Tautkan Perangkat (Link a Device)</strong>.</div>
-                </div>
-                <div class="instruction-step">
-                  <div class="step-num">4</div>
-                  <div>Arahkan kamera smartphone ke <strong>Barcode QR</strong> di samping kiri hingga terhubung.</div>
-                </div>
-              </div>
-
-              <!-- Connected Device Details Box -->
-              <div class="admin-card" id="connectedDeviceBox" style="background:#f0fdf4; border-color:#bbf7d0; display:none; margin-bottom: 24px;">
-                <h5 style="color:#166534; margin-bottom: 8px; display:flex; align-items:center; gap:6px;">
-                  <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" stroke="#166534" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
-                  Perangkat Terhubung Aktif
-                </h5>
-                <p style="font-size:0.9rem; color:#14532d;">
-                  Nomor Bot: <strong id="connectedPhoneDisplay">-</strong><br>
-                  Status Bot: <strong>Siaga menjawab pesan pasien otomatis 24 Jam</strong>
-                </p>
-              </div>
-
-              <!-- Test Message Sender -->
-              <div class="admin-card" style="margin-bottom: 0;">
-                <h5 style="margin-bottom: 12px; color: var(--text-main);">Uji Coba Kirim Pesan WhatsApp</h5>
-                <div class="test-wa-grid">
-                  <input type="text" class="form-input" id="testPhoneInput" placeholder="Contoh: 081234567890">
-                  <input type="text" class="form-input" id="testMessageInput" placeholder="Ketik pesan tes...">
-                  <button class="btn btn-primary" id="btnSendTestWa" style="padding: 10px 18px; font-size: 0.85rem;">
-                    Kirim Tes
-                  </button>
-                </div>
-                <div id="testMessageResult" style="font-size:0.82rem; margin-top:8px;"></div>
-              </div>
-            </div>
-          </div>
-        </section>
-
         <!-- ================= PANEL 1: DASHBOARD & STATS (A-11) ================= -->
         <section class="admin-panel active" id="panelDashboard">
           <div class="panel-header">
@@ -929,9 +1223,9 @@
               <h3>Dasbor</h3>
             </div>
             <div>
-              <button class="btn btn-primary open-simulator-btn" id="btnOpenSimulatorDashboard" style="font-size: 0.85rem; padding: 8px 18px;">
+              <button class="btn btn-primary open-simulator-btn" id="btnOpenSimulatorDashboard" style="font-size: 0.85rem; padding: 8px 18px;" title="Buka Asisten Virtual Chatbot BOKU">
                 <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                Simulator Chat
+                Buka Chatbot Web
               </button>
             </div>
           </div>
@@ -1014,13 +1308,13 @@
             </div>
           </div>
 
-          <!-- ================= KELOLA KATEGORI MENU WHATSAPP (DYNAMIC CATEGORIES) ================= -->
+          <!-- ================= KELOLA KATEGORI MENU CHATBOT WEB (DYNAMIC CATEGORIES) ================= -->
           <div class="admin-card" style="margin-bottom: 24px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
               <div>
                 <h4 style="margin: 0 0 4px 0; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
                   <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-                  Kategori Menu Bot WhatsApp (Dinamis)
+                  Kategori Menu Chatbot Web (Dinamis)
                 </h4>
               </div>
               <button type="button" class="btn btn-primary" id="btnOpenAddCategoryModal" style="font-size: 0.85rem; padding: 9px 18px; border-radius: var(--radius-sm); display: inline-flex; align-items: center; gap: 6px;">
@@ -1098,15 +1392,15 @@
                 </div>
               </div>
 
-              <!-- Right: Realtime WhatsApp Bubble Previewer (A-05) -->
+              <!-- Right: Realtime Web Chat Live Previewer (A-05) -->
               <div class="preview-card">
                 <h5 style="margin-bottom: 12px; color: #475569; font-size: 0.85rem; font-weight: 700;">
-                  PRATINJAU TAMPILAN WHATSAPP PASIEN
+                  PRATINJAU TAMPILAN CHATBOT WEB PASIEN
                 </h5>
                 <div class="preview-screen">
                   <div class="preview-bubble" id="previewBubbleText">
                     <strong>Judul Pertanyaan</strong><br><br>
-                    Isi jawaban baku yang disetujui dokter akan tampil persis seperti ini di layar ponsel pasien...
+                    Isi jawaban baku yang disetujui dokter akan tampil persis seperti ini di layar web chat pasien...
                   </div>
                   <div class="preview-footer-action">
                     1 Membantu &nbsp; 2 Belum membantu &nbsp; 3 Hubungi perawat
@@ -1119,7 +1413,7 @@
           <!-- Existing FAQs Table with Search Filter -->
           <div class="admin-card">
             <div class="faq-table-top-bar" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
-              <h4 style="margin:0;">Daftar FAQ Aktif di WhatsApp</h4>
+              <h4 style="margin:0;">Daftar FAQ Aktif di Chatbot Web</h4>
               <div class="faq-search-wrapper" style="position:relative; min-width:280px;">
                 <svg class="svg-icon svg-icon-sm search-icon" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#94a3b8; pointer-events:none;" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                 <input type="text" class="form-input" id="faqTableSearchInput" placeholder="Cari pertanyaan / isi jawaban..." style="padding-left:38px; width:100%;">
@@ -1175,7 +1469,7 @@
                   <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                 </div>
               </div>
-              <div class="stat-value" id="statSuperAdminCount">2</div>
+              <div class="stat-value" id="statLeadAdminCount">2</div>
             </div>
 
             <div class="stat-card">
@@ -1240,142 +1534,157 @@
           </div>
         </section>
 
-        <!-- ================= PANEL: KELOLA PANGGILAN DARURAT IGD (CUSTOMIZABLE) ================= -->
-        <section class="admin-panel" id="panelEmergency">
-          <div class="panel-header">
+        <!-- ================= PANEL 3B: KELOLA DAFTAR OBAT (FASE 3) ================= -->
+        <section class="admin-panel" id="panelObat">
+          <div class="panel-header" style="flex-wrap: wrap; gap: 14px;">
             <div class="panel-title">
-              <h3>Kelola Panggilan Darurat IGD</h3>
-              <p>Kustomisasi nomor hotline siaga, pesan instruksi medis, dan kata kunci bahaya klinis (PRD B-06 & A-09).</p>
+              <h3>Kelola Daftar Obat Kemoterapi</h3>
+              <p style="font-size: 0.82rem; color: #64748b; margin: 4px 0 0 0;">
+                Manajemen katalog sediaan obat onkologi, ketersediaan fasilitas & harga, status publikasi, dan impor massal.
+              </p>
             </div>
-            <div>
-              <button type="button" class="btn btn-outline" id="btnTestEmergencySimulator" style="font-size: 0.85rem; padding: 8px 16px; display: inline-flex; align-items: center; gap: 6px;">
-                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                Uji Respon Darurat di Chat
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+              <button type="button" class="btn btn-outline" id="btnExportObatCsv" style="display: flex; align-items: center; gap: 6px; font-size: 0.84rem; padding: 8px 14px;">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Ekspor CSV
+              </button>
+              <button type="button" class="btn btn-outline" id="btnOpenImportObatModal" style="display: flex; align-items: center; gap: 6px; font-size: 0.84rem; padding: 8px 14px;">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                Impor CSV
+              </button>
+              <button type="button" class="btn btn-primary" id="btnOpenAddObatModal" style="display: flex; align-items: center; gap: 6px; font-size: 0.84rem; padding: 8px 16px; border-radius: var(--radius-sm);">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Tambah Obat Baru
               </button>
             </div>
           </div>
 
-          <!-- Kustomisasi Editor with Live WhatsApp Bubble Preview (Sama Seperti Kelola Tanya-Jawab) -->
-          <div class="admin-card" style="margin-bottom: 24px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; flex-wrap: wrap; gap: 12px;">
-              <div>
-                <h4 id="emergencyFormHeading" style="margin: 0 0 4px 0; color: var(--text-main);">Tambah / Edit Protokol Panggilan Darurat</h4>
-                <p style="margin: 0; font-size: 0.82rem; color: #64748b;">Konfigurasikan isi jawaban darurat dan pemicu kata kunci klinis.</p>
-              </div>
-              <button type="button" class="btn btn-outline" id="btnResetEmergencyForm" style="font-size: 0.8rem; padding: 7px 14px; display: inline-flex; align-items: center; gap: 6px;">
-                <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                + Form Protokol Baru
-              </button>
-            </div>
-
-            <div class="faq-editor-split">
-              <!-- Left: Customizable Form -->
-              <form id="emergencyCustomForm" class="editor-form">
-                <input type="hidden" id="editEmergencyIdInput" value="">
-
-                <div class="form-group">
-                  <label class="form-label" for="emgTitleInput">Nama Layanan / Protokol Darurat</label>
-                  <input type="text" class="form-input" id="emgTitleInput" placeholder="Contoh: Hotline IGD & Triage 24 Jam" required>
-                </div>
-
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
-                  <div class="form-group">
-                    <label class="form-label" for="emgPhoneInput">Nomor Hotline IGD Utama</label>
-                    <input type="text" class="form-input" id="emgPhoneInput" placeholder="(021) 555-0911" required>
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label" for="emgAmbulanceInput">Nomor Ambulans Siaga</label>
-                    <input type="text" class="form-input" id="emgAmbulanceInput" placeholder="118 / 119" required>
-                  </div>
-                </div>
-
-                <div class="form-group">
-                  <label class="form-label" for="emgLocationInput">Lokasi Fisik / Gedung IGD</label>
-                  <input type="text" class="form-input" id="emgLocationInput" placeholder="Gedung Utama Lt. 1, Jl. Kesehatan No. 88" required>
-                </div>
-
-                <div class="form-group">
-                  <label class="form-label" for="emgKeywordsInput">
-                    Kata Kunci Pemicu Klinis (Pisahkan dengan koma)
-                    <span class="char-counter" id="emgKeywordsCount">0 kata kunci</span>
-                  </label>
-                  <input type="text" class="form-input" id="emgKeywordsInput" placeholder="sesak napas, nyeri dada, pingsan, perdarahan hebat, kejang, darurat, igd" required>
-                  <span class="form-hint" style="font-size: 0.75rem; color: #64748b;">Bot otomatis memotong menu jika pesan pasien memuat salah satu kata kunci di atas.</span>
-                </div>
-
-                <div class="form-group">
-                  <label class="form-label" for="emgInstructionsInput">
-                    Pesan Arahan & Instruksi Medis Pasien
-                    <span class="char-counter" id="emgInstructionsCharCount">0 karakter</span>
-                  </label>
-                  <textarea class="form-textarea" id="emgInstructionsInput" style="min-height: 95px;" placeholder="Tuliskan instruksi penanganan darurat yang jelas dan menenangkan pasien/keluarga..."></textarea>
-                </div>
-
-                <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-top: 6px;">
-                  <button type="submit" class="btn btn-primary" id="btnSaveEmergencyRule" style="border-radius: var(--radius-sm); padding: 11px 22px; display: inline-flex; align-items: center; gap: 6px;">
-                    <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-                    Simpan & Terbitkan Langsung (Live)
-                  </button>
-                  <button type="button" class="btn btn-outline" id="btnCancelEditEmergency" style="display: none; padding: 11px 18px;">
-                    Batal Edit
-                  </button>
-                </div>
-              </form>
-
-              <!-- Right: Realtime WhatsApp Bubble Live Previewer -->
-              <div class="preview-card">
-                <h5 style="margin-bottom: 12px; color: #475569; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; justify-content: space-between;">
-                  <span>PRATINJAU TAMPILAN WHATSAPP PASIEN</span>
-                  <span class="status-badge" style="background:#fee2e2; color:#b91c1c; font-size:0.72rem;">Respon Darurat</span>
-                </h5>
-                <div class="preview-screen">
-                  <div class="preview-bubble" id="previewEmergencyBubbleText" style="border-left: 4px solid #ef4444;">
-                    <div style="font-weight: 800; color: #b91c1c; margin-bottom: 6px;" id="previewEmgHeading">LAYANAN DARURAT IGD 24 JAM</div>
-                    <div>RSUD Prof. Dr. Margono Soekarjo siap melayani penanganan kegawatdaruratan medis 24 jam.</div>
-                    <div style="margin: 8px 0; font-size: 0.83rem;">
-                      • Hotline IGD: <strong id="previewEmgPhone">(0281) 641992</strong><br>
-                      • Ambulans Siaga: <strong id="previewEmgAmbulance">118 / (0281) 641992</strong><br>
-                      • Lokasi: <span id="previewEmgLocation">Gedung Pusat & IGD, Jl. Dr. Gumbreg No. 1, Purwokerto Selatan</span>
-                    </div>
-                    <div id="previewEmgInstructions" style="color: #475569; font-size: 0.8rem; line-height: 1.45;">
-                      Jika pasien mengalami keluhan akut seperti sesak napas berat, nyeri dada, atau penurunan kesadaran, segera bawa ke IGD terdekat tanpa menunda.
-                    </div>
-                  </div>
-                  <div class="preview-footer-action" style="color: #dc2626;">
-                    Ketik 0 untuk kembali ke menu utama
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Existing Emergency Protocols Table with Search (Sama Seperti Tabel Daftar FAQ Aktif) -->
           <div class="admin-card">
-            <div class="faq-table-top-bar" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:12px;">
-              <div>
-                <h4 style="margin:0 0 4px 0; color: var(--text-main);">Daftar Protokol & Layanan Darurat Aktif</h4>
-                <p style="margin:0; font-size:0.82rem; color:#64748b;">Aturan respon darurat yang aktif beroperasi pada bot WhatsApp.</p>
+            <!-- Filter & Search Toolbar -->
+            <div style="display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+              <div style="flex: 1; min-width: 240px; position: relative;">
+                <input type="text" class="form-input" id="obatSearchInput" placeholder="Cari nama obat, produsen, atau kode KFA..." style="padding-left: 36px; font-size: 0.85rem;">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               </div>
-              <div class="faq-search-wrapper" style="position:relative; min-width:280px;">
-                <svg class="svg-icon svg-icon-sm search-icon" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#94a3b8; pointer-events:none;" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                <input type="text" class="form-input" id="emergencyTableSearchInput" placeholder="Cari protokol / kontak / kata kunci..." style="padding-left:38px; width:100%;">
+              <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                <select class="form-select" id="obatStatusFilter" style="font-size: 0.82rem; padding: 7px 12px; width: auto;">
+                  <option value="">Semua Status</option>
+                  <option value="Tayang">Tayang (Publik)</option>
+                  <option value="Draft">Draft (Internal)</option>
+                </select>
+                <select class="form-select" id="obatBentukFilter" style="font-size: 0.82rem; padding: 7px 12px; width: auto;">
+                  <option value="">Semua Bentuk Sediaan</option>
+                  <option value="Injeksi">Injeksi</option>
+                  <option value="Tablet">Tablet</option>
+                  <option value="Kapsul">Kapsul</option>
+                  <option value="Sirup">Sirup</option>
+                  <option value="Infus">Infus</option>
+                  <option value="Lainnya">Lainnya</option>
+                </select>
+                <button type="button" class="btn btn-outline" id="btnResetObatFilter" style="font-size: 0.82rem; padding: 7px 12px;">
+                  Reset
+                </button>
               </div>
             </div>
 
+            <!-- Table -->
             <div class="data-table-wrap">
               <table class="data-table">
                 <thead>
                   <tr>
-                    <th style="width: 80px;">Prioritas</th>
-                    <th>Nama Protokol</th>
-                    <th>Kontak Hotline</th>
-                    <th>Kata Kunci Pemicu Klinis</th>
-                    <th>Status</th>
-                    <th style="width: 140px; text-align: center;">Aksi</th>
+                    <th style="width: 70px; text-align: center;">Urutan</th>
+                    <th>Nama Obat & Kekuatan Sediaan</th>
+                    <th>Produsen</th>
+                    <th>Bentuk / Jenis</th>
+                    <th>Golongan</th>
+                    <th>Fasilitas & Harga</th>
+                    <th style="text-align: center; width: 100px;">Status</th>
+                    <th style="width: 175px; text-align: center;">Aksi</th>
                   </tr>
                 </thead>
-                <tbody id="emergencyTableBody"></tbody>
+                <tbody id="obatTableBody"></tbody>
               </table>
+            </div>
+
+            <!-- Pagination Bar -->
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 14px; border-top: 1px solid #f1f5f9; margin-top: 12px; flex-wrap: wrap; gap: 10px;">
+              <span id="obatPaginationInfo" style="font-size: 0.82rem; color: #64748b;">
+                Memuat katalog obat...
+              </span>
+              <div style="display: flex; gap: 6px; align-items: center;">
+                <button type="button" class="btn btn-outline" id="btnObatPrevPage" disabled style="padding: 6px 12px; font-size: 0.8rem;">
+                  &laquo; Sebelumnya
+                </button>
+                <span id="obatPageNumbers" style="font-size: 0.82rem; font-weight: 600; color: #334155; padding: 0 8px;">
+                  Hal 1 / 1
+                </span>
+                <button type="button" class="btn btn-outline" id="btnObatNextPage" disabled style="padding: 6px 12px; font-size: 0.8rem;">
+                  Berikutnya &raquo;
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= PANEL 3C: KELOLA REGIMEN KEMOTERAPI ================= -->
+        <section class="admin-panel" id="panelRegimen">
+          <div class="panel-header" style="flex-wrap: wrap; gap: 14px;">
+            <div class="panel-title">
+              <h3>Kelola Regimen Kemoterapi</h3>
+              <p style="font-size: 0.82rem; color: #64748b; margin: 4px 0 0 0;">
+                Konfigurasi protokol regimen, interval default, jumlah siklus, dan status aktif untuk Kalkulator Jadwal Pasien.
+              </p>
+            </div>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+              <button type="button" class="btn btn-primary" id="btnOpenAddRegimenModal" style="display: flex; align-items: center; gap: 6px; font-size: 0.84rem; padding: 8px 16px; border-radius: var(--radius-sm);">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Tambah Regimen Baru
+              </button>
+            </div>
+          </div>
+
+          <div class="admin-card">
+            <!-- Filter & Search Toolbar -->
+            <div style="display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+              <div style="flex: 1; min-width: 240px; position: relative;">
+                <input type="text" class="form-input" id="regimenSearchInput" placeholder="Cari nama regimen atau catatan medis..." style="padding-left: 36px; font-size: 0.85rem;">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none;"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                <select class="form-select" id="regimenStatusFilter" style="font-size: 0.82rem; padding: 7px 12px; width: auto;">
+                  <option value="">Semua Status</option>
+                  <option value="active">Aktif Saja</option>
+                  <option value="inactive">Nonaktif Saja</option>
+                </select>
+                <button type="button" class="btn btn-outline" id="btnResetRegimenFilter" style="font-size: 0.82rem; padding: 7px 12px;">
+                  Reset
+                </button>
+              </div>
+            </div>
+
+            <!-- Table -->
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th style="width: 60px; text-align: center;">#</th>
+                    <th>Nama Regimen</th>
+                    <th style="width: 120px; text-align: center;">Interval Default</th>
+                    <th style="width: 120px; text-align: center;">Siklus Default</th>
+                    <th>Deskripsi / Catatan Medis</th>
+                    <th style="width: 110px; text-align: center;">Status</th>
+                    <th style="width: 110px; text-align: center;">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="regimenTableBody"></tbody>
+              </table>
+            </div>
+
+            <!-- Info Bar -->
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 14px; border-top: 1px solid #f1f5f9; margin-top: 12px; flex-wrap: wrap; gap: 10px;">
+              <span id="regimenPaginationInfo" style="font-size: 0.82rem; color: #64748b;">
+                Memuat daftar regimen...
+              </span>
             </div>
           </div>
         </section>
@@ -1495,12 +1804,12 @@
     <!-- ========================================================================
          BUBBLE SIMULATOR CHAT (RSMS PORTAL - SIMULASI STAF/ADMIN)
          ======================================================================== -->
-    <div class="portal-simulator-bubble open-simulator-btn" id="portalSimulatorBubble" title="Buka Simulator WhatsApp Bot BOKU RSUD Margono">
+    <div class="portal-simulator-bubble open-simulator-btn" id="portalSimulatorBubble" title="Buka Asisten Virtual Chatbot Web BOKU RSUD Margono">
       <div class="portal-simulator-bubble-pulse"></div>
       <div class="portal-simulator-bubble-icon">
         <svg class="svg-icon svg-icon-md" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       </div>
-      <span class="portal-simulator-bubble-label">Simulator BOKU</span>
+      <span class="portal-simulator-bubble-label">Chatbot BOKU</span>
     </div>
 
   </div>
@@ -1521,7 +1830,7 @@
         </div>
         <h3 id="userModalTitle" style="font-size: 1.28rem; margin-bottom: 6px;">Tambah Staf Whitelist Baru</h3>
         <p style="font-size: 0.82rem; margin: 0; color: #64748b;">
-          Daftarkan email staf RSUD Margono agar dapat mengakses portal manajemen bot WhatsApp BOKU.
+          Daftarkan email staf RSUD Margono agar dapat mengakses portal manajemen Chatbot Web BOKU.
         </p>
       </div>
 
@@ -1577,11 +1886,11 @@
       <div class="login-brand-header" style="text-align: left; margin-bottom: 20px;">
         <div class="login-brand-badge" style="background: #e0f2fe; color: #0284c7;">
           <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-          Struktur Menu WhatsApp
+          Struktur Menu Chatbot Web
         </div>
         <h3 id="categoryModalTitle" style="font-size: 1.28rem; margin-bottom: 6px;">Tambah Kategori Menu Baru</h3>
         <p style="font-size: 0.82rem; margin: 0; color: #64748b;">
-          Kategori ini akan langsung tampil sebagai opsi angka menu di WhatsApp pasien.
+          Kategori ini akan langsung tampil sebagai opsi pilihan di Chatbot Web pasien.
         </p>
       </div>
 
@@ -1608,6 +1917,434 @@
   </div>
 
   <!-- ========================================================================
+       MODAL TAMBAH / EDIT OBAT KEMOTERAPI (FASE 3)
+       ======================================================================== -->
+  <div class="admin-login-modal" id="obatModal" style="z-index: 1200;">
+    <div class="login-card obat-modal-card" style="max-width: 960px; width: 95%;">
+      <button class="login-close-btn" id="closeObatModalBtn" title="Tutup">
+        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+
+      <div class="login-brand-header" style="text-align: left; margin-bottom: 16px;">
+        <div class="login-brand-badge" style="background: #e0f2fe; color: #0284c7;">
+          <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24"><path d="m10.5 20.5 10-10a4.95 4.95 0 1 0-7-7l-10 10a4.95 4.95 0 1 0 7 7Z"/><path d="m8.5 8.5 7 7"/></svg>
+          Katalog Obat Kemoterapi
+        </div>
+        <h3 id="obatModalTitle" style="font-size: 1.28rem; margin-bottom: 4px;">Tambah Obat Baru</h3>
+        <p style="font-size: 0.82rem; margin: 0; color: #64748b;">
+          Lengkapi data sediaan obat. Pratinjau langsung kartu dan halaman detail tampil di sebelah kanan.
+        </p>
+      </div>
+
+      <form id="obatForm">
+        <input type="hidden" id="editObatIdInput" value="">
+        
+        <div class="obat-modal-grid">
+          <!-- Kolom Kiri: Form Input -->
+          <div class="obat-form-column">
+            <!-- Nama Obat -->
+            <div class="form-group" style="margin-bottom: 14px;">
+              <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                <label class="form-label" for="obatNamaInput">Nama Obat & Kekuatan Sediaan <span style="color:#ef4444;">*</span></label>
+                <span class="char-counter" id="charCountNamaObat">0/200</span>
+              </div>
+              <input type="text" class="form-input" id="obatNamaInput" placeholder="Contoh: Cisplatin 50 mg / 50 mL" required maxlength="200">
+            </div>
+
+            <!-- Produsen & Kode KFA -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+              <div class="form-group" style="margin: 0;">
+                <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                  <label class="form-label" for="obatProdusenInput">Nama Produsen</label>
+                  <span class="char-counter" id="charCountProdusen">0/200</span>
+                </div>
+                <input type="text" class="form-input" id="obatProdusenInput" placeholder="Contoh: Kalbe Farma" maxlength="200">
+              </div>
+              <div class="form-group" style="margin: 0;">
+                <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                  <label class="form-label" for="obatKfaInput">Kode KFA (Kemenkes)</label>
+                  <span class="char-counter" id="charCountKfa">0/30</span>
+                </div>
+                <input type="text" class="form-input" id="obatKfaInput" placeholder="Contoh: 93001234" maxlength="30" pattern="[0-9]*">
+              </div>
+            </div>
+
+            <!-- Bentuk, Jenis, Golongan -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 14px;">
+              <div class="form-group" style="margin: 0;">
+                <label class="form-label" for="obatBentukSelect">Bentuk Sediaan <span style="color:#ef4444;">*</span></label>
+                <select class="form-select" id="obatBentukSelect" required>
+                  <option value="Injeksi">Injeksi</option>
+                  <option value="Tablet">Tablet</option>
+                  <option value="Kapsul">Kapsul</option>
+                  <option value="Sirup">Sirup</option>
+                  <option value="Infus">Infus</option>
+                  <option value="Lainnya">Lainnya</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin: 0;">
+                <label class="form-label" for="obatJenisSelect">Jenis <span style="color:#ef4444;">*</span></label>
+                <select class="form-select" id="obatJenisSelect" required>
+                  <option value="Generik">Generik</option>
+                  <option value="Bermerek">Bermerek</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin: 0;">
+                <label class="form-label" for="obatGolonganSelect">Golongan <span style="color:#ef4444;">*</span></label>
+                <select class="form-select" id="obatGolonganSelect" required>
+                  <option value="Obat Keras">Obat Keras</option>
+                  <option value="Obat Bebas">Obat Bebas</option>
+                  <option value="Narkotika">Narkotika</option>
+                  <option value="Lainnya">Lainnya</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Status & Urutan -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+              <div class="form-group" style="margin: 0;">
+                <label class="form-label" for="obatStatusSelect">Status Publikasi <span style="color:#ef4444;">*</span></label>
+                <select class="form-select" id="obatStatusSelect" required>
+                  <option value="Draft">Draft (Internal Saja)</option>
+                  <option value="Tayang">Tayang (Tampil di Landing Page)</option>
+                </select>
+              </div>
+              <div class="form-group" style="margin: 0;">
+                <label class="form-label" for="obatUrutanInput">Urutan Prioritas</label>
+                <input type="number" class="form-input" id="obatUrutanInput" value="1" min="1" step="1">
+              </div>
+            </div>
+
+            <!-- Indikasi Ringkas -->
+            <div class="form-group" style="margin-bottom: 14px;">
+              <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                <label class="form-label" for="obatIndikasiRingkasInput">Indikasi Ringkas (Tampil pada Kartu)</label>
+                <span class="char-counter" id="charCountIndikasi">0/500</span>
+              </div>
+              <textarea class="form-textarea" id="obatIndikasiRingkasInput" style="min-height: 55px;" placeholder="Ringkasan indikasi medis untuk kartu katalog..." maxlength="500"></textarea>
+            </div>
+
+            <!-- Deskripsi Detail -->
+            <div class="form-group" style="margin-bottom: 14px;">
+              <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                <label class="form-label" for="obatDeskripsiInput">Deskripsi Obat</label>
+                <span class="char-counter" id="charCountDeskripsi">0/5000</span>
+              </div>
+              <textarea class="form-textarea" id="obatDeskripsiInput" style="min-height: 60px;" placeholder="Deskripsi lengkap sediaan obat..." maxlength="5000"></textarea>
+            </div>
+
+            <!-- Indikasi Umum -->
+            <div class="form-group" style="margin-bottom: 14px;">
+              <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                <label class="form-label" for="obatIndikasiUmumInput">Indikasi Umum</label>
+                <span class="char-counter" id="charCountIndikasiUmum">0/5000</span>
+              </div>
+              <textarea class="form-textarea" id="obatIndikasiUmumInput" style="min-height: 55px;" placeholder="Indikasi umum klinis..." maxlength="5000"></textarea>
+            </div>
+
+            <!-- Komposisi -->
+            <div class="form-group" style="margin-bottom: 14px;">
+              <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                <label class="form-label" for="obatKomposisiInput">Komposisi Zat Aktif</label>
+                <span class="char-counter" id="charCountKomposisi">0/5000</span>
+              </div>
+              <textarea class="form-textarea" id="obatKomposisiInput" style="min-height: 55px;" placeholder="Kandungan komposisi zat aktif..." maxlength="5000"></textarea>
+            </div>
+
+            <!-- Peringatan & Perhatian (Filter Dosis Klinis) -->
+            <div class="form-group" style="margin-bottom: 14px;">
+              <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                <label class="form-label" for="obatPeringatanInput">Peringatan & Perhatian</label>
+                <span class="char-counter" id="charCountPeringatan">0/5000</span>
+              </div>
+              <textarea class="form-textarea" id="obatPeringatanInput" style="min-height: 55px;" placeholder="Peringatan khusus dan kontraindikasi klinis..." maxlength="5000"></textarea>
+            </div>
+
+            <!-- Efek Samping (Filter Dosis Klinis) -->
+            <div class="form-group" style="margin-bottom: 10px;">
+              <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                <label class="form-label" for="obatEfekSampingInput">Efek Samping</label>
+                <span class="char-counter" id="charCountEfekSamping">0/5000</span>
+              </div>
+              <textarea class="form-textarea" id="obatEfekSampingInput" style="min-height: 55px;" placeholder="Efek samping yang mungkin timbul..." maxlength="5000"></textarea>
+            </div>
+          </div>
+
+          <!-- Kolom Kanan: Pratinjau Langsung (Live Preview) -->
+          <div class="obat-preview-column">
+            <div class="preview-tabs-nav">
+              <button type="button" class="preview-tab-btn active" id="btnPreviewTabCard">Pratinjau Kartu Publik</button>
+              <button type="button" class="preview-tab-btn" id="btnPreviewTabDetail">Pratinjau Halaman Detail</button>
+            </div>
+
+            <!-- Pratinjau Tampilan Kartu -->
+            <div class="preview-display-pane active" id="panePreviewCard">
+              <div class="preview-box-badge">Tampilan di Landing Page Publik</div>
+              <div id="liveCardPreviewContainer" style="padding-top: 10px;"></div>
+            </div>
+
+            <!-- Pratinjau Tampilan Modal Detail -->
+            <div class="preview-display-pane" id="panePreviewDetail">
+              <div class="preview-box-badge">Tampilan Pop-up Detail Pasien</div>
+              <div id="liveDetailPreviewContainer" class="obat-detail-preview-box"></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px; border-top: 1px solid #e2e8f0; padding-top: 14px;">
+          <button type="button" class="btn btn-outline" id="btnCancelObatModal" style="padding: 10px 18px; font-size: 0.85rem;">
+            Batal
+          </button>
+          <button type="submit" class="btn btn-primary" id="btnSubmitObat" style="padding: 10px 24px; font-size: 0.85rem; border-radius: var(--radius-sm);">
+            Simpan Obat
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL KELOLA FASILITAS & HARGA (FASE 3 - 3.4)
+       ======================================================================== -->
+  <div class="admin-login-modal" id="fasilitasObatModal" style="z-index: 1205;">
+    <div class="login-card" style="max-width: 840px; width: 95%;">
+      <button class="login-close-btn" id="closeFasilitasModalBtn" title="Tutup">
+        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+
+      <div class="login-brand-header" style="text-align: left; margin-bottom: 16px;">
+        <div class="login-brand-badge" style="background: #ecfdf5; color: #059669;">
+          <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l8-4v18M13 21V3l6 4v14"/></svg>
+          Ketersediaan & Harga
+        </div>
+        <h3 id="fasilitasModalTitle" style="font-size: 1.25rem; margin-bottom: 4px;">Kelola Fasilitas & Harga Obat</h3>
+        <p id="fasilitasModalSubtitle" style="font-size: 0.85rem; margin: 0; color: #0284c7; font-weight: 600;">
+          Nama Obat: -
+        </p>
+      </div>
+
+      <!-- Tabel Fasilitas Terdaftar -->
+      <div style="margin-bottom: 20px;">
+        <h4 style="font-size: 0.92rem; font-weight: 700; color: #1e293b; margin-bottom: 8px;">Daftar Fasilitas Saat Ini</h4>
+        <div class="data-table-wrap" style="max-height: 240px; overflow-y: auto;">
+          <table class="data-table" style="font-size: 0.82rem;">
+            <thead>
+              <tr>
+                <th>Fasilitas</th>
+                <th>Provinsi</th>
+                <th>Kontak & Alamat</th>
+                <th>Harga Sediaan</th>
+                <th>Diperbarui</th>
+                <th style="width: 100px; text-align: center;">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="fasilitasListTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Form Tambah / Edit Fasilitas -->
+      <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: var(--radius-sm); padding: 14px;">
+        <h4 id="fasilitasFormTitle" style="font-size: 0.88rem; font-weight: 700; color: #1e293b; margin-bottom: 12px;">
+          Tambah Fasilitas Baru
+        </h4>
+        <form id="fasilitasForm">
+          <input type="hidden" id="editFasilitasIdInput" value="">
+          <input type="hidden" id="fasilitasObatIdInput" value="">
+
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 12px; margin-bottom: 10px;">
+            <div class="form-group" style="margin: 0;">
+              <label class="form-label" for="fasilitasNamaInput">Nama Rumah Sakit / Apotek / Klinik <span style="color:#ef4444;">*</span></label>
+              <input type="text" class="form-input" id="fasilitasNamaInput" placeholder="Contoh: Instalasi Farmasi RSUD Margono" required maxlength="200">
+            </div>
+            <div class="form-group" style="margin: 0;">
+              <label class="form-label" for="fasilitasProvinsiInput">Provinsi <span style="color:#ef4444;">*</span></label>
+              <input type="text" class="form-input" id="fasilitasProvinsiInput" value="Jawa Tengah" required maxlength="100">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 10px;">
+            <label class="form-label" for="fasilitasAlamatInput">Alamat Lengkap</label>
+            <input type="text" class="form-input" id="fasilitasAlamatInput" placeholder="Contoh: Gedung Wijaya Kusuma Lt. 1, Jl. Dr. Gumbreg No.1, Purwokerto" maxlength="500">
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+            <div class="form-group" style="margin: 0;">
+              <label class="form-label" for="fasilitasTeleponInput">No. Telepon</label>
+              <input type="text" class="form-input" id="fasilitasTeleponInput" placeholder="0281-632708" maxlength="50">
+            </div>
+            <div class="form-group" style="margin: 0;">
+              <label class="form-label" for="fasilitasWaInput">WhatsApp</label>
+              <input type="text" class="form-input" id="fasilitasWaInput" placeholder="6281234567890" maxlength="50">
+            </div>
+            <div class="form-group" style="margin: 0;">
+              <label class="form-label" for="fasilitasHargaInput">Harga Sediaan (Rp) <span style="color:#ef4444;">*</span></label>
+              <input type="number" class="form-input" id="fasilitasHargaInput" placeholder="0" min="0" step="1000" required>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 10px; justify-content: flex-end;">
+            <button type="button" class="btn btn-outline" id="btnCancelFasilitasEdit" style="display: none; padding: 8px 14px; font-size: 0.82rem;">
+              Batal Edit
+            </button>
+            <button type="submit" class="btn btn-primary" id="btnSubmitFasilitas" style="padding: 8px 20px; font-size: 0.82rem; border-radius: var(--radius-sm);">
+              Simpan Fasilitas
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL IMPOR DATA OBAT MASSAL (CSV) (FASE 3 - 3.5)
+       ======================================================================== -->
+  <div class="admin-login-modal" id="importObatModal" style="z-index: 1210;">
+    <div class="login-card" style="max-width: 760px; width: 95%;">
+      <button class="login-close-btn" id="closeImportModalBtn" title="Tutup">
+        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+
+      <div class="login-brand-header" style="text-align: left; margin-bottom: 14px;">
+        <div class="login-brand-badge" style="background: #fef3c7; color: #b45309;">
+          <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          Bulk Import CSV
+        </div>
+        <h3 style="font-size: 1.25rem; margin-bottom: 4px;">Impor Data Katalog Obat Massal</h3>
+        <p style="font-size: 0.82rem; margin: 0; color: #64748b;">
+          Unggah berkas CSV untuk mengimpor banyak obat sekaligus (maksimal 200 baris per request). Baris rusak tidak akan membatalkan baris valid.
+        </p>
+      </div>
+
+      <!-- Unduh Template CSV Bar -->
+      <div style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: var(--radius-sm); padding: 10px 14px; margin-bottom: 14px;">
+        <div style="font-size: 0.82rem; color: #475569;">
+          Gunakan format template resmi agar data kolom terbaca sempurna.
+        </div>
+        <button type="button" class="btn btn-outline" id="btnDownloadObatCsvTemplate" style="font-size: 0.78rem; padding: 6px 12px; display: flex; align-items: center; gap: 4px;">
+          <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Unduh Template CSV
+        </button>
+      </div>
+
+      <!-- File Input Dropzone -->
+      <div style="margin-bottom: 14px;">
+        <label class="form-label" for="obatCsvFileInput">Pilih Berkas CSV (.csv)</label>
+        <input type="file" class="form-input" id="obatCsvFileInput" accept=".csv,text/csv" style="padding: 10px; font-size: 0.85rem;">
+      </div>
+
+      <!-- Preview Box (Valid / Invalid Summary & Details) -->
+      <div id="importObatPreviewContainer" style="display: none; margin-bottom: 14px;">
+        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+          <span class="badge-status-pill tayang" id="importValidCount">0 Baris Valid</span>
+          <span class="badge-status-pill" id="importInvalidCount" style="background:#fee2e2; color:#b91c1c;">0 Baris Tidak Valid</span>
+          <span style="font-size: 0.78rem; color: #64748b; margin-left: auto;" id="importTotalCount">Total: 0 baris</span>
+        </div>
+
+        <div class="data-table-wrap" style="max-height: 200px; overflow-y: auto;">
+          <table class="data-table" style="font-size: 0.78rem;">
+            <thead>
+              <tr>
+                <th style="width: 60px;">Baris</th>
+                <th>Nama Obat</th>
+                <th>Bentuk / Jenis</th>
+                <th>Status Validasi</th>
+                <th>Keterangan / Alasan</th>
+              </tr>
+            </thead>
+            <tbody id="importPreviewTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Progress Bar Container -->
+      <div id="importProgressBarContainer" style="display: none; margin-bottom: 14px;">
+        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 600; color: #334155; margin-bottom: 6px;">
+          <span id="importProgressText">Mengimpor batch data...</span>
+          <span id="importProgressPercent">0%</span>
+        </div>
+        <div style="width: 100%; height: 8px; background: #e2e8f0; border-radius: 999px; overflow: hidden;">
+          <div id="importProgressBar" style="width: 0%; height: 100%; background: #0284c7; transition: width 0.3s ease;"></div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 10px; justify-content: flex-end;">
+        <button type="button" class="btn btn-outline" id="btnCancelImportModal" style="padding: 9px 18px; font-size: 0.85rem;">
+          Batal
+        </button>
+        <button type="button" class="btn btn-primary" id="btnSubmitImportCsv" disabled style="padding: 9px 22px; font-size: 0.85rem; border-radius: var(--radius-sm);">
+          Kirim Impor (0 Baris Valid)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL TAMBAH / EDIT REGIMEN KEMOTERAPI (CMS KALKULATOR)
+       ======================================================================== -->
+  <div class="admin-login-modal" id="regimenModal" style="z-index: 1200;">
+    <div class="login-card" style="max-width: 580px; width: 95%;">
+      <button class="login-close-btn" id="closeRegimenModalBtn" title="Tutup">
+        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+
+      <div class="login-brand-header" style="text-align: left; margin-bottom: 16px;">
+        <div class="login-brand-badge" style="background: #e0e7ff; color: #4338ca;">
+          <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          CMS Regimen
+        </div>
+        <h3 id="regimenModalTitle" style="font-size: 1.28rem; margin-bottom: 4px;">Tambah Regimen Kemoterapi Baru</h3>
+        <p style="font-size: 0.82rem; margin: 0; color: #64748b;">
+          Atur nama protokol, interval standar dalam hari, dan siklus default yang akan tampil pada kalkulator pasien.
+        </p>
+      </div>
+
+      <form id="regimenForm">
+        <div class="form-group">
+          <label class="form-label required" for="regimenNamaInput">Nama Regimen</label>
+          <input type="text" class="form-input" id="regimenNamaInput" placeholder="Contoh: Gemcitabine + Cisplatin, FOLFOX" required minlength="3" maxlength="150">
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label required" for="regimenIntervalInput">Default Interval (Hari)</label>
+            <input type="number" class="form-input" id="regimenIntervalInput" min="1" max="365" value="21" required>
+            <span class="form-hint" style="font-size: 0.74rem; color: #64748b;">Jarak antar siklus (contoh: 14 atau 21)</span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label required" for="regimenSiklusInput">Default Jumlah Siklus</label>
+            <input type="number" class="form-input" id="regimenSiklusInput" min="1" max="100" value="6" required>
+            <span class="form-hint" style="font-size: 0.74rem; color: #64748b;">Contoh: 6, 8, atau 12 siklus</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="regimenDeskripsiInput">Deskripsi / Catatan Medis Singkat</label>
+          <textarea class="form-textarea" id="regimenDeskripsiInput" rows="3" placeholder="Indikasi umum, catatan protokol, atau catatan penyesuaian klinis..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="regimenActiveSelect">Status Penayangan di Kalkulator</label>
+          <select class="form-select" id="regimenActiveSelect">
+            <option value="true">Aktif (Tampil di Dropdown Pengguna)</option>
+            <option value="false">Nonaktif (Disembunyikan dari Pengguna)</option>
+          </select>
+        </div>
+
+        <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 18px;">
+          <button type="button" class="btn btn-outline" id="btnCancelRegimenModal" style="padding: 10px 18px; font-size: 0.85rem;">
+            Batal
+          </button>
+          <button type="submit" class="btn btn-primary" id="btnSaveRegimen" style="padding: 10px 24px; font-size: 0.85rem; border-radius: var(--radius-sm);">
+            Simpan Regimen
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================
        MODAL KONFIRMASI / PERSETUJUAN AKSI (MODERN CONFIRMATION POPUP)
        ======================================================================== -->
   <div class="confirm-modal-overlay" id="adminConfirmModal">
@@ -1625,6 +2362,13 @@
       <div class="confirm-modal-body">
         <h4 class="confirm-modal-title" id="confirmModalTitle">Konfirmasi Tindakan</h4>
         <p class="confirm-modal-desc" id="confirmModalDesc">Apakah Anda yakin ingin melanjutkan tindakan ini?</p>
+
+        <!-- Container Input Konfirmasi Khusus (Syarat Ketik "SETUJU") -->
+        <div id="confirmModalInputContainer" style="display: none; margin-top: 14px; text-align: left;">
+          <label id="confirmModalInputLabel" for="confirmModalTextInput" style="font-size: 0.8rem; font-weight: 600; color: #475569; display: block; margin-bottom: 6px;"></label>
+          <input type="text" id="confirmModalTextInput" class="form-input" style="font-size: 0.88rem; text-align: center; text-transform: uppercase; font-weight: bold; letter-spacing: 1px;" autocomplete="off" placeholder="Ketik SETUJU di sini">
+          <div id="confirmModalInputError" style="font-size: 0.74rem; color: #ef4444; margin-top: 4px; display: none;">Teks konfirmasi harus tepat sama dengan yang diminta.</div>
+        </div>
       </div>
 
       <div class="confirm-modal-actions">
@@ -1641,6 +2385,8 @@
   <!-- Scripts -->
   <script src="js/bot-engine.js"></script>
   <script src="js/admin-portal.js"></script>
+  <script src="js/katalog-obat.js"></script>
+  <script src="js/kalkulator-kemo.js"></script>
   <script src="js/app.js"></script>
 </body>
 </html>

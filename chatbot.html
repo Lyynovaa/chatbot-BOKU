@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="id" class="full-chatbot-page">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>BOKU • Asisten Onkologi Wijayakusuma RSUD Margono Soekarjo</title>
+  <meta name="description" content="Layanan Asisten Virtual Web BOKU resmi Gedung Onkologi Terpadu Wijayakusuma RSUD Prof. Dr. Margono Soekarjo Purwokerto. Panduan kemoterapi mandiri, informasi dokter, dan alur pelayanan 24 jam.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%230284c7'><path d='M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14h2v2h-2zm0-10h2v8h-2z'/></svg>">
+
+  <!-- Google Fonts: Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Core & Component Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/bot-modal.css">
+</head>
+<body class="full-chatbot-page">
+
+  <!-- 1. FULL-WIDTH CLEAN TOP HEADER -->
+  <header class="full-chatbot-header">
+    <div class="full-header-left">
+      <a href="index.html" class="full-back-btn" title="Kembali ke Beranda">
+        <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24"><path d="M19 12H5"/><path d="m12 19-7-7 7-7"/></svg>
+        <span>Beranda</span>
+      </a>
+
+      <div class="full-header-divider"></div>
+
+      <div class="full-brand-badge">
+        <div class="full-avatar-wrap">
+          <img src="assets/images/boku-avatar.jpg" alt="Avatar BOKU">
+          <span class="full-avatar-pulse"></span>
+        </div>
+        <div class="full-brand-meta">
+          <h1 class="full-brand-title">
+            BOKU
+            <span class="wa-verified-badge" title="Layanan Resmi Terverifikasi RSUD Margono">
+              <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+            </span>
+          </h1>
+          <div class="full-brand-subtitle">
+            <span class="full-online-dot"></span>
+            <span>Online Siaga 24 Jam • Gedung Onkologi Wijayakusuma</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="full-header-right">
+      <button type="button" class="full-reset-btn" id="btnResetEmbeddedChat" title="Reset Percakapan (Kembali ke Menu Utama)">
+        <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        <span>Reset Chat</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- 2. FULL VIEWPORT CHAT CANVAS (Edge-to-Edge with centered 860px reading track) -->
+  <main class="full-chatbot-main" id="embeddedChatbotFrame">
+    <div class="wa-messages-container" id="embeddedMessagesArea">
+      <div class="wa-chip-notice">
+        <svg class="svg-icon svg-icon-xs" style="width:12px;height:12px;" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        <span>Privasi Terlindungi • Standar Medis RSUD Prof. Dr. Margono Soekarjo</span>
+      </div>
+    </div>
+  </main>
+
+  <!-- 3. DOCKED BOTTOM ACTION DECK (Chips + Modern Input Field) -->
+  <footer class="full-chatbot-bottom">
+    <div class="full-bottom-inner">
+      <!-- Quick Options Carousel -->
+      <div class="wa-quick-replies" id="embeddedQuickChipsContainer">
+        <button type="button" class="wa-quick-chip" data-val="1">1</button>
+        <button type="button" class="wa-quick-chip" data-val="2">2</button>
+        <button type="button" class="wa-quick-chip" data-val="3">3</button>
+        <button type="button" class="wa-quick-chip" data-val="0">0 (Menu Utama)</button>
+        <button type="button" class="wa-quick-chip wa-quick-chip-katalog" data-val="open_katalog_obat">Katalog Obat</button>
+      </div>
+
+      <!-- Input Field Row -->
+      <div class="wa-input-bar">
+        <input type="text" class="wa-input-field" id="embeddedChatInput" placeholder="Ketik pertanyaan atau nomor menu (contoh: kemo, jadwal dokter, bpjs)..." autocomplete="off" autofocus>
+        <button type="button" class="wa-send-btn" id="embeddedSendBtn" title="Kirim Pesan">
+          <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M3.4 20.4l17.45-7.48a1 1 0 0 0 0-1.84L3.4 3.6a.993.993 0 0 0-1.39.91L2 9.12c0 .5.37.93.87.99L17 12 2.87 13.88c-.5.07-.87.49-.87 1l.01 4.61c0 .71.73 1.2 1.39.91z"/></svg>
+        </button>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Toast Notification Container -->
+  <div id="hospitalToast"></div>
+
+  <!-- Scripts -->
+  <script src="js/bot-engine.js"></script>
+  <script src="js/admin-portal.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>

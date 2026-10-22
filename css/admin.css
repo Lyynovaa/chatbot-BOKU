@@ -527,37 +527,43 @@
 }
 
 .preview-screen {
-  background: #efeae2;
+  background: #f8fafc;
   border-radius: 16px;
-  padding: 20px 16px;
+  padding: 24px 20px;
   min-height: 320px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   position: relative;
-  background-image: radial-gradient(#d4cdc2 0.75px, transparent 0.75px);
+  background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
   background-size: 16px 16px;
+  border: 1px solid #e2e8f0;
 }
 
 .preview-bubble {
   background: #ffffff;
-  border-radius: 8px;
-  border-top-left-radius: 0;
-  padding: 12px 14px;
-  font-size: 0.86rem;
-  color: #111b21;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
-  line-height: 1.45;
+  border-radius: 12px;
+  border-top-left-radius: 2px;
+  padding: 14px 18px;
+  font-size: 0.88rem;
+  color: #0f172a;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+  line-height: 1.55;
   white-space: pre-wrap;
+  border: 1px solid #e2e8f0;
+  border-left: 3.5px solid #1e3a8a;
 }
 
 .preview-footer-action {
-  margin-top: 10px;
-  padding-top: 8px;
-  border-top: 1px dashed rgba(0, 0, 0, 0.1);
-  font-size: 0.75rem;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed #cbd5e1;
+  font-size: 0.78rem;
   color: #1e3a8a;
   font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 
@@ -1911,8 +1917,22 @@
 
   .login-card {
     width: calc(100vw - 28px);
+    max-width: 100%;
     padding: 24px 18px;
     border-radius: 18px;
+  }
+
+  #regimenModal .login-card {
+    width: calc(100vw - 24px);
+    max-width: 580px;
+    padding: 22px 16px;
+    max-height: 90vh;
+    max-height: 90dvh;
+    overflow-y: auto;
+  }
+
+  #regimenModal [style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
   }
 
   /* Floating Simulator Bubble on Mobile */
@@ -2105,3 +2125,175 @@
     grid-template-columns: 1fr !important;
   }
 }
+
+/* ==========================================================================
+   PANEL KELOLA DAFTAR OBAT (FASE 3)
+   ========================================================================== */
+.obat-modal-grid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.obat-form-column {
+  max-height: 68vh;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.obat-preview-column {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  position: sticky;
+  top: 0;
+  max-height: 68vh;
+  overflow-y: auto;
+}
+
+.char-counter {
+  font-size: 0.72rem;
+  color: #94a3b8;
+  font-variant-numeric: tabular-nums;
+  font-weight: 500;
+}
+
+.char-counter.limit-near {
+  color: #f59e0b;
+}
+
+.char-counter.limit-exceeded {
+  color: #ef4444;
+  font-weight: 700;
+}
+
+.preview-tabs-nav {
+  display: flex;
+  gap: 6px;
+  border-bottom: 1px solid #e2e8f0;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+}
+
+.preview-tab-btn {
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.preview-tab-btn:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+}
+
+.preview-tab-btn.active {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+}
+
+.preview-display-pane {
+  display: none;
+}
+
+.preview-display-pane.active {
+  display: block;
+}
+
+.preview-box-badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.preview-box-badge::before {
+  content: '';
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+}
+
+.obat-detail-preview-box {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.badge-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge-status-pill.tayang {
+  background: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.badge-status-pill.draft {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+}
+
+.badge-status-pill::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.input-urutan-obat {
+  width: 52px;
+  text-align: center;
+  padding: 4px 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #ffffff;
+  transition: all 0.15s ease;
+}
+
+.input-urutan-obat:focus {
+  border-color: #0284c7;
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+}
+
+@media (max-width: 900px) {
+  .obat-modal-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .obat-preview-column {
+    position: static;
+    max-height: none;
+  }
+}
+

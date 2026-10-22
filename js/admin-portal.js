@@ -30,12 +30,27 @@ class WebAdminPortal {
     this.dosageRegex = /\b(\d+\s*(mg|ml|gr|gram|mcg|tablet|kapsul|x\s*\d|sendok))\b/i;
 
     this.editingFaqId = null;
-    this.editingEmergencyId = null;
-    this.emergencyRules = this.loadEmergencyRules();
     this.isLoggingOutWa = false;
 
+    // State Katalog Obat Kemoterapi (Fase 3)
+    this.obatList = [];
+    this.activeObatFasilitasId = null;
+    this.editingObatId = null;
+    this.editingFasilitasId = null;
+    this.obatCurrentPage = 1;
+    this.obatPageSize = 10;
+    this.obatFilterSearch = '';
+    this.obatFilterStatus = '';
+    this.obatFilterBentuk = '';
+    this.parsedValidCsvRows = [];
+
+    // State Regimen Kemoterapi (Custom Chemotherapy Calculator)
+    this.regimenList = [];
+    this.editingRegimenId = null;
+    this.regimenFilterSearch = '';
+    this.regimenFilterStatus = '';
+
     this.bindEvents();
-    this.initBaileysPoller();
     this.updateNavbarUserInfo();
     this.fetchDataFromGoogleAppsScript();
     this.fetchLiveLogs();
@@ -47,7 +62,7 @@ class WebAdminPortal {
 
   getAdminToken() {
     try {
-      return sessionStorage.getItem('medica_admin_token') || localStorage.getItem('medica_admin_token') || '';
+      return sessionStorage.getItem('medica_admin_token') || '';
     } catch (e) {
       return '';
     }
@@ -55,21 +70,19 @@ class WebAdminPortal {
 
   loadCurrentUser() {
     try {
-      const token = this.getAdminToken();
-      if (!token) {
-        sessionStorage.removeItem('medica_admin_auth');
-        localStorage.removeItem('medica_admin_auth');
-        return null;
+      const stored = sessionStorage.getItem('medica_admin_auth');
+      if (stored) {
+        return JSON.parse(stored);
       }
-      const stored = sessionStorage.getItem('medica_admin_auth') || localStorage.getItem('medica_admin_auth');
-      return stored ? JSON.parse(stored) : null;
+      return null;
     } catch (e) {
       return null;
     }
   }
 
   isAuthenticated() {
-    return Boolean(this.currentUser && this.getAdminToken());
+    const token = this.getAdminToken();
+    return !!(token && this.currentUser && this.currentUser.email);
   }
 
   // Persistent Tab Management: switch tab and store selection across page refresh
@@ -103,9 +116,25 @@ class WebAdminPortal {
       localStorage.setItem('medica_active_tab', targetPanelId);
     } catch (e) {}
 
-    // Panel-specific triggers
-    if (targetPanelId === 'panelBaileys') {
-      this.fetchBaileysStatus();
+    // Panel-specific triggers & access control
+    if (targetPanelId === 'panelObat') {
+      const role = (this.currentUser?.role || '').toLowerCase();
+      const isAllowed = role.includes('super') || role === 'admin';
+      if (!isAllowed) {
+        this.showToast('Akses ditolak: Pengguna peran Perawat tidak memiliki wewenang mengelola daftar obat.', 'danger', 'Akses Ditolak');
+        this.switchTab('panelDashboard');
+        return;
+      }
+      this.fetchAdminObatList();
+    } else if (targetPanelId === 'panelRegimen') {
+      const role = (this.currentUser?.role || '').toLowerCase();
+      const isAllowed = role.includes('super') || role === 'admin';
+      if (!isAllowed) {
+        this.showToast('Akses ditolak: Pengguna peran Perawat tidak memiliki wewenang mengelola regimen kemoterapi.', 'danger', 'Akses Ditolak');
+        this.switchTab('panelDashboard');
+        return;
+      }
+      this.fetchAdminRegimenList();
     } else if (targetPanelId === 'panelLogs') {
       this.fetchLiveLogs();
     } else if (targetPanelId === 'panelDashboard') {
@@ -114,10 +143,6 @@ class WebAdminPortal {
       this.fetchUsersFromGoogleAppsScript();
     } else if (targetPanelId === 'panelFaqs') {
       this.renderFaqTable();
-    } else if (targetPanelId === 'panelEmergency') {
-      this.renderEmergencyTable();
-      this.syncEmergencyFormWithActiveRule();
-      this.updateEmergencyLivePreview();
     } else if (targetPanelId === 'panelSettings') {
       this.renderSettingsForm();
     }
@@ -162,48 +187,46 @@ class WebAdminPortal {
 
   async login(email, password) {
     const cleanEmail = (email || '').trim().toLowerCase();
+    const cleanPass = (password || '').trim();
 
-    // Verifikasi kredensial langsung ke Google Apps Script backend
     try {
       const res = await fetch('/api/gas/action', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'login', email: cleanEmail, password: password })
+        body: JSON.stringify({ action: 'login', email: cleanEmail, password: cleanPass })
       });
       const data = await res.json();
-      if (data.success && data.user) {
+      if (data.success && data.token && data.user) {
         this.currentUser = {
           email: data.user.email,
           name: data.user.name,
           role: data.user.role
         };
         sessionStorage.setItem('medica_admin_auth', JSON.stringify(this.currentUser));
-        localStorage.setItem('medica_admin_auth', JSON.stringify(this.currentUser));
+        sessionStorage.setItem('medica_admin_token', data.token);
         sessionStorage.setItem('medica_portal_open', 'true');
         localStorage.setItem('medica_portal_open', 'true');
-        if (data.token) {
-          sessionStorage.setItem('medica_admin_token', data.token);
-          localStorage.setItem('medica_admin_token', data.token);
-        }
         this.updateNavbarUserInfo();
         this.recordAuditLog('LOGIN_BERHASIL', `Login via kredensial staf (${data.user.role})`);
+        this.fetchUsersFromGoogleAppsScript();
         return { success: true, user: this.currentUser };
       }
       return {
         success: false,
-        message: data.message || data.error || 'Email atau kata sandi tidak valid dalam database Google Apps Script.'
+        message: data.message || data.error || 'Email atau kata sandi tidak valid.'
       };
     } catch (e) {
+      console.warn('Gagal terhubung ke endpoint autentikasi:', e);
       return {
         success: false,
-        message: 'Gagal terhubung ke server autentikasi Google Apps Script. Periksa koneksi internet atau konfigurasi server.'
+        message: 'Server tidak dapat dihubungi, coba lagi'
       };
     }
   }
 
   logout() {
     if (this.currentUser) {
-      this.recordAuditLog('LOGOUT_ADMIN', `Keluar dari portal admin`);
+      this.recordAuditLog('LOGOUT_ADMIN', 'Keluar dari portal admin');
     }
     this.currentUser = null;
     try {
@@ -219,15 +242,64 @@ class WebAdminPortal {
     this.updateNavbarUserInfo();
   }
 
+  // Evaluasi apakah respons server menandakan sesi/token kedaluwarsa atau tidak valid
+  isTokenInvalidResponse(data) {
+    if (!data) return false;
+    const msg = String(data.error || data.message || '').toLowerCase();
+    return msg.includes('token tidak valid') ||
+           msg.includes('token invalid') ||
+           msg.includes('token expired') ||
+           msg.includes('token kedaluwarsa') ||
+           msg.includes('sesi berakhir') ||
+           msg.includes('akses ditolak') ||
+           msg.includes('unauthorized');
+  }
+
+  // Penanganan terpusat saat sesi staf admin berakhir / kedaluwarsa (PRD A-01 / Task 1.5)
+  handleSessionExpired() {
+    this.logout();
+    this.showToast('Sesi berakhir, silakan login kembali', 'warning', 'Sesi Berakhir');
+    if (typeof window.openAdminLogin === 'function') {
+      window.openAdminLogin();
+    } else {
+      const adminModal = document.getElementById('adminModal');
+      const adminLoginModal = document.getElementById('adminLoginModal');
+      adminModal?.classList.remove('active');
+      adminLoginModal?.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
   updateNavbarUserInfo() {
     const emailEl = document.getElementById('adminNavbarUserEmail');
     const roleEl = document.getElementById('adminNavbarRolePill');
+    const tabUsersBtn = document.getElementById('tabUsersNavBtn');
+    const tabObatBtn = document.getElementById('tabObatNavBtn');
+    const tabRegimenBtn = document.getElementById('tabRegimenNavBtn');
+
     if (this.currentUser) {
       if (emailEl) emailEl.textContent = this.currentUser.email;
       if (roleEl) roleEl.textContent = this.currentUser.role.toUpperCase();
+
+      const role = (this.currentUser.role || '').toLowerCase();
+      const isSuper = role.includes('super');
+      const isAdmin = isSuper || role === 'admin';
+
+      if (tabUsersBtn) {
+        tabUsersBtn.style.display = isSuper ? '' : 'none';
+      }
+      if (tabObatBtn) {
+        tabObatBtn.style.display = isAdmin ? '' : 'none';
+      }
+      if (tabRegimenBtn) {
+        tabRegimenBtn.style.display = isAdmin ? '' : 'none';
+      }
     } else {
       if (emailEl) emailEl.textContent = 'Belum Masuk';
       if (roleEl) roleEl.textContent = 'TAMU';
+      if (tabUsersBtn) tabUsersBtn.style.display = 'none';
+      if (tabObatBtn) tabObatBtn.style.display = 'none';
+      if (tabRegimenBtn) tabRegimenBtn.style.display = 'none';
     }
   }
 
@@ -366,7 +438,8 @@ class WebAdminPortal {
     message = 'Apakah Anda yakin ingin melanjutkan tindakan ini?',
     type = 'danger',
     confirmText = 'Ya, Lanjutkan',
-    cancelText = 'Batal'
+    cancelText = 'Batal',
+    requireConfirmationText = null
   } = {}) {
     return new Promise((resolve) => {
       const modal = document.getElementById('adminConfirmModal');
@@ -378,6 +451,10 @@ class WebAdminPortal {
       const proceedTextEl = document.getElementById('btnConfirmProceedText');
       const cancelBtn = document.getElementById('btnConfirmCancel');
       const closeBtn = document.getElementById('btnConfirmClose');
+      const inputContainer = document.getElementById('confirmModalInputContainer');
+      const inputLabel = document.getElementById('confirmModalInputLabel');
+      const textInput = document.getElementById('confirmModalTextInput');
+      const inputError = document.getElementById('confirmModalInputError');
 
       if (!modal) {
         resolve(window.confirm(message));
@@ -420,10 +497,42 @@ class WebAdminPortal {
         proceedBtn.className = `btn btn-${type === 'warning' ? 'warning' : (type === 'info' ? 'primary' : 'danger')}`;
       }
 
+      // Handler syarat ketik kata kunci konfirmasi khusus (mis. "SETUJU")
+      let onTextInputChange = null;
+      if (requireConfirmationText && inputContainer && textInput) {
+        inputContainer.style.display = 'block';
+        if (inputLabel) inputLabel.textContent = `Ketik "${requireConfirmationText}" untuk mengonfirmasi:`;
+        textInput.value = '';
+        textInput.placeholder = `Ketik ${requireConfirmationText} di sini`;
+        if (inputError) inputError.style.display = 'none';
+        if (proceedBtn) proceedBtn.disabled = true;
+
+        onTextInputChange = () => {
+          const val = textInput.value.trim().toUpperCase();
+          if (val === String(requireConfirmationText).trim().toUpperCase()) {
+            if (proceedBtn) proceedBtn.disabled = false;
+            if (inputError) inputError.style.display = 'none';
+          } else {
+            if (proceedBtn) proceedBtn.disabled = true;
+          }
+        };
+        textInput.addEventListener('input', onTextInputChange);
+        setTimeout(() => textInput.focus(), 80);
+      } else {
+        if (inputContainer) inputContainer.style.display = 'none';
+        if (proceedBtn) proceedBtn.disabled = false;
+      }
+
       modal.classList.add('active');
 
       const cleanup = (result) => {
         modal.classList.remove('active');
+        if (inputContainer) inputContainer.style.display = 'none';
+        if (textInput) {
+          textInput.value = '';
+          if (onTextInputChange) textInput.removeEventListener('input', onTextInputChange);
+        }
+        if (proceedBtn) proceedBtn.disabled = false;
         if (cancelBtn) cancelBtn.style.display = '';
         if (proceedBtn) proceedBtn.removeEventListener('click', onProceed);
         if (cancelBtn) cancelBtn.removeEventListener('click', onCancel);
@@ -446,66 +555,15 @@ class WebAdminPortal {
   }
 
   initBaileysPoller() {
-    this.fetchBaileysStatus();
-    setInterval(() => this.fetchBaileysStatus(), 2500);
+    // Baileys dinonaktifkan: Digantikan dengan Web Chatbot Engine
   }
 
   async fetchBaileysStatus() {
-    try {
-      const res = await fetch('/api/wa/status');
-      if (!res.ok) return;
-      const data = await res.json();
-      this.updateBaileysUI(data);
-    } catch (e) {
-      // Backend status safe
-    }
+    // Mode Web Chatbot aktif
   }
 
   updateBaileysUI(data) {
-    if (this.isLoggingOutWa) return;
-    const pill = document.getElementById('waConnectionStatusPill');
-    const pillText = document.getElementById('waConnectionStatusText');
-    const qrSpinner = document.getElementById('qrSpinner');
-    const qrImg = document.getElementById('waQrCodeImg');
-    const logoutBtn = document.getElementById('btnLogoutWa');
-    const deviceBox = document.getElementById('connectedDeviceBox');
-    const phoneDisplay = document.getElementById('connectedPhoneDisplay');
-
-    if (!pill || !pillText) return;
-
-    if (data.status === 'connected') {
-      pill.className = 'connection-status-pill connected';
-      pillText.textContent = `Terhubung Aktif (+${data.connectedPhone || 'WhatsApp'})`;
-      
-      if (qrSpinner) qrSpinner.style.display = 'none';
-      if (qrImg) {
-        qrImg.style.display = 'none';
-      }
-      if (logoutBtn) logoutBtn.style.display = 'inline-flex';
-      if (deviceBox) {
-        deviceBox.style.display = 'block';
-        if (phoneDisplay) phoneDisplay.textContent = `+${data.connectedPhone} (${data.connectedUser || 'Bot RS'})`;
-      }
-    } else if (data.status === 'qr_ready' && data.qrDataUrl) {
-      pill.className = 'connection-status-pill waiting';
-      pillText.textContent = 'Menunggu Scan Barcode QR';
-
-      if (qrSpinner) qrSpinner.style.display = 'none';
-      if (qrImg) {
-        qrImg.src = data.qrDataUrl;
-        qrImg.style.display = 'block';
-      }
-      if (logoutBtn) logoutBtn.style.display = 'none';
-      if (deviceBox) deviceBox.style.display = 'none';
-    } else {
-      pill.className = 'connection-status-pill disconnected';
-      pillText.textContent = 'Menghubungkan Baileys...';
-
-      if (qrSpinner) qrSpinner.style.display = 'flex';
-      if (qrImg) qrImg.style.display = 'none';
-      if (logoutBtn) logoutBtn.style.display = 'none';
-      if (deviceBox) deviceBox.style.display = 'none';
-    }
+    // Mode Web Chatbot aktif
   }
 
   bindEvents() {
@@ -570,201 +628,13 @@ class WebAdminPortal {
       saveSettingsBtn.addEventListener('click', () => this.saveSettings());
     }
 
-    // Customizable Emergency Form Listeners
-    const emergencyCustomForm = document.getElementById('emergencyCustomForm');
-    if (emergencyCustomForm) {
-      emergencyCustomForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-        this.saveEmergencyRule();
-      });
-    }
+    // Inisialisasi event listener panel Kelola Daftar Obat (Fase 3)
+    this.bindObatEvents();
 
-    const btnResetEmergency = document.getElementById('btnResetEmergencyForm');
-    if (btnResetEmergency) {
-      btnResetEmergency.addEventListener('click', (e) => {
-        e.preventDefault();
-        this.resetEmergencyForm();
-      });
-    }
+    // Inisialisasi event listener panel Kelola Regimen Kemoterapi
+    this.bindRegimenEvents();
 
-    const btnCancelEditEmergency = document.getElementById('btnCancelEditEmergency');
-    if (btnCancelEditEmergency) {
-      btnCancelEditEmergency.addEventListener('click', (e) => {
-        e.preventDefault();
-        this.resetEmergencyForm();
-      });
-    }
-
-    // Real-time Inputs for WhatsApp Bubble Live Preview
-    const emgTitleInput = document.getElementById('emgTitleInput');
-    const emgPhoneInput = document.getElementById('emgPhoneInput');
-    const emgAmbulanceInput = document.getElementById('emgAmbulanceInput');
-    const emgLocationInput = document.getElementById('emgLocationInput');
-    const emgKeywordsInput = document.getElementById('emgKeywordsInput');
-    const emgInstructionsInput = document.getElementById('emgInstructionsInput');
-
-    [emgTitleInput, emgPhoneInput, emgAmbulanceInput, emgLocationInput, emgKeywordsInput, emgInstructionsInput].forEach(inp => {
-      inp?.addEventListener('input', () => this.updateEmergencyLivePreview());
-    });
-
-    // Emergency Search Filter Input
-    const emergencyTableSearchInput = document.getElementById('emergencyTableSearchInput');
-    if (emergencyTableSearchInput) {
-      emergencyTableSearchInput.addEventListener('input', (e) => {
-        this.renderEmergencyTable(e.target.value);
-      });
-    }
-
-    // Test Emergency in Chat Simulator Button
-    const btnTestEmergency = document.getElementById('btnTestEmergencySimulator');
-    if (btnTestEmergency) {
-      btnTestEmergency.addEventListener('click', (e) => {
-        e.preventDefault();
-        this.testEmergencyRule(this.editingEmergencyId || null);
-      });
-    }
-
-    // Baileys QR & WhatsApp Action Listeners
-    const refreshQrBtn = document.getElementById('btnRefreshQr');
-    if (refreshQrBtn) {
-      refreshQrBtn.addEventListener('click', async () => {
-        refreshQrBtn.disabled = true;
-        refreshQrBtn.textContent = 'Memuat...';
-        try {
-          await fetch('/api/wa/restart', { method: 'POST' });
-          await this.fetchBaileysStatus();
-        } catch (e) {}
-        setTimeout(() => {
-          refreshQrBtn.disabled = false;
-          refreshQrBtn.innerHTML = `
-            <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 21h5v-5"/></svg>
-            Muat Ulang Barcode
-          `;
-        }, 2000);
-      });
-    }
-
-    const logoutWaBtn = document.getElementById('btnLogoutWa');
-    if (logoutWaBtn) {
-      logoutWaBtn.addEventListener('click', async () => {
-        const confirmed = await this.showConfirmDialog({
-          title: 'Putuskan Koneksi WhatsApp',
-          message: 'Apakah Anda yakin ingin memutuskan sesi nomor WhatsApp yang terhubung? Bot tidak akan dapat membalas pesan pasien sampai barcode QR dipindai ulang dengan nomor baru.',
-          type: 'warning',
-          confirmText: 'Ya, Putuskan Sesi',
-          cancelText: 'Batal'
-        });
-        if (!confirmed) return;
-
-        // 1. Aktifkan flag logout & tampilkan animasi loading di tombol & status panel
-        this.isLoggingOutWa = true;
-        this.setButtonLoading(logoutWaBtn, true, 'Memutuskan Sesi...');
-
-        const pill = document.getElementById('waConnectionStatusPill');
-        const pillText = document.getElementById('waConnectionStatusText');
-        const qrSpinner = document.getElementById('qrSpinner');
-        const qrImg = document.getElementById('waQrCodeImg');
-        const deviceBox = document.getElementById('connectedDeviceBox');
-
-        if (pill) pill.className = 'connection-status-pill disconnected';
-        if (pillText) {
-          pillText.innerHTML = '<span class="btn-inline-spinner" style="margin-right:6px;"></span>Memutuskan Koneksi...';
-        }
-        if (deviceBox) {
-          deviceBox.style.transition = 'opacity 0.3s ease';
-          deviceBox.style.opacity = '0.4';
-        }
-        if (qrSpinner) {
-          qrSpinner.style.display = 'flex';
-          const spinnerText = qrSpinner.querySelector('span');
-          if (spinnerText) spinnerText.textContent = 'Memutuskan sesi & menyiapkan barcode baru...';
-        }
-        if (qrImg) qrImg.style.display = 'none';
-
-        // 2. Tampilkan Loading Dialog Overlay dengan ikon logout / unlink
-        const disconnectIcon = `<svg class="svg-icon svg-icon-md" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>`;
-
-        this.showCrudLoading(
-          'Memutuskan Sesi WhatsApp',
-          'Sedang membersihkan autentikasi nomor terhubung dan menyiapkan barcode QR baru...',
-          disconnectIcon,
-          'danger'
-        );
-
-        try {
-          const res = await fetch('/api/wa/logout', { method: 'POST' });
-          if (!res.ok) throw new Error('Server mengembalikan kode status ' + res.status);
-
-          // 3. Polling status sampai Barcode QR baru selesai dibuat oleh modul Baileys
-          let qrReady = false;
-          const startTime = Date.now();
-          while (!qrReady && Date.now() - startTime < 8000) {
-            await new Promise(r => setTimeout(r, 600));
-            try {
-              const statusRes = await fetch('/api/wa/status');
-              if (statusRes.ok) {
-                const statusData = await statusRes.json();
-                if (statusData.status === 'qr_ready' && statusData.qrDataUrl) {
-                  qrReady = true;
-                  this.isLoggingOutWa = false;
-                  this.updateBaileysUI(statusData);
-                  break;
-                }
-              }
-            } catch (err) {}
-          }
-
-          this.isLoggingOutWa = false;
-          await this.fetchBaileysStatus();
-          this.showToast('Sesi nomor WhatsApp berhasil diputuskan. Barcode baru siap dipindai.', 'info', 'WhatsApp Terputus');
-        } catch (e) {
-          this.isLoggingOutWa = false;
-          this.showToast('Gagal memutuskan sesi WhatsApp: ' + (e.message || 'Terjadi gangguan jaringan'), 'error', 'Gagal Logout');
-        } finally {
-          this.isLoggingOutWa = false;
-          this.hideCrudLoading();
-          this.setButtonLoading(logoutWaBtn, false);
-          if (deviceBox) deviceBox.style.opacity = '1';
-        }
-      });
-    }
-
-    const sendTestBtn = document.getElementById('btnSendTestWa');
-    if (sendTestBtn) {
-      sendTestBtn.addEventListener('click', async () => {
-        const phone = document.getElementById('testPhoneInput')?.value.trim();
-        const msg = document.getElementById('testMessageInput')?.value.trim();
-        const resultEl = document.getElementById('testMessageResult');
-
-        if (!phone || !msg) {
-          this.showToast('Harap masukkan nomor WhatsApp tujuan dan pesan!', 'warning', 'Form Belum Lengkap');
-          return;
-        }
-
-        sendTestBtn.disabled = true;
-        sendTestBtn.textContent = 'Mengirim...';
-        if (resultEl) resultEl.innerHTML = '<span style="color:#64748b;">Mengirim pesan via Baileys...</span>';
-
-        try {
-          const res = await fetch('/api/wa/send-test', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ targetPhone: phone, message: msg })
-          });
-          const d = await res.json();
-          if (res.ok) {
-            if (resultEl) resultEl.innerHTML = `<span style="color:#16a34a; font-weight:700;">[Berhasil] ${d.message}</span>`;
-          } else {
-            if (resultEl) resultEl.innerHTML = `<span style="color:#dc2626;">[Gagal] ${d.error || 'Terjadi kesalahan'}</span>`;
-          }
-        } catch (err) {
-          if (resultEl) resultEl.innerHTML = `<span style="color:#dc2626;">[Error] ${err.message}</span>`;
-        } finally {
-          sendTestBtn.disabled = false;
-          sendTestBtn.textContent = 'Kirim Tes';
-        }
-      });
-    }
+    // Web Chatbot Mode: Baileys event listeners removed
   }
 
   // Clinical Dosage Safety Warning (PRD Section 9)
@@ -1026,423 +896,11 @@ class WebAdminPortal {
     const hoursEl = document.getElementById('settingHours');
 
     const s = this.bot?.data?.settings || {};
-    const primaryRule = (this.emergencyRules && this.emergencyRules.find(r => r.isPrimary)) || (this.emergencyRules && this.emergencyRules[0]);
 
     if (greetingEl) greetingEl.value = s.greeting || '';
     if (fallbackEl) fallbackEl.value = s.fallback || '';
     if (hoursEl) hoursEl.value = s.operatingHours || '';
-    if (igdPhoneEl) igdPhoneEl.value = s.emergencyHotline || this.bot?.emergencyHotline || primaryRule?.phone || '';
-  }
-
-  // ================= KELOLA PANGGILAN DARURAT IGD (CUSTOMIZABLE) =================
-  getDefaultEmergencyRules() {
-    return [];
-  }
-
-  loadEmergencyRules() {
-    try {
-      const stored = localStorage.getItem('hospital_emergency_rules');
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed)) {
-          return parsed;
-        }
-      }
-    } catch (e) {
-      console.warn('Gagal memuat aturan darurat dari storage:', e);
-    }
-    return [];
-  }
-
-  saveEmergencyRulesToStorage(rules = null) {
-    if (rules) this.emergencyRules = rules;
-    try {
-      localStorage.setItem('hospital_emergency_rules', JSON.stringify(this.emergencyRules));
-    } catch (e) {
-      console.warn('Gagal menyimpan aturan darurat ke storage:', e);
-    }
-
-    const primary = (this.emergencyRules && this.emergencyRules.find(r => r.isPrimary)) || (this.emergencyRules && this.emergencyRules[0]);
-    if (primary && this.bot) {
-      this.bot.emergencyHotline = primary.phone || '';
-      this.bot.hospitalAddress = primary.location || '';
-      this.bot.emergencyRules = this.emergencyRules;
-      if (this.bot.data && this.bot.data.settings) {
-        this.bot.data.settings.emergencyHotline = primary.phone || '';
-      }
-    }
-
-    this.syncEmergencyRulesToBackend();
-  }
-
-  async syncEmergencyRulesToBackend() {
-    try {
-      const primary = (this.emergencyRules && this.emergencyRules.find(r => r.isPrimary)) || (this.emergencyRules && this.emergencyRules[0]);
-      const payload = {
-        emergencyRules: this.emergencyRules,
-        settings: {
-          emergencyHotline: primary ? primary.phone : '',
-          hospitalAddress: primary ? primary.location : ''
-        }
-      };
-      await fetch('/api/bot/data', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-    } catch (e) {
-      // Backend offline safe
-    }
-  }
-
-  syncEmergencyFormWithActiveRule() {
-    if (this.editingEmergencyId) return;
-    const primary = (this.emergencyRules && this.emergencyRules.find(r => r.isPrimary)) || (this.emergencyRules && this.emergencyRules[0]);
-    if (primary) {
-      const titleInput = document.getElementById('emgTitleInput');
-      const phoneInput = document.getElementById('emgPhoneInput');
-      const ambInput = document.getElementById('emgAmbulanceInput');
-      const locInput = document.getElementById('emgLocationInput');
-      const kwInput = document.getElementById('emgKeywordsInput');
-      const instInput = document.getElementById('emgInstructionsInput');
-
-      if (titleInput && !titleInput.value) titleInput.value = primary.title || '';
-      if (phoneInput && !phoneInput.value) phoneInput.value = primary.phone || '';
-      if (ambInput && !ambInput.value) ambInput.value = primary.ambulance || '';
-      if (locInput && !locInput.value) locInput.value = primary.location || '';
-      if (kwInput && !kwInput.value) kwInput.value = (primary.keywords || []).join(', ');
-      if (instInput && !instInput.value) instInput.value = primary.instructions || '';
-    }
-  }
-
-  updateEmergencyLivePreview() {
-    const primary = (this.emergencyRules && this.emergencyRules.find(r => r.isPrimary)) || (this.emergencyRules && this.emergencyRules[0]) || null;
-    const titleVal = document.getElementById('emgTitleInput')?.value.trim() || primary?.title || 'Layanan Darurat IGD';
-    const phoneVal = document.getElementById('emgPhoneInput')?.value.trim() || primary?.phone || '-';
-    const ambVal = document.getElementById('emgAmbulanceInput')?.value.trim() || primary?.ambulance || '-';
-    const locVal = document.getElementById('emgLocationInput')?.value.trim() || primary?.location || '-';
-    const kwVal = document.getElementById('emgKeywordsInput')?.value.trim() || (primary?.keywords || []).join(', ') || '';
-    const instVal = document.getElementById('emgInstructionsInput')?.value.trim() ||
-      primary?.instructions || 'Jika pasien mengalami keluhan akut atau kegawatdaruratan medis, segera bawa ke IGD terdekat tanpa menunda.';
-
-    const keywordsCount = kwVal ? kwVal.split(',').filter(s => s.trim().length > 0).length : 0;
-    const kwCountEl = document.getElementById('emgKeywordsCount');
-    if (kwCountEl) kwCountEl.textContent = `${keywordsCount} kata kunci`;
-
-    const instCharCountEl = document.getElementById('emgInstructionsCharCount');
-    if (instCharCountEl) instCharCountEl.textContent = `${instVal.length} karakter`;
-
-    const pHeading = document.getElementById('previewEmgHeading');
-    const pPhone = document.getElementById('previewEmgPhone');
-    const pAmbulance = document.getElementById('previewEmgAmbulance');
-    const pLocation = document.getElementById('previewEmgLocation');
-    const pInstructions = document.getElementById('previewEmgInstructions');
-
-    if (pHeading) pHeading.textContent = titleVal.toUpperCase();
-    if (pPhone) pPhone.textContent = phoneVal;
-    if (pAmbulance) pAmbulance.textContent = ambVal;
-    if (pLocation) pLocation.textContent = locVal;
-    if (pInstructions) pInstructions.textContent = instVal;
-  }
-
-  renderEmergencyTable(searchQuery = '') {
-    const tbody = document.getElementById('emergencyTableBody');
-    if (!tbody) return;
-
-    const q = (searchQuery || '').toLowerCase().trim();
-    const filtered = (this.emergencyRules || []).filter(rule => {
-      if (!q) return true;
-      const matchTitle = (rule.title || '').toLowerCase().includes(q);
-      const matchPhone = (rule.phone || '').toLowerCase().includes(q);
-      const matchAmb = (rule.ambulance || '').toLowerCase().includes(q);
-      const matchLoc = (rule.location || '').toLowerCase().includes(q);
-      const matchInst = (rule.instructions || '').toLowerCase().includes(q);
-      const matchKw = (rule.keywords || []).some(k => k.toLowerCase().includes(q));
-      return matchTitle || matchPhone || matchAmb || matchLoc || matchInst || matchKw;
-    });
-
-    if (filtered.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 28px; color: #94a3b8;">${q ? `Tidak ada protokol darurat yang sesuai dengan "${escapeHtml(q)}"` : 'Belum ada aturan darurat terdaftar.'}</td></tr>`;
-      return;
-    }
-
-    tbody.innerHTML = filtered.map((rule, idx) => {
-      const isPrimary = !!rule.isPrimary;
-      const kwHtml = (rule.keywords || []).slice(0, 5).map(k =>
-        `<span class="emergency-keyword-chip">${escapeHtml(k)}</span>`
-      ).join('');
-      const moreKw = (rule.keywords || []).length > 5 ? `<span style="font-size:0.7rem; color:#94a3b8; margin-left:4px;">+${rule.keywords.length - 5} lainnya</span>` : '';
-
-      return `
-        <tr style="${this.editingEmergencyId === rule.id ? 'background: #fef2f2;' : ''}">
-          <td>
-            ${isPrimary
-              ? `<span class="status-badge" style="background:#fee2e2; color:#b91c1c; font-weight:700;">Utama (1)</span>`
-              : `<span class="status-badge" style="background:#f1f5f9; color:#475569;">Siaga (${idx + 1})</span>`
-            }
-          </td>
-          <td>
-            <div style="font-weight:700; color:var(--text-main); margin-bottom: 2px;">${escapeHtml(rule.title)}</div>
-            <div style="font-size:0.75rem; color:#64748b; line-height: 1.3;">${escapeHtml(rule.location || '-')}</div>
-          </td>
-          <td>
-            <div style="font-weight:700; color:var(--primary); font-family:monospace; font-size:0.85rem;">${escapeHtml(rule.phone)}</div>
-            <div style="font-size:0.75rem; color:#64748b;">Ambulans: <strong>${escapeHtml(rule.ambulance || '-')}</strong></div>
-          </td>
-          <td>
-            <div style="display:flex; flex-wrap:wrap; gap:4px; align-items:center; max-width:260px;">
-              ${kwHtml} ${moreKw}
-            </div>
-          </td>
-          <td>
-            <span class="status-badge active">${escapeHtml(rule.status || 'Tayang')}</span>
-          </td>
-          <td style="text-align: center;">
-            <div class="action-btns" style="justify-content:center;">
-              <button class="btn-icon-sm" title="Edit Protokol Darurat" onclick="adminPortal.editEmergencyRule('${rule.id}')">
-                <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
-              </button>
-              <button class="btn-icon-sm" title="Uji Respon Darurat di Chat Simulator" style="color:var(--primary);" onclick="adminPortal.testEmergencyRule('${rule.id}')">
-                <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-              </button>
-              <button class="btn-icon-sm danger" title="Hapus Protokol" onclick="adminPortal.deleteEmergencyRule('${rule.id}')">
-                <svg class="svg-icon svg-icon-xs" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-              </button>
-            </div>
-          </td>
-        </tr>
-      `;
-    }).join('');
-  }
-
-  editEmergencyRule(ruleId) {
-    const rule = (this.emergencyRules || []).find(r => r.id === ruleId);
-    if (!rule) return;
-
-    this.editingEmergencyId = ruleId;
-    const idInput = document.getElementById('editEmergencyIdInput');
-    const titleInput = document.getElementById('emgTitleInput');
-    const phoneInput = document.getElementById('emgPhoneInput');
-    const ambInput = document.getElementById('emgAmbulanceInput');
-    const locInput = document.getElementById('emgLocationInput');
-    const kwInput = document.getElementById('emgKeywordsInput');
-    const instInput = document.getElementById('emgInstructionsInput');
-
-    if (idInput) idInput.value = rule.id;
-    if (titleInput) titleInput.value = rule.title || '';
-    if (phoneInput) phoneInput.value = rule.phone || '';
-    if (ambInput) ambInput.value = rule.ambulance || '';
-    if (locInput) locInput.value = rule.location || '';
-    if (kwInput) kwInput.value = (rule.keywords || []).join(', ');
-    if (instInput) instInput.value = rule.instructions || '';
-
-    const heading = document.getElementById('emergencyFormHeading');
-    if (heading) heading.textContent = `Edit Protokol: ${rule.title}`;
-
-    const saveBtn = document.getElementById('btnSaveEmergencyRule');
-    if (saveBtn) {
-      saveBtn.innerHTML = `
-        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-        Perbarui & Simpan Perubahan Protokol
-      `;
-    }
-
-    const cancelBtn = document.getElementById('btnCancelEditEmergency');
-    if (cancelBtn) cancelBtn.style.display = 'inline-block';
-
-    this.updateEmergencyLivePreview();
-    this.renderEmergencyTable(document.getElementById('emergencyTableSearchInput')?.value || '');
-
-    titleInput?.focus();
-    document.getElementById('emergencyCustomForm')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }
-
-  resetEmergencyForm() {
-    this.editingEmergencyId = null;
-    const idInput = document.getElementById('editEmergencyIdInput');
-    const form = document.getElementById('emergencyCustomForm');
-    if (idInput) idInput.value = '';
-    if (form) form.reset();
-
-    const heading = document.getElementById('emergencyFormHeading');
-    if (heading) heading.textContent = 'Tambah / Edit Protokol Panggilan Darurat';
-
-    const saveBtn = document.getElementById('btnSaveEmergencyRule');
-    if (saveBtn) {
-      saveBtn.innerHTML = `
-        <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-        Simpan & Terbitkan Langsung (Live)
-      `;
-    }
-
-    const cancelBtn = document.getElementById('btnCancelEditEmergency');
-    if (cancelBtn) cancelBtn.style.display = 'none';
-
-    this.syncEmergencyFormWithActiveRule();
-    this.updateEmergencyLivePreview();
-    this.renderEmergencyTable(document.getElementById('emergencyTableSearchInput')?.value || '');
-  }
-
-  async saveEmergencyRule() {
-    const saveBtn = document.getElementById('btnSaveEmergencyRule');
-    const title = document.getElementById('emgTitleInput')?.value.trim();
-    const phone = document.getElementById('emgPhoneInput')?.value.trim();
-    const ambulance = document.getElementById('emgAmbulanceInput')?.value.trim();
-    const location = document.getElementById('emgLocationInput')?.value.trim();
-    const kwRaw = document.getElementById('emgKeywordsInput')?.value.trim() || '';
-    const instructions = document.getElementById('emgInstructionsInput')?.value.trim();
-
-    if (!title || !phone || !instructions) {
-      this.showToast('Harap lengkapi nama layanan, nomor hotline, dan arahan instruksi pasien!', 'warning', 'Form Belum Lengkap');
-      return;
-    }
-
-    const keywords = kwRaw
-      .split(',')
-      .map(s => s.trim().toLowerCase())
-      .filter(s => s.length > 0);
-
-    this.setButtonLoading(saveBtn, true, 'Menyimpan Protokol...');
-    this.showCrudLoading('Menyimpan Protokol Darurat', 'Menyinkronkan konfigurasi ke Bot WhatsApp & Server...');
-
-    try {
-      if (this.editingEmergencyId) {
-        const idx = this.emergencyRules.findIndex(r => r.id === this.editingEmergencyId);
-        if (idx !== -1) {
-          this.emergencyRules[idx] = {
-            ...this.emergencyRules[idx],
-            title,
-            phone,
-            ambulance: ambulance || '',
-            location: location || '',
-            keywords,
-            instructions,
-            updatedAt: new Date().toISOString()
-          };
-          this.recordAuditLog('UPDATE_PROTOKOL_DARURAT', `Memperbarui protokol darurat: "${title}" (${phone})`);
-          this.showToast(`Protokol darurat "${title}" berhasil diperbarui dan aktif langsung di WhatsApp!`, 'success', 'Protokol Diperbarui');
-        }
-      } else {
-        const isFirst = this.emergencyRules.length === 0;
-        const newRule = {
-          id: 'emg-rule-' + Date.now(),
-          title,
-          phone,
-          ambulance: ambulance || '',
-          location: location || '',
-          keywords,
-          instructions,
-          status: 'Tayang',
-          isPrimary: isFirst,
-          updatedAt: new Date().toISOString()
-        };
-        this.emergencyRules.push(newRule);
-        this.recordAuditLog('TAMBAH_PROTOKOL_DARURAT', `Menambahkan protokol darurat baru: "${title}" (${phone})`);
-        this.showToast(`Protokol darurat "${title}" berhasil ditambahkan dan ditayangkan!`, 'success', 'Protokol Baru Aktif');
-      }
-
-      this.saveEmergencyRulesToStorage();
-
-      const targetRule = this.editingEmergencyId 
-        ? this.emergencyRules.find(r => r.id === this.editingEmergencyId)
-        : this.emergencyRules[this.emergencyRules.length - 1];
-
-      if (targetRule) {
-        this.postToAppsScript({
-          action: 'save_emergency_rule',
-          ruleData: targetRule,
-          userEmail: this.currentUser?.email
-        });
-      }
-
-      this.resetEmergencyForm();
-    } catch (err) {
-      console.error('Error saving emergency rule:', err);
-      this.showToast('Gagal menyimpan protokol darurat: ' + err.message, 'error', 'Error Sistem');
-    } finally {
-      this.hideCrudLoading();
-      if (saveBtn) this.setButtonLoading(saveBtn, false);
-    }
-  }
-
-  async deleteEmergencyRule(ruleId) {
-    const rule = (this.emergencyRules || []).find(r => r.id === ruleId);
-    if (!rule) return;
-
-    if (this.emergencyRules.length <= 1) {
-      this.showToast('Minimal harus ada 1 protokol panggilan darurat aktif di sistem RS Medica.', 'warning', 'Tidak Dapat Dihapus');
-      return;
-    }
-
-    const confirmed = await this.showConfirmDialog({
-      title: 'Hapus Protokol Panggilan Darurat',
-      message: `Apakah Anda yakin ingin menghapus protokol "${rule.title}"? Kata kunci pemicu klinis terkait tidak akan memicu protokol ini lagi.`,
-      type: 'danger',
-      confirmText: 'Ya, Hapus Protokol',
-      cancelText: 'Batal'
-    });
-    if (!confirmed) return;
-
-    this.showCrudLoading('Menghapus Protokol Darurat', `Menghapus "${rule.title}" dari bot & Google Sheets...`);
-
-    try {
-      const isWasPrimary = !!rule.isPrimary;
-      this.emergencyRules = this.emergencyRules.filter(r => r.id !== ruleId);
-
-      if (isWasPrimary && this.emergencyRules.length > 0) {
-        this.emergencyRules[0].isPrimary = true;
-      }
-
-      this.saveEmergencyRulesToStorage();
-
-      this.postToAppsScript({
-        action: 'delete_emergency_rule',
-        id: ruleId,
-        userEmail: this.currentUser?.email
-      });
-
-      if (this.editingEmergencyId === ruleId) {
-        this.resetEmergencyForm();
-      } else {
-        this.renderEmergencyTable(document.getElementById('emergencyTableSearchInput')?.value || '');
-      }
-
-      this.recordAuditLog('HAPUS_PROTOKOL_DARURAT', `Menghapus protokol darurat: "${rule.title}"`);
-      this.showToast(`Protokol darurat "${rule.title}" berhasil dihapus.`, 'success', 'Protokol Dihapus');
-    } catch (err) {
-      console.error('Error deleting emergency rule:', err);
-      this.showToast('Gagal menghapus protokol: ' + err.message, 'error', 'Error Sistem');
-    } finally {
-      this.hideCrudLoading();
-    }
-  }
-
-  testEmergencyRule(ruleId = null) {
-    let target = null;
-    if (ruleId) {
-      target = this.emergencyRules.find(r => r.id === ruleId);
-    }
-    if (!target) {
-      target = (this.emergencyRules && this.emergencyRules.find(r => r.isPrimary)) || (this.emergencyRules && this.emergencyRules[0]);
-    }
-    if (!target) return;
-
-    if (typeof window.openSimulatorChat === 'function') {
-      window.openSimulatorChat();
-      setTimeout(() => {
-        const res = this.bot.handleEmergencyEscalation('Uji Coba Manual Protokol', target);
-        if (typeof window.renderBotResponse === 'function') {
-          window.renderBotResponse(res.text, true);
-        }
-        if (typeof window.scrollWaToBottom === 'function') {
-          window.scrollWaToBottom();
-        }
-      }, 350);
-    }
-  }
-
-  async saveEmergencySettings() {
-    return this.saveEmergencyRule();
+    if (igdPhoneEl) igdPhoneEl.value = s.emergencyHotline || this.bot?.emergencyHotline || '';
   }
 
   // Kirim aksi perubahan ke Google Apps Script Web App
@@ -1458,7 +916,16 @@ class WebAdminPortal {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(bodyPayload)
       });
-      return await res.json();
+      if (res.status === 401 || res.status === 403) {
+        this.handleSessionExpired();
+        return null;
+      }
+      const data = await res.json();
+      if (this.isTokenInvalidResponse(data)) {
+        this.handleSessionExpired();
+        return null;
+      }
+      return data;
     } catch (e) {
       console.warn('[GAS Action] Gagal mengirim aksi ke Google Sheets:', e.message);
       return null;
@@ -1475,10 +942,7 @@ class WebAdminPortal {
           if (json.data.categories && Array.isArray(json.data.categories)) {
             this.bot.data.categories = json.data.categories;
           }
-          if (json.data.emergencyRules && Array.isArray(json.data.emergencyRules)) {
-            this.emergencyRules = json.data.emergencyRules;
-            this.saveEmergencyRulesToStorage();
-          }
+
           if (json.data.settings) {
             if (!this.bot.data.settings) this.bot.data.settings = {};
             if (json.data.settings.greeting !== undefined) this.bot.data.settings.greeting = json.data.settings.greeting;
@@ -1488,6 +952,9 @@ class WebAdminPortal {
           }
           this.bot.saveDataToStorage(this.bot.data);
           this.renderAll();
+          if (typeof window.updateWaSimulatorQuickChips === 'function') {
+            window.updateWaSimulatorQuickChips();
+          }
           this.updateSyncStatusPill(true);
           console.log('[GAS Web Admin] Data berhasil disinkronkan dari Google Sheets!');
         }
@@ -1519,8 +986,8 @@ class WebAdminPortal {
     const el = document.getElementById('adminSyncStatusText');
     if (el) {
       el.innerHTML = isConnected 
-        ? 'Google Sheets & Baileys: <strong>Live</strong>'
-        : 'Baileys Gateway: <strong>Live</strong>';
+        ? 'Google Sheets & Web Bot: <strong>Live</strong>'
+        : 'Web Bot Cache: <strong>Live</strong>';
     }
   }
 
@@ -1541,7 +1008,6 @@ class WebAdminPortal {
     this.renderStats();
     this.renderCategoryList();
     this.renderFaqTable();
-    this.renderEmergencyTable();
     this.renderCategoryOptions();
     this.renderAuditLogs();
     this.renderEventLogs();
@@ -2096,12 +1562,18 @@ class WebAdminPortal {
           'X-Admin-Token': token
         }
       });
-      if (res.ok) {
-        const json = await res.json();
-        if (json.success && Array.isArray(json.data)) {
-          this.whitelistUsers = json.data;
-          this.renderUsers();
-        }
+      if (res.status === 401 || res.status === 403) {
+        this.handleSessionExpired();
+        return;
+      }
+      const json = await res.json();
+      if (this.isTokenInvalidResponse(json)) {
+        this.handleSessionExpired();
+        return;
+      }
+      if (res.ok && json.success && Array.isArray(json.data)) {
+        this.whitelistUsers = json.data;
+        this.renderUsers();
       }
     } catch (e) {
       console.warn('[Users] Gagal mengambil daftar pengguna dari server:', e.message);
@@ -2125,13 +1597,13 @@ class WebAdminPortal {
     });
 
     const totalUsersEl = document.getElementById('statTotalUsers');
-    const superAdminEl = document.getElementById('statSuperAdminCount');
+    const leadAdminEl = document.getElementById('statLeadAdminCount');
     const nurseEl = document.getElementById('statNurseCount');
     const activePercentEl = document.getElementById('statActiveUsersPercent');
 
     if (totalUsersEl) totalUsersEl.textContent = this.whitelistUsers.length;
-    if (superAdminEl) {
-      superAdminEl.textContent = this.whitelistUsers.filter(u => u.role === 'Super Admin').length;
+    if (leadAdminEl) {
+      leadAdminEl.textContent = this.whitelistUsers.filter(u => u.role === 'Super Admin').length;
     }
     if (nurseEl) {
       nurseEl.textContent = this.whitelistUsers.filter(u => (u.role || '').includes('Perawat')).length;
@@ -2397,6 +1869,1943 @@ class WebAdminPortal {
       this.showToast('Gagal menghapus akun: ' + err.message, 'error', 'Error Sistem');
     } finally {
       this.hideCrudLoading();
+    }
+  }
+
+  // ==========================================================================
+  // FASE 3: MANAJEMEN KATALOG OBAT KEMOTERAPI (PANEL OBAT)
+  // ==========================================================================
+
+  bindObatEvents() {
+    // Tombol Buka Modal Tambah Obat
+    const btnOpenAdd = document.getElementById('btnOpenAddObatModal');
+    btnOpenAdd?.addEventListener('click', () => this.openAddObatModal());
+
+    // Tombol Tutup & Batal Modal Obat
+    const btnCloseObat = document.getElementById('closeObatModalBtn');
+    const btnCancelObat = document.getElementById('btnCancelObatModal');
+    const obatModal = document.getElementById('obatModal');
+    const closeObatHandler = () => obatModal?.classList.remove('active');
+    btnCloseObat?.addEventListener('click', closeObatHandler);
+    btnCancelObat?.addEventListener('click', closeObatHandler);
+
+    // Form Submit Obat (Tambah / Edit)
+    const obatForm = document.getElementById('obatForm');
+    obatForm?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      this.saveObat();
+    });
+
+    // Realtime Live Preview & Counter Listener untuk Form Obat
+    const obatInputs = [
+      'obatNamaInput', 'obatProdusenInput', 'obatKfaInput', 'obatBentukSelect',
+      'obatJenisSelect', 'obatGolonganSelect', 'obatStatusSelect', 'obatUrutanInput',
+      'obatIndikasiRingkasInput', 'obatDeskripsiInput', 'obatIndikasiUmumInput',
+      'obatKomposisiInput', 'obatPeringatanInput', 'obatEfekSampingInput'
+    ];
+    obatInputs.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('input', () => {
+          this.updateObatCharCounters();
+          this.updateLiveObatPreview();
+        });
+        el.addEventListener('change', () => {
+          this.updateObatCharCounters();
+          this.updateLiveObatPreview();
+        });
+      }
+    });
+
+    // Tab Switcher Pratinjau Form Obat (Kartu vs Halaman Detail)
+    const tabCardBtn = document.getElementById('btnPreviewTabCard');
+    const tabDetailBtn = document.getElementById('btnPreviewTabDetail');
+    const paneCard = document.getElementById('panePreviewCard');
+    const paneDetail = document.getElementById('panePreviewDetail');
+
+    tabCardBtn?.addEventListener('click', () => {
+      tabCardBtn.classList.add('active');
+      tabDetailBtn?.classList.remove('active');
+      paneCard?.classList.add('active');
+      paneDetail?.classList.remove('active');
+    });
+
+    tabDetailBtn?.addEventListener('click', () => {
+      tabDetailBtn.classList.add('active');
+      tabCardBtn?.classList.remove('active');
+      paneDetail?.classList.add('active');
+      paneCard?.classList.remove('active');
+    });
+
+    // Filter Toolbar Pencarian Realtime & Status & Bentuk
+    const searchInput = document.getElementById('obatSearchInput');
+    let searchDebounce = null;
+    searchInput?.addEventListener('input', () => {
+      if (searchDebounce) clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(() => {
+        this.obatFilterSearch = (searchInput.value || '').trim().toLowerCase();
+        this.obatCurrentPage = 1;
+        this.renderObatTable();
+      }, 250);
+    });
+
+    const statusFilter = document.getElementById('obatStatusFilter');
+    statusFilter?.addEventListener('change', () => {
+      this.obatFilterStatus = statusFilter.value;
+      this.obatCurrentPage = 1;
+      this.renderObatTable();
+    });
+
+    const bentukFilter = document.getElementById('obatBentukFilter');
+    bentukFilter?.addEventListener('change', () => {
+      this.obatFilterBentuk = bentukFilter.value;
+      this.obatCurrentPage = 1;
+      this.renderObatTable();
+    });
+
+    const resetFilterBtn = document.getElementById('btnResetObatFilter');
+    resetFilterBtn?.addEventListener('click', () => {
+      if (searchInput) searchInput.value = '';
+      if (statusFilter) statusFilter.value = '';
+      if (bentukFilter) bentukFilter.value = '';
+      this.obatFilterSearch = '';
+      this.obatFilterStatus = '';
+      this.obatFilterBentuk = '';
+      this.obatCurrentPage = 1;
+      this.renderObatTable();
+    });
+
+    // Pagination Tombol Prev & Next
+    const prevPageBtn = document.getElementById('btnObatPrevPage');
+    const nextPageBtn = document.getElementById('btnObatNextPage');
+    prevPageBtn?.addEventListener('click', () => {
+      if (this.obatCurrentPage > 1) {
+        this.obatCurrentPage--;
+        this.renderObatTable();
+      }
+    });
+    nextPageBtn?.addEventListener('click', () => {
+      this.obatCurrentPage++;
+      this.renderObatTable();
+    });
+
+    // Event Delegation untuk Aksi Baris Tabel Obat (Edit, Fasilitas, Hapus, Urutan)
+    const obatTbody = document.getElementById('obatTableBody');
+    obatTbody?.addEventListener('click', (e) => {
+      const actionBtn = e.target.closest('[data-action]');
+      if (!actionBtn) return;
+      const action = actionBtn.dataset.action;
+      const id = actionBtn.dataset.id;
+      if (!id) return;
+
+      if (action === 'edit-obat') {
+        this.openEditObatModal(id);
+      } else if (action === 'manage-fasilitas') {
+        this.openFasilitasModal(id);
+      } else if (action === 'delete-obat') {
+        this.deleteObat(id);
+      }
+    });
+
+    obatTbody?.addEventListener('change', (e) => {
+      const urutInput = e.target.closest('[data-action="change-urutan"]');
+      if (urutInput && urutInput.dataset.id) {
+        this.updateObatUrutan(urutInput.dataset.id, urutInput.value);
+      }
+    });
+
+    // Modal Fasilitas Obat Events
+    const btnCloseFas = document.getElementById('closeFasilitasModalBtn');
+    const fasModal = document.getElementById('fasilitasObatModal');
+    btnCloseFas?.addEventListener('click', () => fasModal?.classList.remove('active'));
+
+    const fasForm = document.getElementById('fasilitasForm');
+    fasForm?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      this.saveFasilitasObat();
+    });
+
+    const btnCancelFasEdit = document.getElementById('btnCancelFasilitasEdit');
+    btnCancelFasEdit?.addEventListener('click', () => this.resetFasilitasForm());
+
+    const fasTbody = document.getElementById('fasilitasListTableBody');
+    fasTbody?.addEventListener('click', (e) => {
+      const actionBtn = e.target.closest('[data-action]');
+      if (!actionBtn) return;
+      const action = actionBtn.dataset.action;
+      const id = actionBtn.dataset.id;
+      if (!id) return;
+
+      if (action === 'edit-fasilitas') {
+        this.startEditFasilitas(id);
+      } else if (action === 'delete-fasilitas') {
+        this.deleteFasilitasObat(id);
+      }
+    });
+
+    // Modal Impor CSV & Ekspor CSV Events
+    const btnOpenImport = document.getElementById('btnOpenImportObatModal');
+    btnOpenImport?.addEventListener('click', () => this.openImportObatModal());
+
+    const btnCloseImport = document.getElementById('closeImportModalBtn');
+    const btnCancelImport = document.getElementById('btnCancelImportModal');
+    const importModal = document.getElementById('importObatModal');
+    const closeImportHandler = () => importModal?.classList.remove('active');
+    btnCloseImport?.addEventListener('click', closeImportHandler);
+    btnCancelImport?.addEventListener('click', closeImportHandler);
+
+    const btnDownloadTemplate = document.getElementById('btnDownloadObatCsvTemplate');
+    btnDownloadTemplate?.addEventListener('click', () => this.downloadObatCsvTemplate());
+
+    const csvFileInput = document.getElementById('obatCsvFileInput');
+    csvFileInput?.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        this.handleObatCsvFile(e.target.files[0]);
+      }
+    });
+
+    const btnSubmitImport = document.getElementById('btnSubmitImportCsv');
+    btnSubmitImport?.addEventListener('click', () => this.submitImportObatBulk());
+
+    const btnExport = document.getElementById('btnExportObatCsv');
+    btnExport?.addEventListener('click', () => this.exportObatCsv());
+  }
+
+  // Tarik data obat admin dari server (termasuk status Draft dan jumlah fasilitas)
+  async fetchAdminObatList() {
+    const token = this.getAdminToken();
+    if (!token) return;
+
+    try {
+      const res = await fetch('/api/gas/action', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'admin_get_obat_list',
+          token: token
+        })
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        this.handleSessionExpired();
+        return;
+      }
+
+      const json = await res.json();
+      if (this.isTokenInvalidResponse(json)) {
+        this.handleSessionExpired();
+        return;
+      }
+
+      if (json.success && (Array.isArray(json.data) || (json.data && Array.isArray(json.data.items)))) {
+        this.obatList = Array.isArray(json.data) ? json.data : json.data.items;
+        this.renderObatTable();
+      } else {
+        this.showToast(json.error || json.message || 'Gagal memuat daftar obat.', 'warning', 'Peringatan Server');
+      }
+    } catch (e) {
+      console.warn('[Admin Obat] Gagal memuat data obat:', e.message);
+    }
+  }
+
+  // Render Tabel Daftar Obat dengan Filter & Pagination
+  renderObatTable() {
+    const tbody = document.getElementById('obatTableBody');
+    if (!tbody) return;
+
+    const searchTerm = (this.obatFilterSearch || '').toLowerCase().trim();
+    const statusFilter = this.obatFilterStatus;
+    const bentukFilter = this.obatFilterBentuk;
+
+    const filtered = (this.obatList || []).filter(item => {
+      const matchSearch = !searchTerm ||
+        (item.nama_obat && item.nama_obat.toLowerCase().includes(searchTerm)) ||
+        (item.nama_produsen && item.nama_produsen.toLowerCase().includes(searchTerm)) ||
+        (item.kode_kfa && item.kode_kfa.toLowerCase().includes(searchTerm));
+      const matchStatus = !statusFilter || item.status === statusFilter;
+      const matchBentuk = !bentukFilter || item.bentuk_sediaan === bentukFilter;
+      return matchSearch && matchStatus && matchBentuk;
+    });
+
+    // Urutkan berdasarkan urutan prioritas, lalu alfabet nama obat
+    filtered.sort((a, b) => {
+      const urutA = Number(a.urutan) || 1;
+      const urutB = Number(b.urutan) || 1;
+      if (urutA !== urutB) return urutA - urutB;
+      return String(a.nama_obat || '').localeCompare(String(b.nama_obat || ''));
+    });
+
+    const totalItems = filtered.length;
+    const totalPages = Math.max(1, Math.ceil(totalItems / this.obatPageSize));
+    this.obatCurrentPage = Math.min(Math.max(1, this.obatCurrentPage), totalPages);
+
+    const startIndex = (this.obatCurrentPage - 1) * this.obatPageSize;
+    const paginatedItems = filtered.slice(startIndex, startIndex + this.obatPageSize);
+
+    // Update Pagination UI
+    const paginationInfo = document.getElementById('obatPaginationInfo');
+    const pageNumbersEl = document.getElementById('obatPageNumbers');
+    const prevBtn = document.getElementById('btnObatPrevPage');
+    const nextBtn = document.getElementById('btnObatNextPage');
+
+    if (paginationInfo) {
+      if (totalItems === 0) {
+        paginationInfo.textContent = 'Menampilkan 0 obat';
+      } else {
+        const endItem = Math.min(startIndex + this.obatPageSize, totalItems);
+        paginationInfo.textContent = `Menampilkan ${startIndex + 1} - ${endItem} dari ${totalItems} obat`;
+      }
+    }
+    if (pageNumbersEl) {
+      pageNumbersEl.textContent = `Hal ${this.obatCurrentPage} / ${totalPages}`;
+    }
+    if (prevBtn) prevBtn.disabled = this.obatCurrentPage <= 1;
+    if (nextBtn) nextBtn.disabled = this.obatCurrentPage >= totalPages;
+
+    if (paginatedItems.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="8" style="text-align: center; padding: 36px 16px; color: #94a3b8;">
+            Tidak ada obat kemoterapi yang sesuai dengan filter atau kata kunci pencarian.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = paginatedItems.map(item => {
+      const isTayang = item.status === 'Tayang';
+      const isKeras = item.golongan === 'Obat Keras';
+      const fasCount = Number(item.jumlah_fasilitas) || (item.fasilitas ? item.fasilitas.length : 0);
+
+      // Hitung harga terendah jika fasilitas tersedia
+      let hargaTermurahStr = '-';
+      if (Array.isArray(item.fasilitas) && item.fasilitas.length > 0) {
+        const validHargas = item.fasilitas.map(f => Number(f.harga) || 0).filter(h => h > 0);
+        if (validHargas.length > 0) {
+          const minH = Math.min(...validHargas);
+          hargaTermurahStr = `Mulai ${this.formatRupiah(minH)}`;
+        }
+      }
+
+      return `
+        <tr>
+          <td style="text-align: center;">
+            <input type="number" 
+                   class="input-urutan-obat" 
+                   data-action="change-urutan" 
+                   data-id="${escapeHtml(item.id)}" 
+                   value="${escapeHtml(item.urutan || 1)}" 
+                   min="1" 
+                   title="Ubah urutan tampil (langsung tersimpan)">
+          </td>
+          <td>
+            <div style="font-weight: 600; color: #0f172a; font-size: 0.9rem;">
+              ${escapeHtml(item.nama_obat)}
+            </div>
+            ${item.indikasi_ringkas ? `
+              <div style="font-size: 0.74rem; color: #64748b; margin-top: 3px; max-width: 280px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${escapeHtml(item.indikasi_ringkas)}">
+                ${escapeHtml(item.indikasi_ringkas)}
+              </div>
+            ` : ''}
+            ${item.kode_kfa ? `
+              <div style="font-size: 0.72rem; color: #0284c7; margin-top: 3px; font-weight: 600;">
+                # KFA: ${escapeHtml(item.kode_kfa)}
+              </div>
+            ` : ''}
+          </td>
+          <td style="color: #475569; font-size: 0.84rem;">
+            ${escapeHtml(item.nama_produsen || '-')}
+          </td>
+          <td>
+            <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+              <span class="katalog-tag-chip" style="font-size: 0.72rem; padding: 2px 7px;">${escapeHtml(item.bentuk_sediaan || '-')}</span>
+              <span class="katalog-tag-chip" style="font-size: 0.72rem; padding: 2px 7px;">${escapeHtml(item.jenis || '-')}</span>
+            </div>
+          </td>
+          <td>
+            ${isKeras ? `
+              <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 0.75rem; font-weight: 700; color: #dc2626;">
+                <svg viewBox="0 0 24 24" width="16" height="16" style="vertical-align: middle;">
+                  <circle cx="12" cy="12" r="10" fill="#dc2626"/>
+                  <circle cx="12" cy="12" r="8" fill="#ffffff"/>
+                  <text x="12" y="16.5" font-size="12" font-weight="900" text-anchor="middle" fill="#dc2626" font-family="Arial, sans-serif">K</text>
+                </svg>
+                Obat Keras
+              </span>
+            ` : `
+              <span style="font-size: 0.76rem; color: #475569; font-weight: 600;">${escapeHtml(item.golongan || '-')}</span>
+            `}
+          </td>
+          <td>
+            <div style="font-size: 0.82rem; font-weight: 600; color: #334155;">
+              ${fasCount} Fasilitas
+            </div>
+            ${hargaTermurahStr !== '-' ? `
+              <div style="font-size: 0.74rem; color: #16a34a; font-weight: 600; margin-top: 2px;">
+                ${hargaTermurahStr}
+              </div>
+            ` : ''}
+          </td>
+          <td style="text-align: center;">
+            <span class="badge-status-pill ${isTayang ? 'tayang' : 'draft'}">
+              ${isTayang ? 'Tayang' : 'Draft'}
+            </span>
+          </td>
+          <td style="text-align: center;">
+            <div style="display: flex; gap: 6px; justify-content: center; align-items: center;">
+              <button type="button" 
+                      class="btn-icon-sm" 
+                      data-action="edit-obat" 
+                      data-id="${escapeHtml(item.id)}" 
+                      title="Edit Obat">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </button>
+              <button type="button" 
+                      class="btn-icon-sm" 
+                      data-action="manage-fasilitas" 
+                      data-id="${escapeHtml(item.id)}" 
+                      title="Kelola Fasilitas & Harga (${fasCount})">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M3 21h18M5 21V7l8-4v18M13 21V3l6 4v14"/></svg>
+              </button>
+              <button type="button" 
+                      class="btn-icon-sm danger" 
+                      data-action="delete-obat" 
+                      data-id="${escapeHtml(item.id)}" 
+                      title="Hapus Obat">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  // Format Angka ke Rupiah
+  formatRupiah(num) {
+    return new Intl.NumberFormat('id-ID', {
+      style: 'currency',
+      currency: 'IDR',
+      minimumFractionDigits: 0
+    }).format(num);
+  }
+
+  // Buka Modal Tambah Obat Baru
+  openAddObatModal() {
+    this.editingObatId = null;
+    const modal = document.getElementById('obatModal');
+    const form = document.getElementById('obatForm');
+    if (!modal || !form) return;
+
+    form.reset();
+    document.getElementById('editObatIdInput').value = '';
+    document.getElementById('obatModalTitle').textContent = 'Tambah Obat Kemoterapi Baru';
+    document.getElementById('obatBentukSelect').value = 'Injeksi';
+    document.getElementById('obatJenisSelect').value = 'Generik';
+    document.getElementById('obatGolonganSelect').value = 'Obat Keras';
+    document.getElementById('obatStatusSelect').value = 'Draft';
+    document.getElementById('obatUrutanInput').value = (this.obatList.length + 1);
+
+    this.updateObatCharCounters();
+    this.updateLiveObatPreview();
+
+    modal.classList.add('active');
+    setTimeout(() => document.getElementById('obatNamaInput')?.focus(), 80);
+  }
+
+  // Buka Modal Edit Obat
+  openEditObatModal(obatId) {
+    const item = (this.obatList || []).find(o => String(o.id) === String(obatId));
+    if (!item) return;
+
+    this.editingObatId = obatId;
+    const modal = document.getElementById('obatModal');
+    if (!modal) return;
+
+    document.getElementById('editObatIdInput').value = item.id;
+    document.getElementById('obatModalTitle').textContent = `Edit Obat: ${item.nama_obat}`;
+
+    document.getElementById('obatNamaInput').value = item.nama_obat || '';
+    document.getElementById('obatProdusenInput').value = item.nama_produsen || '';
+    document.getElementById('obatKfaInput').value = item.kode_kfa || '';
+    document.getElementById('obatBentukSelect').value = item.bentuk_sediaan || 'Injeksi';
+    document.getElementById('obatJenisSelect').value = item.jenis || 'Generik';
+    document.getElementById('obatGolonganSelect').value = item.golongan || 'Obat Keras';
+    document.getElementById('obatStatusSelect').value = item.status || 'Draft';
+    document.getElementById('obatUrutanInput').value = item.urutan || 1;
+
+    document.getElementById('obatIndikasiRingkasInput').value = item.indikasi_ringkas || '';
+    document.getElementById('obatDeskripsiInput').value = item.deskripsi || '';
+    document.getElementById('obatIndikasiUmumInput').value = item.indikasi_umum || '';
+    document.getElementById('obatKomposisiInput').value = item.komposisi || '';
+    document.getElementById('obatPeringatanInput').value = item.peringatan || '';
+    document.getElementById('obatEfekSampingInput').value = item.efek_samping || '';
+
+    this.updateObatCharCounters();
+    this.updateLiveObatPreview();
+
+    modal.classList.add('active');
+    setTimeout(() => document.getElementById('obatNamaInput')?.focus(), 80);
+  }
+
+  // Perbarui Penghitung Karakter Semua Field
+  updateObatCharCounters() {
+    const fields = [
+      { id: 'obatNamaInput', countId: 'charCountNamaObat', max: 200 },
+      { id: 'obatProdusenInput', countId: 'charCountProdusen', max: 200 },
+      { id: 'obatKfaInput', countId: 'charCountKfa', max: 30 },
+      { id: 'obatIndikasiRingkasInput', countId: 'charCountIndikasi', max: 500 },
+      { id: 'obatDeskripsiInput', countId: 'charCountDeskripsi', max: 5000 },
+      { id: 'obatIndikasiUmumInput', countId: 'charCountIndikasiUmum', max: 5000 },
+      { id: 'obatKomposisiInput', countId: 'charCountKomposisi', max: 5000 },
+      { id: 'obatPeringatanInput', countId: 'charCountPeringatan', max: 5000 },
+      { id: 'obatEfekSampingInput', countId: 'charCountEfekSamping', max: 5000 }
+    ];
+
+    fields.forEach(f => {
+      const el = document.getElementById(f.id);
+      const countEl = document.getElementById(f.countId);
+      if (el && countEl) {
+        const len = (el.value || '').length;
+        countEl.textContent = `${len}/${f.max}`;
+        countEl.classList.toggle('limit-near', len > f.max * 0.85 && len <= f.max);
+        countEl.classList.toggle('limit-exceeded', len > f.max);
+      }
+    });
+  }
+
+  // Pratinjau Langsung Kartu & Modal Detail (Live Preview dengan Sanitasi escapeHtml)
+  updateLiveObatPreview() {
+    const nama = document.getElementById('obatNamaInput')?.value.trim() || 'Nama Obat & Sediaan';
+    const produsen = document.getElementById('obatProdusenInput')?.value.trim() || 'PRODUSEN FARMASI';
+    const kfa = document.getElementById('obatKfaInput')?.value.trim();
+    const bentuk = document.getElementById('obatBentukSelect')?.value || 'Injeksi';
+    const jenis = document.getElementById('obatJenisSelect')?.value || 'Generik';
+    const golongan = document.getElementById('obatGolonganSelect')?.value || 'Obat Keras';
+    const indikasiRingkas = document.getElementById('obatIndikasiRingkasInput')?.value.trim() || 'Ringkasan indikasi klinis akan tampil di sini...';
+    const deskripsi = document.getElementById('obatDeskripsiInput')?.value.trim() || 'Deskripsi lengkap sediaan belum diisi.';
+    const indikasiUmum = document.getElementById('obatIndikasiUmumInput')?.value.trim() || 'Indikasi umum klinis belum diisi.';
+    const komposisi = document.getElementById('obatKomposisiInput')?.value.trim() || 'Komposisi belum diisi.';
+    const peringatan = document.getElementById('obatPeringatanInput')?.value.trim() || 'Tidak ada peringatan khusus yang dicantumkan.';
+    const efekSamping = document.getElementById('obatEfekSampingInput')?.value.trim() || 'Tidak ada efek samping yang dicantumkan.';
+
+    const isKeras = golongan === 'Obat Keras';
+
+    // 1. Render Live Card Preview
+    const cardContainer = document.getElementById('liveCardPreviewContainer');
+    if (cardContainer) {
+      cardContainer.innerHTML = `
+        <div class="katalog-card" style="box-shadow: 0 4px 12px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; background: #ffffff;">
+          <div class="katalog-card-header">
+            <div>
+              <div class="katalog-card-producer">${escapeHtml(produsen.toUpperCase())}</div>
+              <h3 class="katalog-card-title">${escapeHtml(nama)}</h3>
+            </div>
+            ${isKeras ? `
+              <div class="katalog-badge-k" title="Obat Keras">
+                <svg viewBox="0 0 24 24" width="24" height="24">
+                  <circle cx="12" cy="12" r="11" fill="#dc2626"/>
+                  <circle cx="12" cy="12" r="9" fill="#ffffff"/>
+                  <text x="12" y="17" font-size="13" font-weight="900" text-anchor="middle" fill="#dc2626" font-family="Arial, sans-serif">K</text>
+                </svg>
+              </div>
+            ` : ''}
+          </div>
+
+          <div class="katalog-card-tags">
+            <span class="katalog-tag-chip">${escapeHtml(bentuk)}</span>
+            <span class="katalog-tag-chip">${escapeHtml(jenis)}</span>
+            ${kfa ? `<span class="katalog-tag-chip" style="color: #0284c7; background: #e0f2fe;"># KFA: ${escapeHtml(kfa)}</span>` : ''}
+          </div>
+
+          <div class="katalog-card-desc" style="font-size: 0.82rem; color: #475569; margin-bottom: 12px;">
+            ${escapeHtml(indikasiRingkas)}
+          </div>
+
+          <div class="katalog-card-footer" style="border-top: 1px solid #f1f5f9; padding-top: 10px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <div style="font-size: 0.72rem; color: #64748b;">Fasilitas & Harga</div>
+              <div style="font-size: 0.82rem; font-weight: 700; color: #16a34a;">Sesuai Ketersediaan</div>
+            </div>
+            <span style="font-size: 0.75rem; color: #0284c7; font-weight: 600;">Lihat Rincian &rarr;</span>
+          </div>
+        </div>
+      `;
+    }
+
+    // 2. Render Live Detail Preview
+    const detailContainer = document.getElementById('liveDetailPreviewContainer');
+    if (detailContainer) {
+      detailContainer.innerHTML = `
+        <div>
+          <div style="font-size: 0.75rem; color: #64748b; font-weight: 700; text-transform: uppercase;">${escapeHtml(produsen)}</div>
+          <h4 style="font-size: 1.15rem; color: #0f172a; margin: 4px 0 10px 0;">${escapeHtml(nama)}</h4>
+          <div style="display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap;">
+            <span class="katalog-tag-chip">${escapeHtml(bentuk)}</span>
+            <span class="katalog-tag-chip">${escapeHtml(jenis)}</span>
+            <span class="katalog-tag-chip">${escapeHtml(golongan)}</span>
+            ${kfa ? `<span class="katalog-tag-chip" style="color: #0284c7; background: #e0f2fe;"># KFA: ${escapeHtml(kfa)}</span>` : ''}
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <h5 style="font-size: 0.82rem; font-weight: 700; color: #1e293b; margin-bottom: 4px;">Komposisi Zat Aktif</h5>
+            <div style="font-size: 0.82rem; color: #475569; line-height: 1.5; background: #f8fafc; padding: 8px 10px; border-radius: 6px;">
+              ${escapeHtml(komposisi)}
+            </div>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <h5 style="font-size: 0.82rem; font-weight: 700; color: #1e293b; margin-bottom: 4px;">Indikasi Umum</h5>
+            <div style="font-size: 0.82rem; color: #475569; line-height: 1.5;">
+              ${escapeHtml(indikasiUmum)}
+            </div>
+          </div>
+
+          <div style="margin-bottom: 12px;">
+            <h5 style="font-size: 0.82rem; font-weight: 700; color: #1e293b; margin-bottom: 4px;">Deskripsi Lengkap</h5>
+            <div style="font-size: 0.82rem; color: #475569; line-height: 1.5;">
+              ${escapeHtml(deskripsi)}
+            </div>
+          </div>
+
+          <div style="margin-bottom: 12px; background: #fffbeb; border-left: 3px solid #f59e0b; padding: 8px 10px; border-radius: 4px;">
+            <h5 style="font-size: 0.82rem; font-weight: 700; color: #b45309; margin-bottom: 4px;">Peringatan & Perhatian</h5>
+            <div style="font-size: 0.8rem; color: #78350f; line-height: 1.45;">
+              ${escapeHtml(peringatan)}
+            </div>
+          </div>
+
+          <div style="margin-bottom: 10px; background: #fef2f2; border-left: 3px solid #ef4444; padding: 8px 10px; border-radius: 4px;">
+            <h5 style="font-size: 0.82rem; font-weight: 700; color: #b91c1c; margin-bottom: 4px;">Efek Samping</h5>
+            <div style="font-size: 0.8rem; color: #7f1d1d; line-height: 1.45;">
+              ${escapeHtml(efekSamping)}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+  }
+
+  // Simpan Obat (Create / Update) dengan Pola Mutasi Aman (Snapshot + Rollback)
+  async saveObat() {
+    const editId = document.getElementById('editObatIdInput')?.value.trim();
+    const namaObat = document.getElementById('obatNamaInput')?.value.trim();
+    const produsen = document.getElementById('obatProdusenInput')?.value.trim();
+    const kfa = document.getElementById('obatKfaInput')?.value.trim();
+    const bentuk = document.getElementById('obatBentukSelect')?.value;
+    const jenis = document.getElementById('obatJenisSelect')?.value;
+    const golongan = document.getElementById('obatGolonganSelect')?.value;
+    const status = document.getElementById('obatStatusSelect')?.value || 'Draft';
+    const urutan = Number(document.getElementById('obatUrutanInput')?.value) || 1;
+
+    const indikasiRingkas = document.getElementById('obatIndikasiRingkasInput')?.value.trim();
+    const deskripsi = document.getElementById('obatDeskripsiInput')?.value.trim();
+    const indikasiUmum = document.getElementById('obatIndikasiUmumInput')?.value.trim();
+    const komposisi = document.getElementById('obatKomposisiInput')?.value.trim();
+    const peringatan = document.getElementById('obatPeringatanInput')?.value.trim();
+    const efekSamping = document.getElementById('obatEfekSampingInput')?.value.trim();
+
+    // Validasi Sisi Klien
+    if (!namaObat) {
+      this.showToast('Nama obat dan kekuatan sediaan wajib diisi!', 'warning', 'Validasi Form');
+      return;
+    }
+    if (namaObat.length > 200) {
+      this.showToast('Nama obat melebihi batas maksimal 200 karakter!', 'warning', 'Validasi Form');
+      return;
+    }
+    if (kfa && !/^\d+$/.test(kfa)) {
+      this.showToast('Kode KFA hanya boleh memuat karakter angka!', 'warning', 'Validasi Form');
+      return;
+    }
+
+    // Peringatan Dosis Klinis (3.3): Periksa HANYA pada deskripsi, peringatan, efek_samping (Bukan nama_obat)
+    const hasDosageInDesc = this.dosageRegex.test(deskripsi || '');
+    const hasDosageInWarning = this.dosageRegex.test(peringatan || '');
+    const hasDosageInSideEffects = this.dosageRegex.test(efekSamping || '');
+
+    if (hasDosageInDesc || hasDosageInWarning || hasDosageInSideEffects) {
+      const confirmed = await this.showConfirmDialog({
+        title: 'Peringatan Dosis Klinis Terdeteksi',
+        message: 'Teks pada field deskripsi, peringatan, atau efek samping terindikasi memuat petunjuk takaran dosis (mis. mg, ml, tablet). Pastikan ini informasi medis resmi dan bukan anjuran konsumsi mandiri. Ketik "SETUJU" untuk mengonfirmasi.',
+        type: 'warning',
+        confirmText: 'Lanjutkan Simpan',
+        requireConfirmationText: 'SETUJU'
+      });
+
+      if (!confirmed) {
+        this.showToast('Penyimpanan dibatalkan oleh pengguna.', 'info', 'Dibatalkan');
+        return;
+      }
+      this.recordAuditLog('PERINGATAN_DOSIS_DISETUJUI', `Admin menyetujui penyimpanan sediaan obat "${namaObat}" yang memuat takaran dosis klinis.`);
+    }
+
+    const payloadData = {
+      nama_obat: namaObat,
+      nama_produsen: produsen,
+      bentuk_sediaan: bentuk,
+      jenis: jenis,
+      kode_kfa: kfa,
+      golongan: golongan,
+      status: status,
+      urutan: urutan,
+      indikasi_ringkas: indikasiRingkas,
+      deskripsi: deskripsi,
+      indikasi_umum: indikasiUmum,
+      komposisi: komposisi,
+      peringatan: peringatan,
+      efek_samping: efekSamping
+    };
+
+    // Ambil Snapshot State Lokal Sebelum Mutasi (3.6)
+    const stateSnapshot = JSON.parse(JSON.stringify(this.obatList));
+    const submitBtn = document.getElementById('btnSubmitObat');
+    this.setButtonLoading(submitBtn, true, 'Menyimpan Obat...');
+    this.showCrudLoading('Menyimpan Data Obat', 'Menyinkronkan data sediaan obat ke Google Sheets...');
+
+    try {
+      const actionName = editId ? 'update_obat' : 'create_obat';
+      const body = {
+        action: actionName,
+        token: this.getAdminToken(),
+        obatData: payloadData
+      };
+      if (editId) body.id = editId;
+
+      const res = await fetch('/api/gas/action', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        this.handleSessionExpired();
+        return;
+      }
+
+      const json = await res.json();
+      if (this.isTokenInvalidResponse(json)) {
+        this.handleSessionExpired();
+        return;
+      }
+
+      if (!res.ok || !json.success) {
+        // Rollback state lokal dan tampilkan pesan error dari server
+        this.obatList = stateSnapshot;
+        this.renderObatTable();
+        this.showToast(json.error || json.message || 'Gagal menyimpan data obat.', 'danger', 'Gagal Menyimpan');
+        return;
+      }
+
+      // Berhasil
+      document.getElementById('obatModal')?.classList.remove('active');
+      this.showToast(`Data obat "${namaObat}" berhasil disimpan (${status}).`, 'success', 'Berhasil Menyimpan');
+      this.recordAuditLog(editId ? 'UPDATE_OBAT' : 'CREATE_OBAT', `Menyimpan obat "${namaObat}" (Status: ${status})`);
+
+      await this.fetchAdminObatList();
+    } catch (err) {
+      // Jaringan Mati / Error Fatal: Rollback state lokal (3.6)
+      this.obatList = stateSnapshot;
+      this.renderObatTable();
+      console.error('[Admin Obat] Gagal menyimpan saat request:', err);
+      this.showToast('Gagal terhubung ke server (jaringan terputus). Data dikembalikan ke kondisi semula.', 'danger', 'Koneksi Terputus');
+    } finally {
+      this.hideCrudLoading();
+      this.setButtonLoading(submitBtn, false);
+    }
+  }
+
+  // Hapus Obat dengan Snapshot & Rollback
+  async deleteObat(obatId) {
+    const item = (this.obatList || []).find(o => String(o.id) === String(obatId));
+    if (!item) return;
+
+    const confirmed = await this.showConfirmDialog({
+      title: 'Hapus Sediaan Obat',
+      message: `Apakah Anda yakin ingin menghapus "${item.nama_obat}" beserta seluruh data fasilitas dan harganya? Tindakan ini tidak dapat dibatalkan.`,
+      type: 'danger',
+      confirmText: 'Ya, Hapus Obat',
+      cancelText: 'Batal'
+    });
+    if (!confirmed) return;
+
+    // Snapshot state lokal
+    const stateSnapshot = JSON.parse(JSON.stringify(this.obatList));
+    this.showCrudLoading('Menghapus Obat', `Menghapus "${item.nama_obat}" dari Google Sheets...`);
+
+    try {
+      // Optimistic delete di lokal
+      this.obatList = this.obatList.filter(o => String(o.id) !== String(obatId));
+      this.renderObatTable();
+
+      const res = await fetch('/api/gas/action', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'delete_obat',
+          id: obatId,
+          token: this.getAdminToken()
+        })
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        this.handleSessionExpired();
+        return;
+      }
+
+      const json = await res.json();
+      if (this.isTokenInvalidResponse(json)) {
+        this.handleSessionExpired();
+        return;
+      }
+
+      if (!res.ok || !json.success) {
+        // Rollback state lokal
+        this.obatList = stateSnapshot;
+        this.renderObatTable();
+        this.showToast(json.error || json.message || 'Gagal menghapus obat dari database.', 'danger', 'Gagal Menghapus');
+        return;
+      }
+
+      this.showToast(`Obat "${item.nama_obat}" berhasil dihapus.`, 'success', 'Obat Dihapus');
+      this.recordAuditLog('DELETE_OBAT', `Menghapus obat "${item.nama_obat}" (ID: ${obatId})`);
+    } catch (err) {
+      // Rollback jika jaringan mati
+      this.obatList = stateSnapshot;
+      this.renderObatTable();
+      this.showToast('Gagal menghapus: Jaringan terputus. Data dikembalikan ke semula.', 'danger', 'Koneksi Terputus');
+    } finally {
+      this.hideCrudLoading();
+    }
+  }
+
+  // Update Urutan Tampil Langsung dari Tabel
+  async updateObatUrutan(obatId, newUrutanVal) {
+    const newUrutan = Number(newUrutanVal);
+    if (isNaN(newUrutan) || newUrutan < 1) return;
+
+    const item = (this.obatList || []).find(o => String(o.id) === String(obatId));
+    if (!item || item.urutan === newUrutan) return;
+
+    // Snapshot state
+    const stateSnapshot = JSON.parse(JSON.stringify(this.obatList));
+    item.urutan = newUrutan;
+
+    try {
+      const res = await fetch('/api/gas/action', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'update_obat',
+          id: obatId,
+          obatData: { urutan: newUrutan },
+          token: this.getAdminToken()
+        })
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        this.handleSessionExpired();
+        return;
+      }
+
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        this.obatList = stateSnapshot;
+        this.renderObatTable();
+        this.showToast(json.error || json.message || 'Gagal memperbarui urutan.', 'warning', 'Peringatan');
+        return;
+      }
+
+      this.showToast(`Urutan obat "${item.nama_obat}" diubah menjadi ${newUrutan}.`, 'success', 'Urutan Diperbarui', 2500);
+      this.renderObatTable();
+    } catch (err) {
+      this.obatList = stateSnapshot;
+      this.renderObatTable();
+      this.showToast('Koneksi terputus: Gagal mengubah urutan.', 'danger', 'Koneksi Terputus');
+    }
+  }
+
+  // ==========================================================================
+  // SUB-PANEL KELOLA FASILITAS & HARGA PER OBAT (3.4)
+  // ==========================================================================
+
+  openFasilitasModal(obatId) {
+    const item = (this.obatList || []).find(o => String(o.id) === String(obatId));
+    if (!item) return;
+
+    this.activeObatFasilitasId = obatId;
+    this.resetFasilitasForm();
+
+    const subtitleEl = document.getElementById('fasilitasModalSubtitle');
+    if (subtitleEl) {
+      subtitleEl.textContent = `Nama Obat: ${item.nama_obat}`;
+    }
+
+    this.renderFasilitasTable(obatId);
+    document.getElementById('fasilitasObatModal')?.classList.add('active');
+  }
+
+  resetFasilitasForm() {
+    this.editingFasilitasId = null;
+    const form = document.getElementById('fasilitasForm');
+    if (form) form.reset();
+    document.getElementById('editFasilitasIdInput').value = '';
+    document.getElementById('fasilitasObatIdInput').value = this.activeObatFasilitasId || '';
+    document.getElementById('fasilitasProvinsiInput').value = 'Jawa Tengah';
+    document.getElementById('fasilitasFormTitle').textContent = 'Tambah Fasilitas Baru';
+    document.getElementById('btnSubmitFasilitas').textContent = 'Simpan Fasilitas';
+    document.getElementById('btnCancelFasilitasEdit').style.display = 'none';
+  }
+
+  startEditFasilitas(fasId) {
+    const item = (this.obatList || []).find(o => String(o.id) === String(this.activeObatFasilitasId));
+    if (!item || !Array.isArray(item.fasilitas)) return;
+
+    const fas = item.fasilitas.find(f => String(f.id) === String(fasId));
+    if (!fas) return;
+
+    this.editingFasilitasId = fasId;
+    document.getElementById('editFasilitasIdInput').value = fas.id;
+    document.getElementById('fasilitasNamaInput').value = fas.nama_fasilitas || '';
+    document.getElementById('fasilitasProvinsiInput').value = fas.provinsi || 'Jawa Tengah';
+    document.getElementById('fasilitasAlamatInput').value = fas.alamat || '';
+    document.getElementById('fasilitasTeleponInput').value = fas.telepon || '';
+    document.getElementById('fasilitasWaInput').value = fas.whatsapp || '';
+    document.getElementById('fasilitasHargaInput').value = fas.harga || 0;
+
+    document.getElementById('fasilitasFormTitle').textContent = `Edit Fasilitas: ${fas.nama_fasilitas}`;
+    document.getElementById('btnSubmitFasilitas').textContent = 'Perbarui Fasilitas';
+    document.getElementById('btnCancelFasilitasEdit').style.display = 'inline-block';
+    document.getElementById('fasilitasNamaInput')?.focus();
+  }
+
+  renderFasilitasTable(obatId) {
+    const tbody = document.getElementById('fasilitasListTableBody');
+    if (!tbody) return;
+
+    const item = (this.obatList || []).find(o => String(o.id) === String(obatId));
+    const fasList = (item && Array.isArray(item.fasilitas)) ? item.fasilitas : [];
+
+    if (fasList.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="6" style="text-align: center; padding: 22px; color: #94a3b8;">
+            Belum ada data fasilitas dan harga untuk obat ini. Silakan tambahkan pada form di bawah.
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = fasList.map(f => {
+      const formattedPrice = this.formatRupiah(Number(f.harga) || 0);
+      return `
+        <tr>
+          <td style="font-weight: 600; color: #0f172a;">${escapeHtml(f.nama_fasilitas)}</td>
+          <td>${escapeHtml(f.provinsi || '-')}</td>
+          <td>
+            <div style="font-size: 0.76rem; color: #475569;">${escapeHtml(f.alamat || '-')}</div>
+            ${(f.telepon || f.whatsapp) ? `
+              <div style="font-size: 0.72rem; color: #0284c7; margin-top: 2px;">
+                Telp: ${escapeHtml(f.telepon || '-')} | WA: ${escapeHtml(f.whatsapp || '-')}
+              </div>
+            ` : ''}
+          </td>
+          <td style="font-weight: 700; color: #16a34a;">${formattedPrice}</td>
+          <td style="font-size: 0.76rem; color: #64748b;">${escapeHtml(f.tanggal_diperbarui || '-')}</td>
+          <td style="text-align: center;">
+            <div style="display: flex; gap: 4px; justify-content: center;">
+              <button type="button" class="btn-icon-sm" data-action="edit-fasilitas" data-id="${escapeHtml(f.id)}" title="Edit Fasilitas">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </button>
+              <button type="button" class="btn-icon-sm danger" data-action="delete-fasilitas" data-id="${escapeHtml(f.id)}" title="Hapus Fasilitas">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  async saveFasilitasObat() {
+    const editFasId = document.getElementById('editFasilitasIdInput')?.value.trim();
+    const obatId = this.activeObatFasilitasId;
+    const nama = document.getElementById('fasilitasNamaInput')?.value.trim();
+    const provinsi = document.getElementById('fasilitasProvinsiInput')?.value.trim();
+    const alamat = document.getElementById('fasilitasAlamatInput')?.value.trim();
+    const telepon = document.getElementById('fasilitasTeleponInput')?.value.trim();
+    const whatsapp = document.getElementById('fasilitasWaInput')?.value.trim();
+    const harga = Number(document.getElementById('fasilitasHargaInput')?.value);
+
+    if (!nama || !provinsi) {
+      this.showToast('Nama fasilitas dan provinsi wajib diisi!', 'warning', 'Validasi Form');
+      return;
+    }
+    if (isNaN(harga) || harga < 0) {
+      this.showToast('Harga sediaan harus berupa angka non-negatif!', 'warning', 'Validasi Form');
+      return;
+    }
+    const phoneRegex = /^[\d+\s-]+$/;
+    if (telepon && !phoneRegex.test(telepon)) {
+      this.showToast('Nomor telepon hanya boleh memuat angka, spasi, +, atau -', 'warning', 'Validasi Form');
+      return;
+    }
+    if (whatsapp && !phoneRegex.test(whatsapp)) {
+      this.showToast('Nomor WhatsApp hanya boleh memuat angka, spasi, +, atau -', 'warning', 'Validasi Form');
+      return;
+    }
+
+    const payload = {
+      obat_id: obatId,
+      nama_fasilitas: nama,
+      provinsi: provinsi,
+      alamat: alamat,
+      telepon: telepon,
+      whatsapp: whatsapp,
+      harga: harga
+    };
+
+    // Snapshot state
+    const stateSnapshot = JSON.parse(JSON.stringify(this.obatList));
+    const submitBtn = document.getElementById('btnSubmitFasilitas');
+    this.setButtonLoading(submitBtn, true, 'Menyimpan Fasilitas...');
+    this.showCrudLoading('Menyimpan Fasilitas', 'Menyinkronkan data fasilitas ke Google Sheets...');
+
+    try {
+      const actionName = editFasId ? 'update_fasilitas_obat' : 'create_fasilitas_obat';
+      const body = {
+        action: actionName,
+        token: this.getAdminToken(),
+        fasilitasData: payload
+      };
+      if (editFasId) body.id = editFasId;
+
+      const res = await fetch('/api/gas/action', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        this.handleSessionExpired();
+        return;
+      }
+
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        this.obatList = stateSnapshot;
+        this.renderFasilitasTable(obatId);
+        this.showToast(json.error || json.message || 'Gagal menyimpan fasilitas obat.', 'danger', 'Gagal');
+        return;
+      }
+
+      this.showToast(`Fasilitas "${nama}" berhasil disimpan.`, 'success', 'Fasilitas Tersimpan');
+      this.recordAuditLog(editFasId ? 'UPDATE_FASILITAS_OBAT' : 'CREATE_FASILITAS_OBAT', `Menyimpan fasilitas "${nama}" untuk obat ID: ${obatId}`);
+
+      this.resetFasilitasForm();
+      await this.fetchAdminObatList();
+      this.renderFasilitasTable(obatId);
+    } catch (err) {
+      this.obatList = stateSnapshot;
+      this.renderFasilitasTable(obatId);
+      this.showToast('Koneksi terputus: Gagal menyimpan data fasilitas.', 'danger', 'Koneksi Terputus');
+    } finally {
+      this.hideCrudLoading();
+      this.setButtonLoading(submitBtn, false);
+    }
+  }
+
+  async deleteFasilitasObat(fasId) {
+    const obatId = this.activeObatFasilitasId;
+    const confirmed = await this.showConfirmDialog({
+      title: 'Hapus Fasilitas',
+      message: 'Apakah Anda yakin ingin menghapus fasilitas ini dari daftar sediaan obat?',
+      type: 'danger',
+      confirmText: 'Ya, Hapus Fasilitas',
+      cancelText: 'Batal'
+    });
+    if (!confirmed) return;
+
+    // Snapshot state
+    const stateSnapshot = JSON.parse(JSON.stringify(this.obatList));
+    this.showCrudLoading('Menghapus Fasilitas', 'Menghapus data fasilitas dari Google Sheets...');
+
+    try {
+      const res = await fetch('/api/gas/action', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'delete_fasilitas_obat',
+          id: fasId,
+          token: this.getAdminToken()
+        })
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        this.handleSessionExpired();
+        return;
+      }
+
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        this.obatList = stateSnapshot;
+        this.renderFasilitasTable(obatId);
+        this.showToast(json.error || json.message || 'Gagal menghapus fasilitas.', 'danger', 'Gagal Menghapus');
+        return;
+      }
+
+      this.showToast('Fasilitas berhasil dihapus.', 'success', 'Fasilitas Terhapus');
+      this.recordAuditLog('DELETE_FASILITAS_OBAT', `Menghapus fasilitas ID: ${fasId}`);
+
+      await this.fetchAdminObatList();
+      this.renderFasilitasTable(obatId);
+    } catch (err) {
+      this.obatList = stateSnapshot;
+      this.renderFasilitasTable(obatId);
+      this.showToast('Koneksi terputus: Gagal menghapus fasilitas.', 'danger', 'Koneksi Terputus');
+    } finally {
+      this.hideCrudLoading();
+    }
+  }
+
+  // ==========================================================================
+  // IMPOR MASSAL (CSV) & EKSPOR CSV (3.5)
+  // ==========================================================================
+
+  downloadObatCsvTemplate() {
+    const header = [
+      'nama_obat', 'nama_produsen', 'bentuk_sediaan', 'jenis', 'kode_kfa',
+      'golongan', 'status', 'urutan', 'indikasi_ringkas', 'deskripsi',
+      'indikasi_umum', 'komposisi', 'peringatan', 'efek_samping'
+    ];
+
+    const sampleRows = [
+      [
+        'Cisplatin 50 mg / 50 mL',
+        'Kalbe Farma',
+        'Injeksi',
+        'Generik',
+        '93001234',
+        'Obat Keras',
+        'Tayang',
+        '1',
+        'Kemoterapi untuk berbagai jenis kanker padat',
+        'Cisplatin adalah agen antineoplastik berbasis platinum yang bekerja dengan mengikat DNA sel kanker.',
+        'Kanker testis metastasis, kanker ovarium lanjut, dan karsinoma kandung kemih.',
+        'Cisplatin 1 mg/mL larutan infus',
+        'Harus diberikan di bawah pengawasan dokter onkologi. Lakukan hidrasi sebelum dan sesudah infus.',
+        'Nefrotoksisitas, mual muntah berat, ototoksisitas, mielosupresi.'
+      ],
+      [
+        'Sitotoksin 500 mg',
+        'Sanbe Farma',
+        'Infus',
+        'Generik',
+        '93005678',
+        'Obat Keras',
+        'Draft',
+        '2',
+        'Kemoterapi kombinasi limfoma dan sarkoma',
+        'Antineoplastik sitotoksik untuk regimen kombinasi onkologi.',
+        'Karsinoma payudara, limfoma Hodgkin dan non-Hodgkin.',
+        'Sitotoksin 500 mg serbuk injeksi',
+        'Pantau fungsi hepar, ginjal, dan hitung darah lengkap secara berkala.',
+        'Mielosupresi, mual, alopesia, stomatitis.'
+      ]
+    ];
+
+    const csvContent = [
+      header.join(','),
+      ...sampleRows.map(row => row.map(val => `"${String(val).replace(/"/g, '""')}"`).join(','))
+    ].join('\r\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'template_katalog_obat.csv');
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+
+  openImportObatModal() {
+    this.parsedValidCsvRows = [];
+    const fileInput = document.getElementById('obatCsvFileInput');
+    if (fileInput) fileInput.value = '';
+
+    const previewContainer = document.getElementById('importObatPreviewContainer');
+    if (previewContainer) previewContainer.style.display = 'none';
+
+    const progressContainer = document.getElementById('importProgressBarContainer');
+    if (progressContainer) progressContainer.style.display = 'none';
+
+    const submitBtn = document.getElementById('btnSubmitImportCsv');
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Kirim Impor (0 Baris Valid)';
+    }
+
+    document.getElementById('importObatModal')?.classList.add('active');
+  }
+
+  // Parse Format CSV (Mendukung Tanda Kutip & Newline dalam Field)
+  parseCsvText(text) {
+    const lines = [];
+    let currentLine = [];
+    let currentField = '';
+    let insideQuotes = false;
+
+    for (let i = 0; i < text.length; i++) {
+      const char = text[i];
+      const nextChar = text[i + 1];
+
+      if (char === '"') {
+        if (insideQuotes && nextChar === '"') {
+          currentField += '"';
+          i++; // Lewati quote kedua
+        } else {
+          insideQuotes = !insideQuotes;
+        }
+      } else if (char === ',' && !insideQuotes) {
+        currentLine.push(currentField);
+        currentField = '';
+      } else if ((char === '\r' || char === '\n') && !insideQuotes) {
+        if (char === '\r' && nextChar === '\n') i++;
+        currentLine.push(currentField);
+        currentField = '';
+        if (currentLine.length > 1 || currentLine[0] !== '') {
+          lines.push(currentLine);
+        }
+        currentLine = [];
+      } else {
+        currentField += char;
+      }
+    }
+
+    if (currentField !== '' || currentLine.length > 0) {
+      currentLine.push(currentField);
+      lines.push(currentLine);
+    }
+
+    return lines;
+  }
+
+  handleObatCsvFile(file) {
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const text = e.target.result;
+        const rows = this.parseCsvText(text);
+
+        if (rows.length < 2) {
+          this.showToast('Berkas CSV kosong atau tidak memuat data baris.', 'warning', 'Berkas Kosong');
+          return;
+        }
+
+        const headers = rows[0].map(h => String(h).trim().toLowerCase());
+        const expectedHeaders = ['nama_obat', 'bentuk_sediaan', 'jenis', 'golongan'];
+        for (const eh of expectedHeaders) {
+          if (!headers.includes(eh)) {
+            this.showToast(`Header CSV tidak lengkap. Kolom wajib '${eh}' tidak ditemukan. Silakan gunakan template resmi.`, 'danger', 'Format Salah');
+            return;
+          }
+        }
+
+        const validBentuk = ["Tablet", "Injeksi", "Kapsul", "Sirup", "Infus", "Lainnya"];
+        const validJenis = ["Generik", "Bermerek"];
+        const validGolongan = ["Obat Keras", "Obat Bebas", "Narkotika", "Lainnya"];
+
+        const validatedRows = [];
+        const validItems = [];
+
+        for (let r = 1; r < rows.length; r++) {
+          const rowData = rows[r];
+          const itemObj = {};
+          headers.forEach((h, idx) => {
+            itemObj[h] = rowData[idx] !== undefined ? String(rowData[idx]).trim() : '';
+          });
+
+          // Validasi Sisi Klien per Baris (3.5)
+          let isValid = true;
+          const reasons = [];
+
+          const nama = itemObj.nama_obat;
+          if (!nama) {
+            isValid = false;
+            reasons.push("Field 'nama_obat' wajib diisi.");
+          } else if (nama.length > 200) {
+            isValid = false;
+            reasons.push("Field 'nama_obat' melebihi 200 karakter.");
+          }
+
+          const bentuk = itemObj.bentuk_sediaan;
+          if (!bentuk || !validBentuk.some(vb => vb.toLowerCase() === bentuk.toLowerCase())) {
+            isValid = false;
+            reasons.push(`Bentuk sediaan tidak valid. Pilihan: ${validBentuk.join(', ')}.`);
+          }
+
+          const jenis = itemObj.jenis;
+          if (!jenis || !validJenis.some(vj => vj.toLowerCase() === jenis.toLowerCase())) {
+            isValid = false;
+            reasons.push(`Jenis tidak valid. Pilihan: ${validJenis.join(', ')}.`);
+          }
+
+          const golongan = itemObj.golongan;
+          if (!golongan || !validGolongan.some(vg => vg.toLowerCase() === golongan.toLowerCase())) {
+            isValid = false;
+            reasons.push(`Golongan tidak valid. Pilihan: ${validGolongan.join(', ')}.`);
+          }
+
+          const kfa = itemObj.kode_kfa;
+          if (kfa && !/^\d+$/.test(kfa)) {
+            isValid = false;
+            reasons.push("Kode KFA hanya boleh memuat angka numerik.");
+          }
+
+          const status = itemObj.status ? (itemObj.status.toLowerCase() === 'tayang' ? 'Tayang' : 'Draft') : 'Draft';
+          itemObj.status = status;
+
+          validatedRows.push({
+            rowNumber: r + 1,
+            nama: nama || '(Kosong)',
+            bentukJenis: `${bentuk || '-'} / ${jenis || '-'}`,
+            isValid: isValid,
+            reason: reasons.join(' ') || 'Siap diimpor.'
+          });
+
+          if (isValid) {
+            validItems.push({
+              nama_obat: nama,
+              nama_produsen: itemObj.nama_produsen || '',
+              bentuk_sediaan: bentuk,
+              jenis: jenis,
+              kode_kfa: kfa || '',
+              golongan: golongan,
+              status: status,
+              urutan: Number(itemObj.urutan) || (this.obatList.length + validItems.length + 1),
+              indikasi_ringkas: itemObj.indikasi_ringkas || '',
+              deskripsi: itemObj.deskripsi || '',
+              indikasi_umum: itemObj.indikasi_umum || '',
+              komposisi: itemObj.komposisi || '',
+              peringatan: itemObj.peringatan || '',
+              efek_samping: itemObj.efek_samping || ''
+            });
+          }
+        }
+
+        this.parsedValidCsvRows = validItems;
+
+        // Tampilkan Pratinjau Baris Valid / Tidak Valid
+        const previewContainer = document.getElementById('importObatPreviewContainer');
+        const validBadge = document.getElementById('importValidCount');
+        const invalidBadge = document.getElementById('importInvalidCount');
+        const totalBadge = document.getElementById('importTotalCount');
+        const previewTbody = document.getElementById('importPreviewTableBody');
+        const submitBtn = document.getElementById('btnSubmitImportCsv');
+
+        const invalidCount = validatedRows.filter(r => !r.isValid).length;
+        if (validBadge) validBadge.textContent = `${validItems.length} Baris Valid`;
+        if (invalidBadge) invalidBadge.textContent = `${invalidCount} Baris Tidak Valid`;
+        if (totalBadge) totalBadge.textContent = `Total: ${validatedRows.length} baris`;
+
+        if (previewTbody) {
+          previewTbody.innerHTML = validatedRows.map(vr => `
+            <tr style="background: ${vr.isValid ? '#ffffff' : '#fef2f2'};">
+              <td style="font-weight: 600; text-align: center;">${vr.rowNumber}</td>
+              <td style="font-weight: 600; color: ${vr.isValid ? '#0f172a' : '#b91c1c'};">${escapeHtml(vr.nama)}</td>
+              <td>${escapeHtml(vr.bentukJenis)}</td>
+              <td>
+                <span class="badge-status-pill ${vr.isValid ? 'tayang' : 'draft'}" style="${vr.isValid ? '' : 'background:#fee2e2; color:#b91c1c; border-color:#fca5a5;'}">
+                  ${vr.isValid ? 'Valid' : 'Gagal'}
+                </span>
+              </td>
+              <td style="font-size: 0.76rem; color: ${vr.isValid ? '#16a34a' : '#b91c1c'};">
+                ${escapeHtml(vr.reason)}
+              </td>
+            </tr>
+          `).join('');
+        }
+
+        if (previewContainer) previewContainer.style.display = 'block';
+
+        if (submitBtn) {
+          if (validItems.length > 0) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = `Kirim Impor (${validItems.length} Baris Valid)`;
+          } else {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Tidak Ada Baris Valid untuk Diimpor';
+          }
+        }
+      } catch (err) {
+        console.error('Error parsing CSV:', err);
+        this.showToast('Gagal memproses berkas CSV: ' + err.message, 'danger', 'Gagal Parse');
+      }
+    };
+    reader.readAsText(file, 'UTF-8');
+  }
+
+  // Kirim Impor Bertahap (Maksimal 200 Baris per Request) dengan Progress Bar (3.5)
+  async submitImportObatBulk() {
+    const items = this.parsedValidCsvRows || [];
+    if (items.length === 0) {
+      this.showToast('Tidak ada data baris valid untuk diimpor.', 'warning', 'Data Kosong');
+      return;
+    }
+
+    const submitBtn = document.getElementById('btnSubmitImportCsv');
+    const progressContainer = document.getElementById('importProgressBarContainer');
+    const progressBar = document.getElementById('importProgressBar');
+    const progressText = document.getElementById('importProgressText');
+    const progressPercent = document.getElementById('importProgressPercent');
+
+    if (progressContainer) progressContainer.style.display = 'block';
+    if (submitBtn) this.setButtonLoading(submitBtn, true, 'Mengimpor...');
+
+    // Bagi menjadi batch maks 200 baris
+    const BATCH_SIZE = 200;
+    const batches = [];
+    for (let i = 0; i < items.length; i += BATCH_SIZE) {
+      batches.push(items.slice(i, i + BATCH_SIZE));
+    }
+
+    let importedSuccessTotal = 0;
+    const stateSnapshot = JSON.parse(JSON.stringify(this.obatList));
+
+    try {
+      for (let b = 0; b < batches.length; b++) {
+        const batchItems = batches[b];
+        const batchNum = b + 1;
+
+        if (progressText) {
+          progressText.textContent = `Mengimpor batch ${batchNum} dari ${batches.length} (${batchItems.length} data)...`;
+        }
+
+        const res = await fetch('/api/gas/action', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            action: 'import_obat_bulk',
+            items: batchItems,
+            token: this.getAdminToken()
+          })
+        });
+
+        if (res.status === 401 || res.status === 403) {
+          this.handleSessionExpired();
+          return;
+        }
+
+        const json = await res.json();
+        if (!res.ok || !json.success) {
+          this.obatList = stateSnapshot;
+          this.renderObatTable();
+          this.showToast(json.error || json.message || `Gagal mengimpor batch ${batchNum}.`, 'danger', 'Gagal Impor');
+          return;
+        }
+
+        importedSuccessTotal += (json.totalImported || batchItems.length);
+        const percent = Math.round(((b + 1) / batches.length) * 100);
+        if (progressBar) progressBar.style.width = `${percent}%`;
+        if (progressPercent) progressPercent.textContent = `${percent}%`;
+      }
+
+      // Selesai seluruh batch
+      this.showToast(`Berhasil mengimpor ${importedSuccessTotal} data obat ke katalog!`, 'success', 'Impor Sukses', 6000);
+      this.recordAuditLog('IMPORT_OBAT_BULK', `Mengimpor ${importedSuccessTotal} obat secara massal via CSV`);
+
+      document.getElementById('importObatModal')?.classList.remove('active');
+      await this.fetchAdminObatList();
+    } catch (err) {
+      this.obatList = stateSnapshot;
+      this.renderObatTable();
+      this.showToast('Koneksi terputus saat proses impor. Perubahan dibatalkan.', 'danger', 'Koneksi Terputus');
+    } finally {
+      if (submitBtn) this.setButtonLoading(submitBtn, false);
+      if (progressContainer) progressContainer.style.display = 'none';
+    }
+  }
+
+  // Ekspor Seluruh Katalog Obat ke Format CSV
+  exportObatCsv() {
+    const list = this.obatList || [];
+    if (list.length === 0) {
+      this.showToast('Belum ada data obat untuk diekspor.', 'warning', 'Katalog Kosong');
+      return;
+    }
+
+    const headers = [
+      'id', 'nama_obat', 'nama_produsen', 'bentuk_sediaan', 'jenis', 'kode_kfa',
+      'golongan', 'status', 'urutan', 'indikasi_ringkas', 'deskripsi',
+      'indikasi_umum', 'komposisi', 'peringatan', 'efek_samping', 'updated_at'
+    ];
+
+    const rows = list.map(item => [
+      item.id || '',
+      item.nama_obat || '',
+      item.nama_produsen || '',
+      item.bentuk_sediaan || '',
+      item.jenis || '',
+      item.kode_kfa || '',
+      item.golongan || '',
+      item.status || 'Draft',
+      item.urutan || 1,
+      item.indikasi_ringkas || '',
+      item.deskripsi || '',
+      item.indikasi_umum || '',
+      item.komposisi || '',
+      item.peringatan || '',
+      item.efek_samping || '',
+      item.updated_at || ''
+    ]);
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.map(val => `"${String(val).replace(/"/g, '""')}"`).join(','))
+    ].join('\r\n');
+
+    const todayStr = new Date().toISOString().slice(0, 10);
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `katalog_obat_rsud_margono_${todayStr}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    this.showToast(`Berhasil mengekspor ${list.length} data obat ke CSV.`, 'success', 'Ekspor Selesai');
+  }
+
+  // =========================================================================
+  // MANAJEMEN REGIMEN KEMOTERAPI (CMS KALKULATOR)
+  // =========================================================================
+
+  bindRegimenEvents() {
+    // Tombol Buka Modal Tambah Regimen
+    const btnOpenAdd = document.getElementById('btnOpenAddRegimenModal');
+    btnOpenAdd?.addEventListener('click', () => this.openAddRegimenModal());
+
+    // Tombol Tutup & Batal Modal Regimen
+    const btnCloseRegimen = document.getElementById('closeRegimenModalBtn');
+    const btnCancelRegimen = document.getElementById('btnCancelRegimenModal');
+    const regimenModal = document.getElementById('regimenModal');
+    const closeRegimenHandler = () => regimenModal?.classList.remove('active');
+    btnCloseRegimen?.addEventListener('click', closeRegimenHandler);
+    btnCancelRegimen?.addEventListener('click', closeRegimenHandler);
+
+    // Form Submit Regimen (Tambah / Edit)
+    const regimenForm = document.getElementById('regimenForm');
+    regimenForm?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      this.saveRegimen();
+    });
+
+    // Filter Toolbar Pencarian Realtime & Status
+    const searchInput = document.getElementById('regimenSearchInput');
+    let searchDebounce = null;
+    searchInput?.addEventListener('input', () => {
+      if (searchDebounce) clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(() => {
+        this.regimenFilterSearch = (searchInput.value || '').trim().toLowerCase();
+        this.renderRegimenTable();
+      }, 250);
+    });
+
+    const statusFilter = document.getElementById('regimenStatusFilter');
+    statusFilter?.addEventListener('change', () => {
+      this.regimenFilterStatus = statusFilter.value;
+      this.renderRegimenTable();
+    });
+
+    const resetFilterBtn = document.getElementById('btnResetRegimenFilter');
+    resetFilterBtn?.addEventListener('click', () => {
+      if (searchInput) searchInput.value = '';
+      if (statusFilter) statusFilter.value = '';
+      this.regimenFilterSearch = '';
+      this.regimenFilterStatus = '';
+      this.renderRegimenTable();
+    });
+
+    // Event Delegation Aksi Tabel Regimen (Edit, Toggle Status, Hapus)
+    const tbody = document.getElementById('regimenTableBody');
+    tbody?.addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-action]');
+      if (!btn) return;
+      const action = btn.dataset.action;
+      const id = btn.dataset.id;
+      if (!id) return;
+
+      if (action === 'edit-regimen') {
+        this.openEditRegimenModal(id);
+      } else if (action === 'toggle-regimen') {
+        const currentActive = btn.dataset.active === 'true';
+        this.toggleRegimenStatus(id, !currentActive);
+      } else if (action === 'delete-regimen') {
+        this.deleteRegimen(id);
+      }
+    });
+  }
+
+  async fetchAdminRegimenList() {
+    const token = this.getAdminToken();
+    if (!token) return;
+
+    try {
+      const res = await fetch('/api/gas/action', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'admin_get_regimen_list',
+          token: token
+        })
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        this.handleSessionExpired();
+        return;
+      }
+
+      const json = await res.json();
+      if (this.isTokenInvalidResponse(json)) {
+        this.handleSessionExpired();
+        return;
+      }
+
+      if (json.success && Array.isArray(json.data)) {
+        this.regimenList = json.data;
+        this.renderRegimenTable();
+      } else {
+        this.showToast(json.error || json.message || 'Gagal memuat daftar regimen.', 'warning', 'Peringatan Server');
+      }
+    } catch (e) {
+      console.warn('[Admin Regimen] Gagal memuat data regimen:', e.message);
+    }
+  }
+
+  renderRegimenTable() {
+    const tbody = document.getElementById('regimenTableBody');
+    const infoEl = document.getElementById('regimenPaginationInfo');
+    if (!tbody) return;
+
+    const searchTerm = (this.regimenFilterSearch || '').toLowerCase().trim();
+    const statusFilter = this.regimenFilterStatus;
+
+    const filtered = (this.regimenList || []).filter(item => {
+      const matchSearch = !searchTerm ||
+        (item.nama_regimen && item.nama_regimen.toLowerCase().includes(searchTerm)) ||
+        (item.deskripsi && item.deskripsi.toLowerCase().includes(searchTerm));
+      const matchStatus = !statusFilter || (statusFilter === 'active' ? (item.active === true || item.active === 'true') : (item.active === false || item.active === 'false'));
+      return matchSearch && matchStatus;
+    });
+
+    if (infoEl) {
+      infoEl.textContent = `Menampilkan ${filtered.length} dari total ${this.regimenList.length} regimen`;
+    }
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7" style="text-align:center; padding: 36px 16px; color: #64748b;">
+            <div style="font-size: 1.8rem; margin-bottom: 8px;">📋</div>
+            <div style="font-weight: 600; color: #334155;">Tidak ada regimen ditemukan</div>
+            <div style="font-size: 0.82rem; margin-top: 4px;">Ubah kata kunci pencarian atau tambahkan regimen baru.</div>
+          </td>
+        </tr>
+      `;
+      return;
+    }
+
+    tbody.innerHTML = filtered.map((item, idx) => {
+      const isActive = item.active === true || item.active === 'true';
+      return `
+        <tr>
+          <td style="text-align: center; font-weight: 600; color: #64748b;">${idx + 1}</td>
+          <td>
+            <div style="font-weight: 700; color: #1e293b; font-size: 0.92rem;">
+              ${escapeHtml(item.nama_regimen)}
+            </div>
+          </td>
+          <td style="text-align: center;">
+            <span class="katalog-tag-chip" style="font-size: 0.8rem; font-weight: 600; color: #4338ca; background: #e0e7ff; border-color: #c7d2fe;">
+              ${item.default_interval} Hari
+            </span>
+          </td>
+          <td style="text-align: center;">
+            <span class="katalog-tag-chip" style="font-size: 0.8rem; font-weight: 600; color: #0284c7; background: #e0f2fe; border-color: #bae6fd;">
+              ${item.default_siklus} Siklus
+            </span>
+          </td>
+          <td>
+            <div style="font-size: 0.82rem; color: #475569; max-width: 320px; line-height: 1.4;">
+              ${escapeHtml(item.deskripsi || '-')}
+            </div>
+          </td>
+          <td style="text-align: center;">
+            <button type="button" 
+                    class="btn-icon-sm" 
+                    data-action="toggle-regimen" 
+                    data-id="${escapeHtml(item.id)}" 
+                    data-active="${isActive}"
+                    title="${isActive ? 'Klik untuk Nonaktifkan (Sembunyikan dari User)' : 'Klik untuk Aktifkan'}"
+                    style="border-radius: 9999px; padding: 4px 10px; width: auto; font-size: 0.76rem; font-weight: 700; background: ${isActive ? '#ecfdf5' : '#fef2f2'}; color: ${isActive ? '#059669' : '#dc2626'}; border: 1px solid ${isActive ? '#a7f3d0' : '#fecaca'};">
+              ${isActive ? '✓ Aktif' : '✕ Nonaktif'}
+            </button>
+          </td>
+          <td style="text-align: center;">
+            <div style="display: flex; gap: 6px; justify-content: center; align-items: center;">
+              <button type="button" 
+                      class="btn-icon-sm" 
+                      data-action="edit-regimen" 
+                      data-id="${escapeHtml(item.id)}" 
+                      title="Edit Regimen">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </button>
+              <button type="button" 
+                      class="btn-icon-sm danger" 
+                      data-action="delete-regimen" 
+                      data-id="${escapeHtml(item.id)}" 
+                      title="Hapus Regimen">
+                <svg class="svg-icon svg-icon-sm" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+
+  openAddRegimenModal() {
+    this.editingRegimenId = null;
+    const title = document.getElementById('regimenModalTitle');
+    if (title) title.textContent = 'Tambah Regimen Kemoterapi Baru';
+
+    const namaInput = document.getElementById('regimenNamaInput');
+    const intervalInput = document.getElementById('regimenIntervalInput');
+    const siklusInput = document.getElementById('regimenSiklusInput');
+    const descInput = document.getElementById('regimenDeskripsiInput');
+    const activeSelect = document.getElementById('regimenActiveSelect');
+
+    if (namaInput) namaInput.value = '';
+    if (intervalInput) intervalInput.value = '21';
+    if (siklusInput) siklusInput.value = '6';
+    if (descInput) descInput.value = '';
+    if (activeSelect) activeSelect.value = 'true';
+
+    document.getElementById('regimenModal')?.classList.add('active');
+    namaInput?.focus();
+  }
+
+  openEditRegimenModal(id) {
+    const item = (this.regimenList || []).find(r => r.id === id);
+    if (!item) {
+      this.showToast('Data regimen tidak ditemukan.', 'warning');
+      return;
+    }
+
+    this.editingRegimenId = id;
+    const title = document.getElementById('regimenModalTitle');
+    if (title) title.textContent = 'Edit Regimen Kemoterapi';
+
+    const namaInput = document.getElementById('regimenNamaInput');
+    const intervalInput = document.getElementById('regimenIntervalInput');
+    const siklusInput = document.getElementById('regimenSiklusInput');
+    const descInput = document.getElementById('regimenDeskripsiInput');
+    const activeSelect = document.getElementById('regimenActiveSelect');
+
+    if (namaInput) namaInput.value = item.nama_regimen || '';
+    if (intervalInput) intervalInput.value = item.default_interval || 21;
+    if (siklusInput) siklusInput.value = item.default_siklus || 6;
+    if (descInput) descInput.value = item.deskripsi || '';
+    const isActive = item.active === true || item.active === 'true';
+    if (activeSelect) activeSelect.value = isActive ? 'true' : 'false';
+
+    document.getElementById('regimenModal')?.classList.add('active');
+    namaInput?.focus();
+  }
+
+  async saveRegimen() {
+    const token = this.getAdminToken();
+    if (!token) return;
+
+    const namaInput = document.getElementById('regimenNamaInput');
+    const intervalInput = document.getElementById('regimenIntervalInput');
+    const siklusInput = document.getElementById('regimenSiklusInput');
+    const descInput = document.getElementById('regimenDeskripsiInput');
+    const activeSelect = document.getElementById('regimenActiveSelect');
+    const submitBtn = document.getElementById('btnSaveRegimen');
+
+    const nama = (namaInput?.value || '').trim();
+    const interval = parseInt(intervalInput?.value, 10);
+    const siklus = parseInt(siklusInput?.value, 10);
+    const deskripsi = (descInput?.value || '').trim();
+    const active = activeSelect?.value === 'true';
+
+    if (!nama || nama.length < 3) {
+      this.showToast('Nama regimen wajib diisi minimal 3 karakter.', 'warning', 'Validasi Form');
+      namaInput?.focus();
+      return;
+    }
+
+    if (isNaN(interval) || interval < 1 || interval > 365) {
+      this.showToast('Interval hari harus berupa angka valid antara 1 dan 365.', 'warning', 'Validasi Form');
+      intervalInput?.focus();
+      return;
+    }
+
+    if (isNaN(siklus) || siklus < 1 || siklus > 100) {
+      this.showToast('Jumlah siklus harus berupa angka valid antara 1 dan 100.', 'warning', 'Validasi Form');
+      siklusInput?.focus();
+      return;
+    }
+
+    const payloadData = {
+      nama_regimen: nama,
+      default_interval: interval,
+      default_siklus: siklus,
+      deskripsi: deskripsi,
+      active: active
+    };
+
+    const isEdit = !!this.editingRegimenId;
+    const action = isEdit ? 'update_regimen' : 'create_regimen';
+
+    this.showCrudLoading(
+      isEdit ? 'Memperbarui Regimen' : 'Menyimpan Regimen Baru',
+      'Menyimpan konfigurasi protokol ke database Google Sheets...'
+    );
+    this.setButtonLoading(submitBtn, true, 'Menyimpan...');
+
+    try {
+      const res = await fetch('/api/gas/action', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: action,
+          token: token,
+          id: this.editingRegimenId || undefined,
+          data: payloadData
+        })
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        this.hideCrudLoading();
+        this.handleSessionExpired();
+        return;
+      }
+
+      const json = await res.json();
+      this.hideCrudLoading();
+
+      if (json.success) {
+        this.showToast(
+          isEdit ? 'Regimen berhasil diperbarui.' : 'Regimen baru berhasil ditambahkan.',
+          'success'
+        );
+        document.getElementById('regimenModal')?.classList.remove('active');
+        await this.fetchAdminRegimenList();
+      } else {
+        this.showToast(json.error || 'Gagal menyimpan regimen.', 'danger', 'Gagal Simpan');
+      }
+    } catch (err) {
+      this.hideCrudLoading();
+      this.showToast('Koneksi terputus saat menyimpan regimen.', 'danger', 'Kesalahan Koneksi');
+    } finally {
+      this.setButtonLoading(submitBtn, false);
+    }
+  }
+
+  async toggleRegimenStatus(id, newActive) {
+    const token = this.getAdminToken();
+    if (!token) return;
+
+    const item = (this.regimenList || []).find(r => r.id === id);
+    if (!item) return;
+
+    // Snapshot rollback
+    const oldStatus = item.active;
+    item.active = newActive;
+    this.renderRegimenTable();
+
+    try {
+      const res = await fetch('/api/gas/action', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'toggle_regimen',
+          token: token,
+          id: id,
+          active: newActive
+        })
+      });
+
+      const json = await res.json();
+      if (json.success) {
+        this.showToast(
+          `Status regimen "${item.nama_regimen}" berhasil diubah menjadi ${newActive ? 'Aktif' : 'Nonaktif'}.`,
+          'success'
+        );
+      } else {
+        item.active = oldStatus;
+        this.renderRegimenTable();
+        this.showToast(json.error || 'Gagal mengubah status regimen.', 'danger');
+      }
+    } catch (err) {
+      item.active = oldStatus;
+      this.renderRegimenTable();
+      this.showToast('Koneksi terputus saat mengubah status.', 'danger');
+    }
+  }
+
+  async deleteRegimen(id) {
+    const token = this.getAdminToken();
+    if (!token) return;
+
+    const item = (this.regimenList || []).find(r => r.id === id);
+    if (!item) return;
+
+    const confirmed = await this.showConfirmDialog({
+      title: 'Hapus Regimen Kemoterapi',
+      message: `Apakah Anda yakin ingin menghapus regimen "${item.nama_regimen}"? Tindakan ini akan menghapus regimen dari opsi kalkulator pasien.`,
+      type: 'danger',
+      confirmText: 'Ya, Hapus Regimen',
+      cancelText: 'Batal'
+    });
+
+    if (!confirmed) return;
+
+    this.showCrudLoading('Menghapus Regimen', 'Menghapus data dari Google Sheets...');
+
+    try {
+      const res = await fetch('/api/gas/action', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'delete_regimen',
+          token: token,
+          id: id
+        })
+      });
+
+      this.hideCrudLoading();
+      const json = await res.json();
+
+      if (json.success) {
+        this.showToast(`Regimen "${item.nama_regimen}" berhasil dihapus.`, 'success');
+        await this.fetchAdminRegimenList();
+      } else {
+        this.showToast(json.error || 'Gagal menghapus regimen.', 'danger');
+      }
+    } catch (err) {
+      this.hideCrudLoading();
+      this.showToast('Koneksi terputus saat menghapus regimen.', 'danger');
     }
   }
 }

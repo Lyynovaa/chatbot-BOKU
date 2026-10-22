@@ -1,0 +1,95 @@
+[
+  {
+    "id": "obat-fiktif-003",
+    "nama_obat": "KemoVira Kapsul 50 mg",
+    "nama_produsen": "PT Medika Farma Internasional [Fiktif]",
+    "bentuk_sediaan": "Kapsul",
+    "jenis": "Bermerek",
+    "kode_kfa": "93005544332",
+    "golongan": "Obat Keras",
+    "indikasi_ringkas": "Kapsul kemoterapi oral pemeliharaan simulasi [Data Contoh Fiktif]",
+    "deskripsi": "Obat kemoterapi oral simulasi untuk terapi mandiri pasien di rumah dengan pemantauan via Bot BOKU.",
+    "indikasi_umum": "Simulasi terapi pemeliharaan pasca siklus kemoterapi rawat inap.",
+    "komposisi": "Kemovirate 50 mg tiap kapsul pelepasan terkontrol.",
+    "peringatan": "Telan utuh dengan air putih, jangan dikunyah atau dibuka kapsulnya. Konsumsi setelah makan.",
+    "efek_samping": "Gangguan pencernaan ringan, nafsu makan berkurang sementara.",
+    "status": "Tayang",
+    "urutan": 3,
+    "updated_at": "2026-10-22T06:27:59.018Z",
+    "fasilitas": [
+      {
+        "id": "fas-fiktif-301",
+        "obat_id": "obat-fiktif-003",
+        "nama_fasilitas": "Apotek Rawat Jalan Wijayakusuma",
+        "provinsi": "Jawa Tengah",
+        "alamat": "Gedung Wijayakusuma Lt. 1, RSUD Margono, Purwokerto",
+        "telepon": "0281-641992",
+        "whatsapp": "08112345678",
+        "harga": 320000,
+        "tanggal_diperbarui": "2026-10-22"
+      }
+    ],
+    "updated_by": "noval@gmail.com"
+  },
+  {
+    "id": "obat-fiktif-004",
+    "nama_obat": "[CONTOH FIKTIF] OnkoMitrat Tablet 25 mg",
+    "nama_produsen": "BioKemo Farma [Fiktif]",
+    "bentuk_sediaan": "Tablet",
+    "jenis": "Generik",
+    "kode_kfa": "93002233441",
+    "golongan": "Obat Keras",
+    "indikasi_ringkas": "Tablet terapi target hematologi simulasi [Data Contoh Fiktif]",
+    "deskripsi": "Sediaan tablet uji coba untuk terapi terarah kelainan darah simulasi di Poliklinik Onkologi.",
+    "indikasi_umum": "Simulasi terapi lini kedua hematologi-onkologi terpadu.",
+    "komposisi": "Onkomitrat base 25 mg tablet salut selaput.",
+    "peringatan": "Pemeriksaan fungsi darah berkala (DPL) wajib dilakukan setiap 2 minggu.",
+    "efek_samping": "Pusing ringan, perubahan rasa kecap sementara.",
+    "status": "Tayang",
+    "urutan": 4,
+    "updated_at": "2026-10-22T06:15:41.404Z",
+    "fasilitas": [
+      {
+        "id": "fas-fiktif-401",
+        "obat_id": "obat-fiktif-004",
+        "nama_fasilitas": "Depo Farmasi Onkologi Terpadu RSMS",
+        "provinsi": "Jawa Tengah",
+        "alamat": "Jl. Dr. Gumbreg No. 1, Purwokerto",
+        "telepon": "0281-641992",
+        "whatsapp": "08112345678",
+        "harga": 180000,
+        "tanggal_diperbarui": "2026-10-22"
+      },
+      {
+        "id": "fas-fiktif-402",
+        "obat_id": "obat-fiktif-004",
+        "nama_fasilitas": "Apotek RS Jejaring Bandung",
+        "provinsi": "Jawa Barat",
+        "alamat": "Jl. Pasteur No. 38, Bandung",
+        "telepon": "022-2034953",
+        "whatsapp": "08139876543",
+        "harga": 195000,
+        "tanggal_diperbarui": "2026-10-22"
+      }
+    ]
+  },
+  {
+    "id": "obat-fiktif-006",
+    "nama_obat": "[CONTOH FIKTIF] KemoFlavon Injeksi 10 mg/ml (DRAFT)",
+    "nama_produsen": "Riset Kanker Nusantara [Fiktif]",
+    "bentuk_sediaan": "Injeksi",
+    "jenis": "Generik",
+    "kode_kfa": "93006677881",
+    "golongan": "Obat Keras",
+    "indikasi_ringkas": "Obat kemoterapi eksperimental fase uji [Data Contoh Status Draft]",
+    "deskripsi": "Data draf internal uji coba, tidak boleh tayang di landing page publik katalog.",
+    "indikasi_umum": "Simulasi riset klinis onkologi.",
+    "komposisi": "Flavonitrat 10 mg/ml ampul 5 ml.",
+    "peringatan": "Hanya untuk simulasi draf internal tim admin.",
+    "efek_samping": "Simulasi efek samping belum dipublikasikan.",
+    "status": "Draft",
+    "urutan": 6,
+    "updated_at": "2026-10-22T06:15:41.405Z",
+    "fasilitas": []
+  }
+]

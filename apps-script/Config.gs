@@ -24,30 +24,33 @@ var CONFIG = {
     CATEGORIES: "categories",
     FAQS: "faqs",
     SETTINGS: "settings",
-    EMERGENCY_RULES: "emergency_rules",
     EVENT_LOGS: "event_logs",
-    AUDIT_LOGS: "audit_logs"
+    AUDIT_LOGS: "audit_logs",
+    OBAT: "obat",
+    FASILITAS_OBAT: "fasilitas_obat",
+    REGIMEN: "regimen_kemo"
   },
 
   // Whitelist admin default untuk inisialisasi awal (PRD A-01 / A-02)
+  // CATATAN KEAMANAN: Password tidak boleh di-hardcode. Harus diatur via environment atau setup awal.
   DEFAULT_ADMINS: [
     {
       email: "admin.onkologi@rs-medica.id",
-      password: "medica2026",
+      password: "",
       name: "Dr. Maya (Unit Onkologi & Admin RS)",
       role: "Super Admin",
       active: true
     },
     {
-      email: "superadmin@rs-medica.id",
-      password: "admin2026",
+      email: "direksi@rs-medica.id",
+      password: "",
       name: "Direksi RS Medica",
       role: "Super Admin",
       active: true
     },
     {
       email: "perawat.jaga@rs-medica.id",
-      password: "perawat2026",
+      password: "",
       name: "Ns. Hendra, S.Kep",
       role: "Admin Perawat",
       active: true
@@ -64,43 +67,61 @@ var CONFIG = {
     hospitalAddress: "Jl. Kesehatan No. 88, Gedung Utama Lt. 1"
   },
 
-  // Protokol Panggilan Darurat IGD Default (PRD B-06 & Custom Emergency Management)
-  DEFAULT_EMERGENCY_RULES: [
+  // Daftar Regimen Kemoterapi default untuk inisialisasi awal
+  DEFAULT_REGIMENS: [
     {
-      id: "emg-rule-1",
-      title: "Hotline IGD & Triage 24 Jam",
-      phone: "(021) 555-0911",
-      ambulance: "118 / 119",
-      location: "Gedung Utama Lt. 1, Jl. Kesehatan No. 88",
-      keywords: "darurat, igd, sesak, nyeri dada, pingsan, perdarahan, kecelakaan, kejang, gawat",
-      instructions: "Jika pasien mengalami keluhan akut seperti sesak napas berat, nyeri dada kiri, perdarahan hebat, atau penurunan kesadaran, SEGERA bawa ke IGD terdekat tanpa menunda. Jangan memberikan makanan/minuman pada pasien tidak sadar.",
-      order: 1,
-      is_primary: true,
-      active: true
+      id: "reg-folfox",
+      nama_regimen: "FOLFOX (Fluorouracil + Leucovorin + Oxaliplatin)",
+      default_interval: 14,
+      default_siklus: 12,
+      deskripsi: "Protokol standar lini pertama kanker kolorektal. Interval siklus setiap 14 hari (2 minggu).",
+      active: true,
+      urutan: 1
     },
     {
-      id: "emg-rule-2",
-      title: "Ambulans Siaga & Penjemputan Cito",
-      phone: "(021) 555-0912",
-      ambulance: "118 / 119 (Ext. 2)",
-      location: "Posko Armada Ambulans Gedung B RS Medica",
-      keywords: "ambulans, ambulance, penjemputan, antar pasien, jemput, evakuasi",
-      instructions: "Armada ambulans RS Medica siaga 24 jam dengan tim medis emergency dan peralatan resusitasi lengkap. Hubungi nomor siaga untuk permintaan penjemputan cito segera ke lokasi Anda.",
-      order: 2,
-      is_primary: false,
-      active: true
+      id: "reg-gem-cis",
+      nama_regimen: "Gemcitabine + Cisplatin",
+      default_interval: 21,
+      default_siklus: 6,
+      deskripsi: "Protokol kombinasi kanker saluran kemih, kandung kemih, dan saluran empedu. Siklus tiap 21 hari (3 minggu).",
+      active: true,
+      urutan: 2
     },
     {
-      id: "emg-rule-3",
-      title: "Konsultasi Perawat Jaga Triase Krisis",
-      phone: "(021) 555-0913",
-      ambulance: "118 / 119",
-      location: "Unit Triase Cepat Lt. 1 Sayap Barat",
-      keywords: "triase, triage, perawat jaga darurat, krisis, darurat mental, kondisi kritis",
-      instructions: "Layanan triase cepat untuk memandu keluarga pasien menentukan derajat kegawatan medis dan persiapan tindakan sebelum tiba di instalasi gawat darurat.",
-      order: 3,
-      is_primary: false,
-      active: true
+      id: "reg-ac-t",
+      nama_regimen: "AC-T (Doxorubicin + Cyclophosphamide diikuti Paclitaxel)",
+      default_interval: 21,
+      default_siklus: 8,
+      deskripsi: "Protokol ajuvan standar kanker payudara: 4 siklus fase AC dilanjutkan 4 siklus fase T, interval 21 hari.",
+      active: true,
+      urutan: 3
+    },
+    {
+      id: "reg-pac-carb",
+      nama_regimen: "Paclitaxel + Carboplatin",
+      default_interval: 21,
+      default_siklus: 6,
+      deskripsi: "Kemoterapi lini pertama kanker ovarium dan kanker paru bukan sel kecil (NSCLC). Siklus per 21 hari.",
+      active: true,
+      urutan: 4
+    },
+    {
+      id: "reg-chop",
+      nama_regimen: "CHOP (Cyclophosphamide + Doxorubicin + Vincristine + Prednisone)",
+      default_interval: 21,
+      default_siklus: 6,
+      deskripsi: "Protokol lini utama limfoma non-Hodgkin (NHL). Siklus diberikan setiap 21 hari.",
+      active: true,
+      urutan: 5
+    },
+    {
+      id: "reg-cis-5fu",
+      nama_regimen: "Cisplatin + 5-Fluorouracil (5-FU)",
+      default_interval: 28,
+      default_siklus: 6,
+      deskripsi: "Protokol kemoterapi untuk karsinoma nasofaring dan kanker kepala-leher. Siklus tiap 28 hari (4 minggu).",
+      active: true,
+      urutan: 6
     }
   ]
 };

@@ -1,7 +1,7 @@
 {
   "name": "chatbot-rumahsakit",
   "version": "1.0.0",
-  "description": "Portal Web RSUD Prof. Dr. Margono Soekarjo Purwokerto & WhatsApp Bot BOKU",
+  "description": "Portal Web RSUD Prof. Dr. Margono Soekarjo Purwokerto & Web Chatbot BOKU 24 Jam",
   "main": "server.mjs",
   "type": "module",
   "scripts": {
@@ -10,9 +10,9 @@
   },
   "keywords": [
     "hospital",
-    "whatsapp-bot",
+    "web-chatbot",
     "healthcare",
-    "baileys",
+    "rsud-margono-soekarjo",
     "google-apps-script"
   ],
   "author": "Noval Fadli Robbani",

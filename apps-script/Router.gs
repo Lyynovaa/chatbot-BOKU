@@ -58,9 +58,28 @@ function doGet(e) {
       case "users":
         return createJsonResponse(getUsersList(params.token || CONFIG.API_SECRET_TOKEN));
 
-      // 10. Mengambil Daftar Protokol Panggilan Darurat IGD
-      case "emergency_rules":
-        return createJsonResponse(getEmergencyRules());
+      // 10. Katalog Obat Kemoterapi (Publik: hanya status Tayang)
+      case "get_obat_list":
+      case "obat":
+        return createJsonResponse(getObatList(params));
+
+      // 11. Detail Obat Kemoterapi beserta Fasilitas (Publik)
+      case "get_obat_detail":
+      case "obat_detail":
+        return createJsonResponse(getObatDetail(params.id));
+
+      // 12. Daftar Obat Admin (termasuk Draft)
+      case "admin_get_obat_list":
+        return createJsonResponse(adminGetObatList(params.token || "", params));
+
+      // 13. Daftar Regimen Kemoterapi (Publik: hanya status aktif)
+      case "get_regimen_list":
+      case "regimen":
+        return createJsonResponse(getRegimenList(params));
+
+      // 14. Daftar Regimen Admin (Semua, termasuk nonaktif)
+      case "admin_get_regimen_list":
+        return createJsonResponse(adminGetRegimenList(params.token || "", params));
 
       // Default: Status Info Web App
       default:
@@ -69,7 +88,9 @@ function doGet(e) {
           service: "RS Medica WhatsApp Bot Apps Script Backend",
           timestamp: new Date().toISOString(),
           availableActions: [
-            "init", "categories", "faqs", "settings", "emergency_rules", "audit_logs", "event_logs", "metrics", "bot_bundle", "users"
+            "init", "categories", "faqs", "settings", "audit_logs", "event_logs", 
+            "metrics", "bot_bundle", "users", "get_obat_list", "get_obat_detail", "admin_get_obat_list",
+            "get_regimen_list", "admin_get_regimen_list"
           ]
         });
     }
@@ -115,6 +136,15 @@ function doPost(e) {
     }
     if (typeof body.eventData === "string") {
       try { body.eventData = JSON.parse(body.eventData); } catch (err) {}
+    }
+    if (typeof body.obatData === "string") {
+      try { body.obatData = JSON.parse(body.obatData); } catch (err) {}
+    }
+    if (typeof body.fasilitasData === "string") {
+      try { body.fasilitasData = JSON.parse(body.fasilitasData); } catch (err) {}
+    }
+    if (typeof body.regimenData === "string") {
+      try { body.regimenData = JSON.parse(body.regimenData); } catch (err) {}
     }
 
     var action = body.action || (e && e.parameter && e.parameter.action) || "";
@@ -174,25 +204,76 @@ function doPost(e) {
         var targetSettings = body.settings || body.settingsData || body;
         return createJsonResponse(updateSettings(targetSettings, body.userEmail));
 
-      // ================= KELOLA PANGGILAN DARURAT IGD =================
-      case "get_emergency_rules":
-        return createJsonResponse(getEmergencyRules());
-
-      case "save_emergency_rule":
-        return createJsonResponse(saveEmergencyRule(body.ruleData || body, body.userEmail));
-
-      case "create_emergency_rule":
-        return createJsonResponse(createEmergencyRule(body.ruleData || body, body.userEmail));
-
-      case "update_emergency_rule":
-        return createJsonResponse(updateEmergencyRule(body.id, body.ruleData || body, body.userEmail));
-
-      case "delete_emergency_rule":
-        return createJsonResponse(deleteEmergencyRule(body.id, body.userEmail));
 
       // ================= LOG & EVENT BAILEYS =================
       case "bot_event":
         return createJsonResponse(handleBotEventWebhook(body.eventData, token));
+
+      // ================= KATALOG OBAT KEMOTERAPI =================
+      case "get_obat_list":
+        return createJsonResponse(getObatList(body));
+
+      case "get_obat_detail": {
+        var detailId = body.id || (e && e.parameter && e.parameter.id) || "";
+        return createJsonResponse(getObatDetail(detailId));
+      }
+
+      case "admin_get_obat_list":
+        return createJsonResponse(adminGetObatList(token, body));
+
+      case "create_obat":
+        return createJsonResponse(createObat(body.obatData || body, token));
+
+      case "update_obat": {
+        var updateId = body.id || (body.obatData && body.obatData.id) || (e && e.parameter && e.parameter.id) || "";
+        return createJsonResponse(updateObat(updateId, body.obatData || body, token));
+      }
+
+      case "delete_obat": {
+        var delId = body.id || (body.obatData && body.obatData.id) || (e && e.parameter && e.parameter.id) || "";
+        return createJsonResponse(deleteObat(delId, token));
+      }
+
+      case "create_fasilitas_obat":
+        return createJsonResponse(createFasilitasObat(body.fasilitasData || body, token));
+
+      case "update_fasilitas_obat": {
+        var fasUpdateId = body.id || (body.fasilitasData && body.fasilitasData.id) || (e && e.parameter && e.parameter.id) || "";
+        return createJsonResponse(updateFasilitasObat(fasUpdateId, body.fasilitasData || body, token));
+      }
+
+      case "delete_fasilitas_obat": {
+        var fasDelId = body.id || (body.fasilitasData && body.fasilitasData.id) || (e && e.parameter && e.parameter.id) || "";
+        return createJsonResponse(deleteFasilitasObat(fasDelId, token));
+      }
+
+      case "import_obat_bulk":
+        return createJsonResponse(importObatBulk(body.items || body.obatList || [], token));
+
+      // ================= KALKULATOR REGIMEN KEMOTERAPI =================
+      case "get_regimen_list":
+        return createJsonResponse(getRegimenList(body));
+
+      case "admin_get_regimen_list":
+        return createJsonResponse(adminGetRegimenList(token, body));
+
+      case "create_regimen":
+        return createJsonResponse(createRegimen(body.regimenData || body, token));
+
+      case "update_regimen": {
+        var regUpdateId = body.id || (body.regimenData && body.regimenData.id) || (e && e.parameter && e.parameter.id) || "";
+        return createJsonResponse(updateRegimen(regUpdateId, body.regimenData || body, token));
+      }
+
+      case "delete_regimen": {
+        var regDelId = body.id || (body.regimenData && body.regimenData.id) || (e && e.parameter && e.parameter.id) || "";
+        return createJsonResponse(deleteRegimen(regDelId, token));
+      }
+
+      case "toggle_regimen": {
+        var regToggleId = body.id || (body.regimenData && body.regimenData.id) || (e && e.parameter && e.parameter.id) || "";
+        return createJsonResponse(toggleRegimenStatus(regToggleId, body.active, token));
+      }
 
       // Default: Action tidak dikenali
       default:
